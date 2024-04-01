@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.system.systemGpMapper">
+
+    <select id="selectGpMenuMgtList"  resultType="com.springboot.myapp.eds.erp.vo.system.systemGpListVO">
+        SELECT /* selectGpMenuMgtList */
+            corpCd
+            ,groupId
+            ,groupNm
+            ,groupExp
+            ,groupOrder
+            ,useYn
+        FROM TB_SYSTEM_GP_LIST
+        WHERE corpCd = #{corpCd}
+        <if test="groupNm != null and !groupNm.equals('')">
+            AND groupNm like '%' #{groupNm} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+        ORDER BY groupOrder
+    </select>
+
+    <select id="selectGpMenuAuthList"    resultType="com.springboot.myapp.eds.erp.vo.system.systemGpAuthVO">
+        SELECT /* selectGpMenuAuthList */
+            T1.corpCd
+            ,T1.groupId
+            ,T1.menuId
+            ,T1.pgmId
+            ,(SELECT T0.pgmNm FROM TB_SYSTEM_PGM_LIST T0 WHERE T0.pgmId = T1.pgmId) as pgmNm
+            ,(SELECT T0.pgmUrl FROM TB_SYSTEM_PGM_LIST T0 WHERE T0.pgmId = T1.pgmId) as pgmUrl
+            ,T1.readAuth
+            ,T1.addAuth
+            ,T1.updAuth
+            ,T1.delAuth
+            ,T1.excelDownAuth
+            ,T1.printAuth
+            ,T1.finishAuth
+            ,T1.cancelAuth
+            ,T1.emailPopupAuth
+        FROM TB_SYSTEM_GP_AUTH T1 LEFT JOIN TB_SYSTEM_MENU_DET T2 ON T1.menuId = T2.menuId AND T1.pgmId = T2.pgmId
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.groupId = #{groupId}
+          AND T1.menuId = #{menuId}
+        ORDER BY T2.pgmOrder
+    </select>
+
+    <select id="selectGpUserMgtList"  resultType="com.springboot.myapp.eds.erp.vo.system.systemGpUserListVO">
+        SELECT /* selectGpUserMgtList */
+            T2.corpCd
+             ,T2.empCd
+             ,T2.empNm
+             ,T1.groupId
+             ,T1.authDivi
+             ,(SELECT T0.depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.depaCd=T2.depaCd) AS depaNm
+             ,(SELECT T0.commCdNm FROM TB_SYSTEM_SHA_LIST T INNER JOIN TB_SYSTEM_SHA_DET T0 ON T.groupNo=T0.groupNo WHERE T.groupCd='SYS003' AND T0.commCd=T2.respDivi) AS respDiviNm
+             ,(SELECT T0.commCdNm FROM TB_SYSTEM_SHA_LIST T INNER JOIN TB_SYSTEM_SHA_DET T0 ON T.groupNo=T0.groupNo WHERE T.groupCd='SYS004' AND T0.commCd=T2.posiDivi) AS posiDiviNm
+        FROM
+            TB_SYSTEM_GP_USER T1 INNER JOIN TB_BASE_USER_LIST T2 ON T1.empCd=T2.empCd
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.groupId = #{groupId}
+    </select>
+
+    <insert id="insertGpMenuMgtList" parameterType="hashMap">
+        INSERT INTO /* insertGpMenuMgtList */
+            TB_SYSTEM_GP_LIST(
+                         corpCd
+                        ,groupId
+                        ,groupNm
+                        ,groupExp
+                        ,groupOrder
+                        ,useYn
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,(SELECT IFNULL(MAX(CAST(groupId as signed)),0)+1 FROM TB_SYSTEM_GP_LIST WHERE corpCd = #{corpCd})
+             ,#{groupNm}
+             ,#{groupExp}
+             ,#{groupOrder}
+             ,#{useYn}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertGpUserMgtList" parameterType="hashMap">
+        INSERT INTO /* insertGpUserMgtList */
+            TB_SYSTEM_GP_USER(
+                         corpCd
+                        ,empCd
+                        ,groupId
+                        ,authDivi
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{empCd}
+             ,#{groupId}
+             ,#{authDivi}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertGpMenuAuth" parameterType="hashMap">
+        INSERT INTO /* insertGpMenuAuth */
+            TB_SYSTEM_GP_AUTH(
+                         corpCd
+                        ,groupId
+                        ,menuId
+                        ,pgmId
+                        ,readAuth
+                        ,addAuth
+                        ,updAuth
+                        ,delAuth
+                        ,excelDownAuth
+                        ,printAuth
+                        ,finishAuth
+                        ,cancelAuth
+                        ,emailPopupAuth
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{groupId}
+            ,#{menuId}
+            ,pgmId
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,'0'
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        FROM TB_SYSTEM_MENU_DET T1
+        WHERE corpCd = #{corpCd}
+          AND useYn = '01'
+          AND menuId = #{menuId}
+          AND not exists(
+                SELECT 1 FROM TB_SYSTEM_GP_AUTH T0
+                WHERE T0.corpCd = #{corpCd}
+                  AND T0.groupId = #{groupId}
+                  AND T0.menuId = T1.menuId
+                  AND T0.pgmId = T1.pgmId
+            )
+    </insert>
+
+    <update id="updateGpMenuMgtList" parameterType="hashMap">
+        UPDATE /* updateGpMenuMgtList */
+            TB_SYSTEM_GP_LIST SET
+                            groupNm = #{groupNm}
+                           ,groupExp = #{groupExp}
+                           ,groupOrder = #{groupOrder}
+                           ,useYn = #{useYn}
+                           ,updId = #{userId}
+                           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND groupId = #{groupId}
+    </update>
+
+    <update id="updateGpMenuAuthList" parameterType="hashMap">
+        UPDATE /* updateGpMenuAuthList */
+            TB_SYSTEM_GP_AUTH SET
+                            readAuth = #{readAuth}
+                           ,addAuth = #{addAuth}
+                           ,updAuth = #{updAuth}
+                           ,delAuth = #{delAuth}
+                           ,excelDownAuth = #{excelDownAuth}
+                           ,printAuth = #{printAuth}
+                           ,finishAuth = #{finishAuth}
+                           ,cancelAuth = #{cancelAuth}
+                           ,emailPopupAuth = #{emailPopupAuth}
+                           ,updId = #{userId}
+                           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND groupId = #{groupId}
+          AND menuId = #{menuId}
+          AND pgmId = #{pgmId}
+    </update>
+
+    <update id="updateGpUserMgtList" parameterType="hashMap">
+        UPDATE /* updateGpUserMgtList */
+            TB_SYSTEM_GP_USER SET
+            authDivi = #{authDivi}
+                                ,updId = #{userId}
+                                ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+          AND groupId = #{groupId}
+    </update>
+
+    <delete id="deleteGpMenuMgtList"  parameterType="hashMap">
+        DELETE /* deleteGpMenuMgtList */
+        FROM TB_SYSTEM_GP_LIST
+        WHERE corpCd = #{corpCd}
+          AND groupId = #{groupId}
+    </delete>
+
+    <delete id="deleteGpMenuAuthList"  parameterType="hashMap">
+        DELETE /* deleteGpMenuAuthList */
+        FROM TB_SYSTEM_GP_AUTH
+        WHERE corpCd = #{corpCd}
+          AND groupId = #{groupId}
+    </delete>
+
+    <delete id="deleteManuGpAuth"  parameterType="hashMap">
+        DELETE /* deleteManuGpAuth */
+        FROM TB_SYSTEM_GP_AUTH
+        WHERE corpCd = #{corpCd}
+          AND menuId = #{menuId}
+          AND pgmId = #{pgmIdDb}
+    </delete>
+
+    <delete id="deleteGpUserMgtList"  parameterType="hashMap">
+        DELETE /* deleteGpUserMgtList */
+        FROM TB_SYSTEM_GP_USER
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+          AND groupId = #{groupId}
+    </delete>
+
+    <delete id="deleteGpMenuAuth"  parameterType="hashMap">
+        DELETE /* deleteGpMenuAuth */
+        T1
+        FROM TB_SYSTEM_GP_AUTH T1 left join TB_SYSTEM_MENU_DET T2 ON T1.menuId=T2.menuId AND T1.pgmId=T2.pgmId
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.groupId = #{groupId}
+        AND T1.menuId = #{menuId}
+        AND T2.menuId is null;
+    </delete>
+</mapper>

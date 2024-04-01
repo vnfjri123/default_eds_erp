@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+
+<%--공통 CSS--%>
+	<!-- Bootstrap 4.6.2 -->
+	<link type="text/css" rel="stylesheet" href="/bootstrap-4.6.2/dist/css/bootstrap.min.css">
+
+	<!-- Bootstrap-select2 -->
+	<link rel="stylesheet" href="/AdminLTE_main/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="/AdminLTE_main/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+	<!-- Font Awesome -->
+	<link type="text/css" rel="stylesheet" href="/css/AdminLTE_main/plugins/fontawesome-free/css/all.min.css">
+	<!-- Font Awesome -->
+	<link type="text/css" rel="stylesheet" href="/css/AdminLTE_main/plugins/fontawesome-free/css/fontawesome.min.css">
+
+	<%--toastr CSS--%>
+	<link type="text/css" rel="stylesheet" href="/AdminLTE_main/plugins/toastr/toastr.min.css" />
+
+	<%-- summernote CSS --%>
+	<link rel="stylesheet" href="/summernote/summernote-bs4.min.css" />
+
+	<%-- TUI-Editor CSS --%>
+	<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+	<%-- TUI-Grid CSS --%>
+	<link type="text/css" rel="stylesheet" href="/tui/tui-grid/dist/tui-grid.css" />
+	<link type="text/css" rel="stylesheet" href="/tui/tui-date-picker/dist/tui-date-picker.css" />
+	<link type="text/css" rel="stylesheet" href="/tui/tui-time-picker/dist/tui-time-picker.css" />
+
+	<!-- fontnoto -->
+	<link type="text/css" rel="stylesheet" href="/css/fontNoto.css">

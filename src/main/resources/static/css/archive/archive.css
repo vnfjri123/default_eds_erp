@@ -1,0 +1,150 @@
+#testImg, #testImg1{
+    width: 98%;
+    padding: 0 1px 0 1px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: inherit;
+}
+
+body {
+    user-select: none;
+}
+
+#file:hover {
+    cursor: pointer;
+}
+
+form input {
+    align-self: center;
+}
+
+form input::file-selector-button {
+    display: none;
+}
+
+.dataName.main {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.dataName.main:hover {
+    cursor: unset;
+    color: unset;
+}
+
+#title-error,
+#titleUpdate-error,
+#file-error,
+#fileUpdate-error {
+    position: absolute;
+    left: 5.4rem;
+    margin: unset;
+    top: 7px;
+    background-color: white;
+    width: 10rem;
+}
+
+.error {
+    border: none !important;
+}
+
+#video,
+#videoUpdate,
+#videoUpdate3 {
+    width: 100%;
+    height: 40vh;
+}
+
+#bodyContent {
+    justify-content: center;
+    gap: 10px 0;
+}
+
+/*#bodyContent > div {*/
+/*    !*width: 100%;*!*/
+/*    !*height: 100%;*!*/
+/*    height: 15rem;*/
+/*    width: 15rem;*/
+/*}*/
+
+#bodyContent > div:hover {
+    scale: 105%;
+    text-decoration: underline;
+}
+
+/*#bodyContent > div > a {*/
+/*    display: inline-block;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*}*/
+
+#bodyContent > div > a > img {
+    height: 13rem;
+    /*max-width: 100%;*/
+    width: 100%;
+    /*aspect-ratio: 1/1;*/
+    /*object-fit: contain;*/
+    border-radius: 0.5rem;
+}
+
+.item-footer {
+    display: flex;
+    /*justify-content: space-around;*/
+    width: inherit;
+    white-space: nowrap;        /* 줄 바꿈 방지 */
+    overflow: hidden;           /* 내용이 넘치는 경우 숨김 */
+    text-overflow: ellipsis;    /* 텍스트가 넘칠 경우 elipsis 표시 */
+}
+
+/*#bodyContent > div > a > img {*/
+/*    border-radius: 0.5rem;*/
+/*    object-fit: cover;*/
+/*    height: inherit;*/
+/*    width: inherit;*/
+/*}*/
+
+/*.item-footer {*/
+/*    white-space: nowrap;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+
+/*페이징 시작*/
+.page-item.active .page-link {
+    border: 1px solid #4b96e6;
+    background-color: #4b96e6;
+}
+
+.page-item.active .page-link:hover {
+    cursor: default;
+}
+
+.page-link {
+    color: black;
+}
+
+/*페이징 끝*/
+
+/* bootstrap custom style 시작 */
+.custom-col-lg-5 {
+    flex: 0 0 calc(19%); /* 20%는 5개의 열에 대한 너비, px는 열 사이의 간격 */
+    position: relative;
+    width: 18rem;
+    /* width: 100%; */ /* 이 부분을 삭제하면 꽉 차게 설정됩니다. */
+    padding-right: 0px;
+    margin-left: 15px;
+    /*padding-left: 15px;*/
+    border: solid 1px rgba(0,0,0,0.2);
+    border-radius: 0.5rem;
+}
+
+@media (max-width: 720px) {
+    /* 화면 너비가 767px 이하일 때 적용되는 스타일 */
+    .custom-col-lg-5 {
+        flex: 0 0 calc(50% - 1px); /* 50%는 2개의 열에 대한 너비, 1px는 열 사이의 간격 */
+        margin-right: 0; /* 열 사이의 간격을 제거 */
+        /*padding-left: 15px; !* 왼쪽 패딩은 유지 *!*/
+    }
+}
+
+/* bootstrap custom style 끝 */

@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.email.emailMapper">
+
+    <select id="selectSendEmailInfo" resultType="com.springboot.myapp.eds.erp.vo.email.emailListVO">
+        SELECT /* selectSendEmailInfo */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                ,T1.projCd
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                ,T1.projCd
+                ,T1.ordCd
+                ,T1.sendDivi
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                ,T1.projCd
+                ,T1.salCd
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                ,T1.projCd
+                ,T1.colCd
+            </when>
+        </choose>
+        ,T1.seq
+        ,T1.divi
+        ,T1.setForm
+        ,T1.toAddr
+        ,T1.ccAddr
+        ,T1.bccAddr
+        ,T1.setSubject
+        ,T1.note
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,inpDttm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,updDttm
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                FROM tb_yeongeob_est_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.estCd = #{estCd}
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                FROM tb_project_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.projCd = #{projCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                FROM tb_gumae_ord_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                <if test="ordCd != null and !ordCd.equals('')">
+                    AND T1.ordCd = #{ordCd}
+                </if>
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                FROM tb_yeongeob_sal_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.salCd = #{salCd}
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                FROM tb_gumae_col_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.colCd = #{colCd}
+            </when>
+        </choose>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+
+    <select id="selectSendEmailInfo2" resultType="com.springboot.myapp.eds.erp.vo.email.emailListVO">
+        SELECT /* selectSendEmailInfo2 */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                ,T1.projCd
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                ,T1.projCd
+                ,(SELECT I1.projNm FROM tb_project_list I1 WHERE I1.corpCd = T1.corpCd AND I1.projCd = T1.projCd) AS projNm
+                ,T1.ordCd
+                ,T1.sendDivi
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                ,T1.projCd
+                ,T1.salCd
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                ,T1.projCd
+                ,T1.colCd
+            </when>
+        </choose>
+        ,T1.seq
+        ,T1.divi
+        ,T1.setForm
+        ,T1.toAddr
+        ,T1.ccAddr
+        ,T1.bccAddr
+        ,T1.setSubject
+        ,T1.note
+        ,T1.inpId
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,inpDttm
+        ,T1.updId
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,updDttm
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                FROM tb_yeongeob_est_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.estCd = #{estCd}
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                FROM tb_project_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.projCd = #{projCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                FROM tb_gumae_ord_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                <if test="ordCd != null and !ordCd.equals('')">
+                    AND T1.ordCd = #{ordCd}
+                </if>
+                <if test="seq != null and !seq.equals('')">
+                    AND T1.seq = #{seq}
+                </if>
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                FROM tb_yeongeob_sal_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.salCd = #{salCd}
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                FROM tb_gumae_col_email_list T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.colCd = #{colCd}
+            </when>
+        </choose>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY T1.inpDttm DESC
+    </select>
+
+    <select id="selectSendEmailFileInfo" resultType="com.springboot.myapp.eds.erp.vo.email.emailFileVO">
+        SELECT /* selectSendEmailFileInfo */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                ,T1.projCd
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                ,T1.projCd
+                ,T1.ordCd
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                ,T1.projCd
+                ,T1.salCd
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                ,T1.projCd
+                ,T1.colCd
+            </when>
+        </choose>
+        ,T1.seq
+        ,T1.divi
+        ,T1.saveNm
+        ,T1.origNm
+        ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+        ,T1.ext
+        ,T1.size
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,inpDttm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,updDttm
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                FROM tb_yeongeob_est_email_atch T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.estCd = #{estCd}
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                FROM tb_project_email_atch T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.projCd = #{projCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                FROM tb_gumae_ord_email_atch T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.ordCd = #{ordCd}
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                FROM tb_yeongeob_sal_email_atch T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.salCd = #{salCd}
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                FROM tb_gumae_col_email_atch T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.colCd = #{colCd}
+            </when>
+        </choose>
+        <if test="emailSeq != null and !emailSeq.equals('')">
+            AND T1.emailSeq = #{emailSeq}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+
+    <select id="selectSendEmailJasperInfo" resultType="com.springboot.myapp.eds.erp.vo.email.emailFileVO">
+        SELECT /* selectSendEmailJasperInfo */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                ,T1.projCd
+                ,T1.ordCd
+            </when>
+        </choose>
+        ,T1.seq
+        ,T1.divi
+        ,T1.saveNm
+        ,T1.origNm
+        ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+        ,T1.ext
+        ,T1.size
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,inpDttm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,updDttm
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                FROM tb_yeongeob_est_email_jasper T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.estCd = #{estCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                FROM tb_gumae_ord_email_jasper T1
+                WHERE T1.corpCd = #{corpCd}
+                AND T1.ordCd = #{ordCd}
+            </when>
+        </choose>
+        <if test="emailSeq != null and !emailSeq.equals('')">
+            AND T1.emailSeq = #{emailSeq}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+
+    <select id="selectSendEmailFileInfoAll" resultType="com.springboot.myapp.eds.erp.vo.email.emailFileVO">
+        SELECT /* selectSendEmailFileInfoAll */
+            *
+        FROM (
+            SELECT /* selectSendEmailFileInfo */
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+            <choose>
+                <when test="divi == 'estimate' or divi.equals('estimate')">
+
+                </when>
+                <when test="divi == 'project' or divi.equals('project')">
+                    ,T1.projCd
+                </when>
+                <when test="divi == 'order' or divi.equals('order')">
+                    ,T1.projCd
+                    ,T1.ordCd
+                </when>
+                <when test="divi == 'sales' or divi.equals('sales')">
+                    ,T1.projCd
+                    ,T1.salCd
+                </when>
+                <when test="divi == 'collect' or divi.equals('collect')">
+                    ,T1.projCd
+                    ,T1.colCd
+                </when>
+            </choose>
+            ,T1.seq
+            ,T1.divi
+            ,T1.saveNm
+            ,T1.origNm
+            ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+            ,T1.ext
+            ,T1.size
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,inpDttm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,updDttm
+            <choose>
+                <when test="divi == 'estimate' or divi.equals('estimate')">
+                    FROM tb_yeongeob_est_email_atch T1
+                    WHERE T1.corpCd = #{corpCd}
+                    AND T1.estCd = #{estCd}
+                </when>
+                <when test="divi == 'project' or divi.equals('project')">
+                    FROM tb_project_email_atch T1
+                    WHERE T1.corpCd = #{corpCd}
+                    AND T1.projCd = #{projCd}
+                </when>
+                <when test="divi == 'order' or divi.equals('order')">
+                    FROM tb_gumae_ord_email_atch T1
+                    WHERE T1.corpCd = #{corpCd}
+                    AND T1.ordCd = #{ordCd}
+                </when>
+                <when test="divi == 'sales' or divi.equals('sales')">
+                    FROM tb_yeongeob_sal_email_atch T1
+                    WHERE T1.corpCd = #{corpCd}
+                    AND T1.salCd = #{salCd}
+                </when>
+                <when test="divi == 'collect' or divi.equals('collect')">
+                    FROM tb_gumae_col_email_atch T1
+                    WHERE T1.corpCd = #{corpCd}
+                    AND T1.colCd = #{colCd}
+                </when>
+            </choose>
+            <if test="emailSeq != null and !emailSeq.equals('')">
+                AND T1.emailSeq = #{emailSeq}
+            </if>
+            UNION ALL
+            SELECT /* selectSendEmailJasperInfo */
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+            <choose>
+                <when test="divi == 'estimate' or divi.equals('estimate')">
+
+                </when>
+                <when test="divi == 'order' or divi.equals('order')">
+                    ,T1.projCd
+                    ,T1.ordCd
+                </when>
+            </choose>
+                ,T1.seq
+                ,T1.divi
+                ,T1.saveNm
+                ,T1.origNm
+                ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+                ,T1.ext
+                ,T1.size
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+                ,inpDttm
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+                ,updDttm
+            <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+            FROM tb_yeongeob_est_email_jasper T1
+            WHERE T1.corpCd = #{corpCd}
+            AND T1.estCd = #{estCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+            FROM tb_gumae_ord_email_jasper T1
+            WHERE T1.corpCd = #{corpCd}
+            AND T1.ordCd = #{ordCd}
+            </when>
+            </choose>
+            <if test="emailSeq != null and !emailSeq.equals('')">
+                AND T1.emailSeq = #{emailSeq}
+            </if>
+        ) as U1
+    </select>
+    
+    <insert id="insertSendEmailInfo" parameterType="hashMap">
+        INSERT INTO /* insertSendEmailInfo */
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+            tb_yeongeob_est_email_list(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,seq
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+            tb_project_email_list(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,seq
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+            tb_gumae_ord_email_list(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,ordCd
+                ,seq
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                tb_yeongeob_sal_email_list(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,salCd
+                ,seq
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                tb_gumae_col_email_list(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,colCd
+                ,seq
+            </when>
+        </choose>
+                ,divi
+                ,setForm
+                ,toAddr
+                ,ccAddr
+                ,bccAddr
+                ,setSubject
+                ,note
+                ,inpId
+                ,inpDttm
+                ,updId
+                ,updDttm
+        )
+        SELECT
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_est_email_list WHERE corpCd = #{corpCd} AND estCd = #{estCd})
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_project_email_list WHERE corpCd = #{corpCd} AND projCd = #{projCd})
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{ordCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_gumae_ord_email_list WHERE corpCd = #{corpCd} AND ordCd = #{ordCd})
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{salCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_sal_email_list WHERE corpCd = #{corpCd} AND salCd = #{salCd})
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{colCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_gumae_col_email_list WHERE corpCd = #{corpCd} AND colCd = #{colCd})
+            </when>
+        </choose>
+            ,#{divi}
+            ,#{setForm}
+            ,#{toAddr}
+            ,#{ccAddr}
+            ,#{bccAddr}
+            ,#{setSubject}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        <selectKey keyColumn="seq" keyProperty="emailSeq" order="AFTER" resultType="java.lang.String">
+            SELECT seq
+            <choose>
+                <when test="divi == 'estimate' or divi.equals('estimate')">
+                    FROM tb_yeongeob_est_email_list
+                    WHERE corpCd = #{corpCd}
+                    AND busiCd = #{busiCd}
+                    AND estCd = #{estCd}
+                </when>
+                <when test="divi == 'project' or divi.equals('project')">
+                    FROM tb_project_email_list
+                    WHERE corpCd = #{corpCd}
+                    AND busiCd = #{busiCd}
+                    AND projCd = #{projCd}
+                </when>
+                <when test="divi == 'order' or divi.equals('order')">
+                    FROM tb_gumae_ord_email_list
+                    WHERE corpCd = #{corpCd}
+                    AND busiCd = #{busiCd}
+                    AND ordCd = #{ordCd}
+                </when>
+                <when test="divi == 'sales' or divi.equals('sales')">
+                    FROM tb_yeongeob_sal_email_list
+                    WHERE corpCd = #{corpCd}
+                    AND busiCd = #{busiCd}
+                    AND salCd = #{salCd}
+                </when>
+                <when test="divi == 'collect' or divi.equals('collect')">
+                    FROM tb_gumae_col_email_list
+                    WHERE corpCd = #{corpCd}
+                    AND busiCd = #{busiCd}
+                    AND colCd = #{colCd}
+                </when>
+            </choose>
+            ORDER BY seq DESC
+            LIMIT 1;
+        </selectKey>
+    </insert>
+
+    <insert id="insertSendEmailAtchInfo" parameterType="hashMap">
+        INSERT INTO /* insertSendEmailAtchInfo */
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+            tb_yeongeob_est_email_atch(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,seq
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+            tb_project_email_atch(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,seq
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+            tb_gumae_ord_email_atch(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,ordCd
+                ,seq
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+            tb_yeongeob_sal_email_atch(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,salCd
+                ,seq
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+            tb_gumae_col_email_atch(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,colCd
+                ,seq
+            </when>
+        </choose>
+            ,emailSeq
+            ,divi
+            ,saveNm
+            ,origNm
+            ,saveRoot
+            ,ext
+            ,size
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_est_email_atch WHERE corpCd = #{corpCd} AND estCd = #{estCd})
+            </when>
+            <when test="divi == 'project' or divi.equals('project')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_project_email_atch WHERE corpCd = #{corpCd} AND projCd = #{projCd})
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{ordCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_gumae_ord_email_atch WHERE corpCd = #{corpCd} AND ordCd = #{ordCd})
+            </when>
+            <when test="divi == 'sales' or divi.equals('sales')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{salCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_sal_email_atch WHERE corpCd = #{corpCd} AND salCd = #{salCd})
+            </when>
+            <when test="divi == 'collect' or divi.equals('collect')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{colCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_gumae_col_email_atch WHERE corpCd = #{corpCd} AND colCd = #{colCd})
+            </when>
+        </choose>
+            ,#{emailSeq}
+            ,#{divi}
+            ,#{saveNm}
+            ,#{origNm}
+            ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+            ,#{ext}
+            ,#{size}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <insert id="insertSendEmailJasperInfo" parameterType="hashMap">
+        INSERT INTO /* insertSendEmailJasperInfo */
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                tb_yeongeob_est_email_jasper(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,seq
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                tb_gumae_ord_email_jasper(
+                corpCd
+                ,busiCd
+                ,estCd
+                ,projCd
+                ,ordCd
+                ,seq
+            </when>
+        </choose>
+            ,emailSeq
+            ,divi
+            ,saveNm
+            ,origNm
+            ,saveRoot
+            ,ext
+            ,size
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_est_email_jasper WHERE corpCd = #{corpCd} AND estCd = #{estCd})
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                #{corpCd}
+                ,#{busiCd}
+                ,#{estCd}
+                ,#{projCd}
+                ,#{ordCd}
+                ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_gumae_ord_email_jasper WHERE corpCd = #{corpCd} AND ordCd = #{ordCd})
+            </when>
+        </choose>
+            ,#{emailSeq}
+            ,#{divi}
+            ,#{saveNm}
+            ,#{origNm}
+            ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+            ,#{ext}
+            ,#{size}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="applySendEmail" parameterType="hashMap">
+        UPDATE tb_gumae_ord_email_list /* applySendEmail */
+        SET sendDivi = #{sendDivi},
+            updId = #{userId},
+            updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND ordCd = #{ordCd}
+          AND seq = #{seq}
+    </update>
+</mapper>

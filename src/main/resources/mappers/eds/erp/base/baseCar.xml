@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseCarMapper">
+
+    <select id="selectCarMgtList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCarListVO">
+        SELECT /* selectCarMgtList */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,T1.depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+            ,carCd
+            ,carNo
+            ,carNm
+            ,carDivi
+            ,oilType
+            ,fuelAmt
+            ,insuCorpDivi
+            ,insuExpiDt
+            ,cumuMile + (SELECT IFNULL(SUM(T0.mdDist),0) FROM TB_CAR_LOG_LIST T0 WHERE T0.corpCd = #{corpCd} AND T0.carCd = T1.carCd)AS sumCumuMile
+            ,cumuMile
+            ,buyDt
+            ,buyDivi
+            ,periInspExpiDt
+            ,note
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM tb_base_car_list T1
+        WHERE 1=1
+        AND T1.corpCd = #{corpCd}
+        <if test="carNm != null and !carNm.equals('')">
+            AND (T1.carNo like '%' #{carNm} '%' or T1.carNm like '%' #{carNm} '%')
+        </if>
+        order by carCd
+    </select>
+
+    <select id="selectCarMgtUseList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCarListVO">
+        SELECT /* selectCarMgtUseList */
+            *
+          FROM (
+                 SELECT /* selectCarMgtList */
+                     T1.corpCd,
+                     T1.carCd,
+                     T1.carNm,
+                     T1.cumuMile,
+                     T1.carDivi,
+                     T1.carNo,
+                     T1.insuExpiDt
+                   FROM tb_base_car_list T1
+                  WHERE T1.corpCd = #{corpCd}
+                 UNION ALL
+                 SELECT /* selectCarBookList */
+                     T1.corpCd,
+                     T1.carCd,
+                     '',
+                     '',
+                     '',
+                     '',
+                     ''
+                   FROM TB_CAR_BOOK_LIST T1
+                  WHERE T1.corpCd = #{corpCd}
+                    AND (    DATE_FORMAT(#{stDt}, '%Y%m%d%H%i') BETWEEN T1.stDt AND T1.edDt
+                          OR DATE_FORMAT(#{edDt}, '%Y%m%d%H%i') BETWEEN T1.stDt AND T1.edDt)
+               ) O1
+         GROUP BY O1.corpCd, O1.carCd
+        HAVING COUNT(O1.carCd) = 1
+           AND CHAR_LENGTH(O1.carCd) <![CDATA[>]]> 0
+         ORDER BY O1.carCd
+    </select>
+
+    <select id="selectCarExpeList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCarExpeListVO">
+        SELECT /* selectCarExpeList */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,carCd
+            ,expeCd
+            ,apprDivi
+            ,expeDt
+            ,empCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empCd) AS empNm
+            ,expeAmt
+            ,accountCd
+            ,(SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd=#{corpCd} AND I1.accountCd like T1.accountCd) AS accountNm
+            ,expeDivi
+            ,payDivi
+            ,projCd
+            ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) AS projNm
+            ,depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+            ,note
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM tb_base_car_expe_list T1
+        WHERE 1=1
+        AND T1.corpCd = #{corpCd}
+        AND T1.carCd = #{carCd}
+        order by expeCd
+    </select>
+
+    <select id="selectCarExpeFileList" resultType="com.springboot.myapp.eds.erp.vo.base.baseCarExpeFileListVO">
+        SELECT /* selectCarExpeFileList */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.carCd
+            ,T1.expeCd
+            ,T1.seq
+            ,T1.saveNm
+            ,T1.origNm
+            ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+            ,T1.ext
+            ,T1.size
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,note
+            ,inpDttm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,updDttm
+            FROM tb_base_car_expe_file_list T1
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.busiCd = #{busiCd}
+        AND T1.carCd = #{carCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="expeCd != null and !expeCd.equals('')">
+            AND expeCd = #{expeCd}
+        </if>
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+
+    <insert id="insertCarMgtList" parameterType="hashMap">
+        INSERT INTO /* insertCarMgtList */
+        TB_BASE_CAR_LIST(
+                 corpCd
+                ,busiCd
+                ,depaCd
+                ,carCd
+                ,carNo
+                ,carNm
+                ,carDivi
+                ,oilType
+                ,fuelAmt
+                ,insuCorpDivi
+                ,insuExpiDt
+                ,cumuMile
+                ,buyDt
+                ,buyDivi
+                ,periInspExpiDt
+                ,note
+                ,inpId
+                ,inpDttm
+                ,updId
+                ,updDttm)
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{depaCd}
+            ,(SELECT IFNULL(MAX(CAST(carCd as signed)),0)+1
+              FROM TB_BASE_CAR_LIST
+              WHERE corpCd = #{corpCd})
+            ,#{carNo}
+            ,#{carNm}
+            ,#{carDivi}
+            ,#{oilType}
+            ,#{fuelAmt}
+            ,#{insuCorpDivi}
+            ,#{insuExpiDt}
+            ,#{cumuMile}
+            ,#{buyDt}
+            ,#{buyDivi}
+            ,#{periInspExpiDt}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <insert id="insertCarExpeList" parameterType="hashMap">
+        INSERT INTO /* insertCarExpeList */
+            tb_base_car_expe_list(
+                 corpCd
+                ,busiCd
+                ,carCd
+                ,expeCd
+                ,apprDivi
+                ,expeDt
+                ,empCd
+                ,expeAmt
+                ,accountCd
+                ,expeDivi
+                ,payDivi
+                ,projCd
+                ,depaCd
+                ,note
+                ,inpId
+                ,inpDttm
+                ,updId
+                ,updDttm)
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{carCd}
+            ,(SELECT IFNULL(MAX(CAST(expeCd as signed)),0)+1
+              FROM tb_base_car_expe_list
+              WHERE corpCd = #{corpCd}
+                AND carCd = #{carCd})
+            ,#{apprDivi}
+            ,#{expeDt}
+            ,#{empCd}
+            ,#{expeAmt}
+            ,#{accountCd}
+            ,#{expeDivi}
+            ,#{payDivi}
+            ,#{projCd}
+            ,#{depaCd}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <insert id="insertCarExpeFileList" parameterType="hashMap">
+        INSERT INTO /* insertCarExpeFileList */
+            TB_BASE_CAR_EXPE_FILE_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,carCd
+                                ,expeCd
+                                ,seq
+                                ,saveNm
+                                ,origNm
+                                ,saveRoot
+                                ,ext
+                                ,size
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{carCd}
+             ,#{expeCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM TB_BASE_CAR_EXPE_FILE_LIST WHERE corpCd = #{corpCd} AND carCd = #{carCd} AND expeCd = #{expeCd})
+             ,#{saveNm}
+             ,#{origNm}
+             ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+             ,#{ext}
+             ,#{size}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <update id="updateCarMgtList" parameterType="hashMap">
+        UPDATE /* updateCarMgtList */
+            TB_BASE_CAR_LIST
+        SET busiCd = #{busiCd}
+           ,depaCd = #{depaCd}
+           ,carNo = #{carNo}
+           ,carNm = #{carNm}
+           ,carDivi = #{carDivi}
+           ,oilType = #{oilType}
+           ,fuelAmt = #{fuelAmt}
+           ,insuCorpDivi = #{insuCorpDivi}
+           ,insuExpiDt = #{insuExpiDt}
+           ,cumuMile = #{cumuMile}
+           ,buyDt = #{buyDt}
+           ,buyDivi = #{buyDivi}
+           ,periInspExpiDt = #{periInspExpiDt}
+           ,note = #{note}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND carCd = #{carCd}
+    </update>
+
+    <update id="updateCarExpeList" parameterType="hashMap">
+        UPDATE /* updateCarExpeList */
+            tb_base_car_expe_list
+        SET apprDivi = #{apprDivi}
+           ,expeDt = #{expeDt}
+           ,empCd = #{empCd}
+           ,expeAmt = #{expeAmt}
+           ,accountCd = #{accountCd}
+           ,expeDivi = #{expeDivi}
+           ,payDivi = #{payDivi}
+           ,projCd = #{projCd}
+           ,depaCd = #{depaCd}
+           ,note = #{note}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+           AND carCd = #{carCd}
+           AND expeCd = #{expeCd}
+    </update>
+
+    <update id="updateCarExpeFileList" parameterType="hashMap">
+        UPDATE /* updateCarExpeFileList */
+            TB_BASE_CAR_EXPE_FILE_LIST SET
+            note = #{note}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND busiCd = #{busiCd}
+          AND expeCd = #{expeCd}
+          AND seq = #{seq}
+    </update>
+
+    <delete id="deleteCarMgtList"  parameterType="hashMap">
+        DELETE /* deleteCarMgtList */
+        FROM TB_BASE_CAR_LIST
+        WHERE corpCd = #{corpCd}
+          AND carCd = #{carCd}
+    </delete>
+
+    <delete id="deleteCarExpeList"  parameterType="hashMap">
+        DELETE /* deleteCarExpeList */
+        FROM tb_base_car_expe_list
+        WHERE corpCd = #{corpCd}
+          AND carCd = #{carCd}
+          AND expeCd = #{expeCd}
+    </delete>
+
+    <delete id="deleteCarExpeFileList"  parameterType="hashMap">
+        DELETE /* deleteCarExpeFileList */
+        FROM TB_BASE_CAR_EXPE_FILE_LIST
+        WHERE corpCd = #{corpCd}
+        AND busiCd = #{busiCd}
+        AND carCd = #{carCd}
+        <if test="expeCd != null and !expeCd.equals('')">
+            AND expeCd = #{expeCd}
+        </if>
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+</mapper>

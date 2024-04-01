@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.pda.salma.SALMA3500Mapper">
+    
+    <resultMap id="SALMA3500List" type="com.springboot.myapp.eds.pda.salma.SALMA3500VO">
+        <result property="corpCd"          column="corpCd"/>
+        <result property="busiCd"          column="busiCd"/>
+        <result property="exNo"            column="ex_no"/>
+        <result property="exDt"            column="ex_dt"/>
+        <result property="saleCloseDivi"   column="sale_close_divi"/>
+        <result property="custCd"          column="custCd"/>
+        <result property="custNm"          column="custNm"/>
+        <result property="supAmt"          column="supAmt"/>
+        <result property="tax"             column="tax"/>
+        <result property="totAmt"          column="totAmt"/>
+        <result property="suppCd"          column="supp_cd"/>
+        <result property="suppNm"          column="supp_nm"/>
+        <result property="picCd"           column="pic_cd"/>
+        <result property="picNm"           column="picNm"/>
+        <result property="depaCd"          column="depaCd"/>
+        <result property="depaNm"          column="depaNm"/>
+        <result property="empCd"           column="empCd"/>
+        <result property="empNm"           column="empNm"/>
+        <result property="remark"          column="remark"/>
+        <result property="closeYn"         column="close_yn"/>
+    </resultMap>
+    
+    <resultMap id="SALMA3501List" type="com.springboot.myapp.eds.pda.salma.SALMA3501VO">
+        <result property="corpCd"           column="corpCd"/>
+        <result property="exNo"             column="ex_no"/>
+        <result property="seq"              column="seq"/>
+        <result property="itemCd"           column="itemCd"/>
+        <result property="itemNm"           column="itemNm"/>
+        <result property="stan"             column="stan"/>
+        <result property="acDiviCd"         column="acDiviCd"/>
+        <result property="taxDivi"          column="tax_divi"/>
+        <result property="vatDivi"          column="vat_divi"/>
+        <result property="inveUnit"         column="inveUnit"/>
+        <result property="boxQty"           column="boxQty"/>
+        <result property="qty"              column="qty"/>
+        <result property="upr"              column="upr"/>
+        <result property="supAmt"           column="supAmt"/>
+        <result property="tax"              column="tax"/>
+        <result property="totAmt"           column="totAmt"/>
+        <result property="storCd"           column="storCd"/>
+        <result property="storNm"           column="storNm"/>
+        <result property="locaCd"           column="locaCd"/>
+        <result property="locaNm"           column="locaNm"/>
+        <result property="deliCloseDt"      column="deli_close_dt"/>
+        <result property="exDueDt"          column="ex_due_dt"/>
+        <result property="estiCd"           column="estiCd"/>
+        <result property="reordNo"          column="reord_no"/>
+        <result property="exRequNo"         column="ex_requ_no"/>
+        <result property="projCd"             column="pj_cd"/>
+        <result property="projNm"             column="projNm"/>
+        <result property="applyQty"         column="apply_qty"/>
+        <result property="dcEcDivi"         column="dc_ec_divi"/>
+        <result property="dcEcRate"         column="dc_ec_rate"/>
+        <result property="upr2"             column="upr2"/>
+        <result property="supAmt2"          column="supAmt2"/>
+        <result property="tax2"             column="tax2"/>
+        <result property="totAmt2"          column="totAmt2"/>
+        <result property="remark"           column="remark"/>
+        <result property="dbDcEcDivi"       column="db_dc_ec_divi"/>
+        <result property="dbDcEcRate"       column="db_dc_ec_rate"/>
+        <result property="bundQty"          column="bund_qty"/>
+        <result property="eachQty"          column="each_qty"/>
+        <result property="diviUpr2"         column="divi_upr2"/>
+        <result property="diviDcEcDivi"     column="divi_dc_ec_divi"/>
+        <result property="diviDcEcRate"     column="divi_dc_ec_rate"/>
+        <result property="diviTaxDivi"      column="divi_tax_divi"/>
+        <result property="diviVatDivi"      column="divi_vat_divi"/>
+        <result property="lotNo"            column="lot_no"/>
+    </resultMap>
+
+    <resultMap id="SALMA3502List" type="com.springboot.myapp.eds.pda.salma.SALMA3502VO">
+        <result property="corpCd"          column="corpCd"/>
+        <result property="exRequNo"        column="ex_requ_no"/>
+        <result property="exRequDt"        column="ex_requ_dt"/>
+        <result property="custCd"          column="custCd"/>
+        <result property="custNm"          column="custNm"/>
+        <result property="supAmt"          column="supAmt"/>
+        <result property="tax"             column="tax"/>
+        <result property="totAmt"          column="totAmt"/>
+        <result property="picCd"           column="pic_cd"/>
+        <result property="picNm"           column="picNm"/>
+        <result property="depaCd"          column="depaCd"/>
+        <result property="depaNm"          column="depaNm"/>
+        <result property="empCd"           column="empCd"/>
+        <result property="empNm"           column="empNm"/>
+        <result property="remark"          column="remark"/>
+    </resultMap>
+
+    <resultMap id="SALMA3503List" type="com.springboot.myapp.eds.pda.salma.SALMA3503VO">
+        <result property="corpCd"          column="corpCd"/>
+        <result property="exRequNo"        column="ex_requ_no"/>
+        <result property="seq"             column="seq"/>
+        <result property="itemCd"          column="itemCd"/>
+        <result property="itemNm"          column="itemNm"/>
+        <result property="taxDivi"         column="tax_divi"/>
+        <result property="vatDivi"         column="vat_divi"/>
+        <result property="stan"            column="stan"/>
+        <result property="acDiviCd"        column="acDiviCd"/>
+        <result property="procDiviCd"      column="proc_divi_cd"/>
+        <result property="inveUnit"        column="inveUnit"/>
+        <result property="qty"             column="qty"/>
+        <result property="upr"             column="upr"/>
+        <result property="supAmt"          column="supAmt"/>
+        <result property="tax"             column="tax"/>
+        <result property="totAmt"          column="totAmt"/>
+        <result property="storCd"          column="storCd"/>
+        <result property="locaCd"          column="locaCd"/>
+        <result property="estiCd"          column="estiCd"/>
+        <result property="reordNo"         column="reord_no"/>
+        <result property="remark"          column="remark"/>
+        <result property="exQty"           column="ex_qty"/>
+        <result property="applyQty"         column="apply_qty"/>
+    </resultMap>
+
+    <resultMap id="SALMA3504List" type="com.springboot.myapp.eds.pda.salma.SALMA3504VO">
+        <result property="corpCd"          column="corpCd"/>
+        <result property="reordNo"         column="reord_no"/>
+        <result property="reordDt"         column="reord_dt"/>
+        <result property="custCd"          column="custCd"/>
+        <result property="custNm"          column="custNm"/>
+        <result property="supAmt"          column="supAmt"/>
+        <result property="tax"             column="tax"/>
+        <result property="totAmt"          column="totAmt"/>
+        <result property="picCd"           column="pic_cd"/>
+        <result property="picNm"           column="picNm"/>
+        <result property="depaCd"          column="depaCd"/>
+        <result property="depaNm"          column="depaNm"/>
+        <result property="empCd"           column="empCd"/>
+        <result property="empNm"           column="empNm"/>
+        <result property="remark"          column="remark"/>
+    </resultMap>
+
+    <resultMap id="SALMA3505List" type="com.springboot.myapp.eds.pda.salma.SALMA3505VO">
+        <result property="corpCd"           column="corpCd"/>
+        <result property="reordNo"          column="reord_no"/>
+        <result property="seq"              column="seq"/>
+        <result property="itemCd"           column="itemCd"/>
+        <result property="itemNm"           column="itemNm"/>
+        <result property="taxDivi"          column="tax_divi"/>
+        <result property="vatDivi"          column="vat_divi"/>
+        <result property="stan"             column="stan"/>
+        <result property="acDiviCd"         column="acDiviCd"/>
+        <result property="procDiviCd"       column="proc_divi_cd"/>
+        <result property="inveUnit"         column="inveUnit"/>
+        <result property="qty"              column="qty"/>
+        <result property="upr"              column="upr"/>
+        <result property="supAmt"           column="supAmt"/>
+        <result property="tax"              column="tax"/>
+        <result property="totAmt"           column="totAmt"/>
+        <result property="storCd"           column="storCd"/>
+        <result property="locaCd"           column="locaCd"/>
+        <result property="estiCd"           column="estiCd"/>
+        <result property="remark"           column="remark"/>
+        <result property="exQty"            column="ex_qty"/>
+        <result property="applyQty"         column="apply_qty"/>
+    </resultMap>
+
+    <resultMap id="applyBarcode2Item" type="com.springboot.myapp.eds.pda.salma.SALMA3506VO">
+        <result property="itemCd"           column="itemCd"/>
+        <result property="itemNm"           column="itemNm"/>
+        <result property="stan"             column="stan"/>
+        <result property="acDiviCd"         column="acDiviCd"/>
+        <result property="taxDivi"          column="tax_divi"/>
+        <result property="vatDivi"          column="vat_divi"/>
+        <result property="inveUnit"         column="inveUnit"/>
+        <result property="upr"              column="upr"/>
+        <result property="qty"              column="qty"/>
+    </resultMap>
+
+    <select id="selectSALMA3500"  resultMap="SALMA3500List"	parameterType="hashMap">
+        SELECT /* selectSALMA3500 */
+            corpCd
+            ,busiCd
+            ,ex_no
+            ,ex_dt
+            ,sale_close_divi
+            ,custCd
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.custCd = T1.custCd) as custNm
+            ,IFNULL((SELECT SUM(I1.supAmt2) FROM t_messalma08_1 I1 WHERE I1.corpCd=#{corpCd} AND I1.ex_no = T1.ex_no),0) as supAmt
+            ,IFNULL((SELECT SUM(I1.tax2) FROM t_messalma08_1 I1 WHERE I1.corpCd=#{corpCd} AND I1.ex_no = T1.ex_no),0) as tax
+            ,IFNULL((SELECT SUM(I1.totAmt2) FROM t_messalma08_1 I1 WHERE I1.corpCd=#{corpCd} AND I1.ex_no = T1.ex_no),0) as totAmt
+            ,supp_cd
+            ,(SELECT I1.supp_nm FROM t_mesbasma13 I1 WHERE I1.corpCd=#{corpCd} AND I1.custCd=T1.custCd AND I1.supp_cd = T1.supp_cd) as supp_nm
+            ,pic_cd
+            ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.pic_cd) as picNm
+            ,depaCd
+            ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.busiCd=#{busiCd} AND I1.depaCd=T1.depaCd) as depaNm
+            ,empCd
+            ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.empCd) as empNm
+            ,remark
+            ,close_yn
+        FROM t_messalma07 T1
+        WHERE corpCd = #{corpCd}
+        AND busiCd = #{busiCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND depaCd = #{depaCd}
+            AND empCd = #{empCd}
+        </if>
+        AND ex_dt = #{exDt}
+        ORDER BY ex_no DESC
+    </select>
+    
+    <select id="selectSALMA3501"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* selectSALMA3501 */
+            corpCd
+            ,ex_no
+            ,seq
+            ,itemCd
+            ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.itemCd = T1.itemCd) as itemNm
+            ,(SELECT I1.stan FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.itemCd = T1.itemCd) as stan
+            ,(SELECT I1.acDiviCd FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.itemCd = T1.itemCd) as acDiviCd
+            ,tax_divi
+            ,vat_divi
+            ,(SELECT I1.inveUnit FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.itemCd = T1.itemCd) as inveUnit
+            ,boxQty
+            ,qty
+            ,upr
+            ,supAmt
+            ,tax
+            ,totAmt
+            ,dc_ec_divi
+            ,dc_ec_rate
+            ,upr2
+            ,supAmt2
+            ,tax2
+            ,totAmt2
+            ,storCd
+            ,(SELECT I1.storNm FROM TB_BASE_STOR_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.storCd = T1.storCd) as storNm
+            ,locaCd
+            ,(SELECT I1.locaNm FROM TB_BASE_LOCA_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.storCd = T1.storCd AND I1.locaCd = T1.locaCd) as locaNm
+            ,deli_close_dt
+            ,ex_due_dt
+            ,estiCd
+            ,reord_no
+            ,ex_requ_no
+            ,pj_cd
+            <!-- ,projNm-->
+            ,apply_qty
+            ,remark
+            ,lot_no
+        FROM
+            t_messalma08 T1
+        WHERE 1=1
+        AND corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+        order by seq DESC
+    </select>
+
+    <select id="selectSALMA3502"  resultMap="SALMA3502List"	parameterType="hashMap">
+        SELECT  /* selectSALMA3502 */
+            corpCd
+            ,ex_requ_no
+            ,ex_requ_dt
+            ,custCd
+            ,custNm
+            ,IFNULL(SUM(supAmt),0) AS supAmt
+            ,IFNULL(SUM(tax),0) AS tax
+            ,IFNULL(SUM(totAmt),0) AS totAmt
+            ,pic_cd
+            ,picNm
+            ,depaCd
+            ,depaNm
+            ,empCd
+            ,empNm
+            ,remark
+        FROM(
+            SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.ex_requ_no
+                ,T1.ex_requ_dt
+                ,T1.custCd
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.custCd = T1.custCd) as custNm
+                ,T2.qty
+                ,T2.supAmt
+                ,T2.tax
+                ,T2.totAmt
+                ,T1.pic_cd
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.pic_cd) as picNm
+                ,T1.depaCd
+                ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.busiCd=#{busiCd} AND I1.depaCd=T1.depaCd) as depaNm
+                ,T1.empCd
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.empCd) as empNm
+                ,T1.remark
+                ,IFNULL((select SUM(qty) from t_messalma08 I1 WHERE I1.corpCd = T2.corpCd AND I1.ex_requ_no = T2.ex_requ_no AND I1.seq = T2.seq),0) AS ex_qty
+            FROM
+                t_messalma05 T1 INNER JOIN t_messalma06 T2 ON T1.corpCd=T2.corpCd AND T1.ex_requ_no=T2.ex_requ_no
+            WHERE 1=1
+            AND T1.corpCd = #{corpCd}
+            AND T1.busiCd = #{busiCd}
+            <if test="authDivi == '3' or authDivi.equals('3')">
+                AND T1.depaCd = #{depaCd}
+            </if>
+            <if test="authDivi == '4' or authDivi.equals('4')">
+                AND T1.depaCd = #{depaCd}
+                AND T1.empCd = #{empCd}
+            </if>
+            AND IFNULL(T1.close_yn,0) = '0'
+            AND T1.ex_requ_dt BETWEEN #{stDt} AND #{edDt}
+            ) T1
+        WHERE 1=1
+        AND qty > ex_qty
+        GROUP BY corpCd, ex_requ_no, ex_requ_dt, custCd, custNm, pic_cd, picNm, depaCd, depaNm, empCd, empNm, remark
+        ORDER BY corpCd, ex_requ_no
+    </select>
+
+    <select id="selectSALMA3503"  resultMap="SALMA3503List"	parameterType="hashMap">
+        SELECT /* selectSALMA3503 */
+            corpCd
+            ,ex_requ_no
+            ,seq
+            ,itemCd
+            ,itemNm
+            ,tax_divi
+            ,vat_divi
+            ,stan
+            ,acDiviCd
+            ,proc_divi_cd
+            ,inveUnit
+            ,qty
+            ,upr
+            ,supAmt
+            ,tax
+            ,totAmt
+            ,storCd
+            ,locaCd
+            ,estiCd
+            ,reord_no
+            ,remark
+            ,ex_qty
+            ,0 AS apply_qty
+        FROM
+            (SELECT
+                corpCd
+                ,ex_requ_no
+                ,seq
+                ,itemCd
+                ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as itemNm
+                ,tax_divi
+                ,vat_divi
+                ,(SELECT I1.stan FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as stan
+                ,(SELECT I1.acDiviCd FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as acDiviCd
+                ,(SELECT I1.proc_divi_cd FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as proc_divi_cd
+                ,(SELECT I1.inveUnit FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as inveUnit
+                ,qty
+                ,upr
+                ,supAmt
+                ,tax
+                ,totAmt
+                ,storCd
+                ,locaCd
+                ,estiCd
+                ,reord_no
+                ,remark
+                ,(select IFNULL(sum(qty),0) from t_messalma08 I1 WHERE I1.corpCd = T1.corpCd AND I1.ex_requ_no = T1.ex_requ_no AND I1.seq = T1.seq) AS ex_qty
+            FROM t_messalma06 AS T1
+            WHERE corpCd = #{corpCd}
+            AND ex_requ_no = #{exRequNo}
+            ) T1
+        WHERE qty > ex_qty
+        ORDER BY seq
+    </select>
+
+    <select id="selectSALMA3504"  resultMap="SALMA3504List"	parameterType="hashMap">
+        SELECT  /* selectSALMA3504 */
+            corpCd
+            ,reord_no
+            ,reord_dt
+            ,custCd
+            ,custNm
+            ,IFNULL(SUM(supAmt),0) AS supAmt
+            ,IFNULL(SUM(tax),0) AS tax
+            ,IFNULL(SUM(totAmt),0) AS totAmt
+            ,pic_cd
+            ,picNm
+            ,depaCd
+            ,depaNm
+            ,empCd
+            ,empNm
+            ,remark
+        FROM(
+            SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.reord_no
+                ,T1.reord_dt
+                ,T1.custCd
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.custCd = T1.custCd) as custNm
+                ,T2.qty
+                ,T2.supAmt
+                ,T2.tax
+                ,T2.totAmt
+                ,T1.pic_cd
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.pic_cd) as picNm
+                ,T1.depaCd
+                ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.busiCd=#{busiCd} AND I1.depaCd=T1.depaCd) as depaNm
+                ,T1.empCd
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.empCd = T1.empCd) as empNm
+                ,T1.remark
+                ,IFNULL((select SUM(qty) from t_messalma08 I1 WHERE I1.corpCd = T2.corpCd AND I1.reord_no = T2.reord_no AND I1.seq = T2.seq),0) AS ex_qty
+            FROM
+                t_messalma03 T1 INNER JOIN t_messalma04 T2 ON T1.corpCd=T2.corpCd AND T1.reord_no=T2.reord_no
+            WHERE 1=1
+            AND T1.corpCd = #{corpCd}
+            AND T1.busiCd = #{busiCd}
+            <if test="authDivi == '3' or authDivi.equals('3')">
+                AND T1.depaCd = #{depaCd}
+            </if>
+            <if test="authDivi == '4' or authDivi.equals('4')">
+                AND T1.depaCd = #{depaCd}
+                AND T1.empCd = #{empCd}
+            </if>
+            AND IFNULL(T1.close_yn,0) = '0'
+            AND T1.reord_dt BETWEEN #{stDt} AND #{edDt}
+            ) T1
+        WHERE (qty > ex_qty OR qty = 0)
+        GROUP BY corpCd, reord_no, reord_dt, custCd, custNm, pic_cd, picNm, depaCd, depaNm, empCd, empNm, remark
+        ORDER BY corpCd, reord_no
+    </select>
+
+    <select id="selectSALMA3505"  resultMap="SALMA3505List"	parameterType="hashMap">
+        SELECT /* selectSALMA3505 */
+            corpCd
+            ,reord_no
+            ,seq
+            ,itemCd
+            ,itemNm
+            ,tax_divi
+            ,vat_divi
+            ,stan
+            ,acDiviCd
+            ,proc_divi_cd
+            ,inveUnit
+            ,qty
+            ,upr
+            ,supAmt
+            ,tax
+            ,totAmt
+            ,storCd
+            ,locaCd
+            ,estiCd
+            ,remark
+            ,ex_qty
+            ,0 AS apply_qty
+        FROM
+            (SELECT
+                corpCd
+                ,reord_no
+                ,seq
+                ,itemCd
+                ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as itemNm
+                ,tax_divi
+                ,vat_divi
+                ,(SELECT I1.stan FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as stan
+                ,(SELECT I1.acDiviCd FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as acDiviCd
+                ,(SELECT I1.proc_divi_cd FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as proc_divi_cd
+                ,(SELECT I1.inveUnit FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd=T1.corpCd AND I1.itemCd = T1.itemCd) as inveUnit
+                ,qty
+                ,upr
+                ,supAmt
+                ,tax
+                ,totAmt
+                ,storCd
+                ,locaCd
+                ,estiCd
+                ,remark
+                ,(select IFNULL(sum(qty),0) from t_messalma08 I1 WHERE I1.corpCd = T1.corpCd AND I1.reord_no = T1.reord_no AND I1.seq = T1.seq)
+                    /*출고요청등록페이지 없어지면 주문적용된 합계 추가 또는 빼는 방향으로*/
+                    /* +
+                 (select IFNULL(sum(qty),0) from t_messalma06 I1 WHERE I1.corpCd = T1.corpCd AND I1.reord_no = T1.reord_no AND I1.seq = T1.seq)*/ AS ex_qty
+            FROM t_messalma04 AS T1
+            WHERE corpCd = #{corpCd}
+            AND reord_no = #{reordNo}
+            ) T1
+        WHERE qty > ex_qty
+        ORDER BY seq
+    </select>
+
+    <select id="selectSALMA3506"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* selectSALMA3506 */
+            T1.corpCd
+             ,T1.ex_no
+             ,T1.itemCd
+             ,T2.itemNm
+             ,T2.inveUnit
+             ,T2.boxQty
+             ,SUM(qty) AS bund_qty
+             ,0 AS each_qty
+             ,0 AS qty
+             ,IFNULL((SELECT I1.upr FROM t_mesbasma16 I1 WHERE I1.custCd = #{custCd} AND I1.itemCd = T1.itemCd AND #{exDt} BETWEEN I1.st_dt AND I1.ed_dt ORDER BY seq*1 DESC LIMIT 1),0)AS upr2
+             ,0 AS supAmt2
+             ,0 AS tax2
+             ,0 AS totAmt2
+             ,'02' AS dc_ec_divi
+             ,T1.dc_ec_rate AS dc_ec_rate
+             ,T1.tax_divi AS tax_divi
+             ,T1.vat_divi AS vat_divi
+             ,T1.upr2 AS divi_upr2
+             ,T1.dc_ec_divi AS divi_dc_ec_divi
+             ,T1.dc_ec_rate AS divi_dc_ec_rate
+             ,T1.tax_divi AS divi_tax_divi
+             ,T1.vat_divi AS divi_vat_divi
+        FROM t_messalma08 T1 INNER JOIN TB_BASE_ITEM_LIST T2
+                                        ON T1.corpCd = T2.corpCd
+                                            AND T1.itemCd = T2.itemCd
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.ex_no = #{exNo}
+        GROUP BY T1.corpCd, T1.ex_no, T1.itemCd, T1.upr2, T1.dc_ec_divi, T1.dc_ec_rate, T1.tax_divi, T1.vat_divi
+    </select>
+
+    <select id="selectSALMA3507"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* selectSALMA3507 */
+            T1.corpCd
+             ,T1.ex_no
+             ,T1.itemCd
+             ,T2.itemNm
+             ,T2.inveUnit
+             ,T2.boxQty
+             ,T1.bund_qty
+             ,T1.each_qty
+             ,T1.qty
+             ,IFNULL(T1.upr2,
+                IFNULL((SELECT I1.upr FROM t_mesbasma16 I1 WHERE I1.custCd = #{custCd} AND I1.itemCd = T1.itemCd AND #{exDt} BETWEEN I1.st_dt AND I1.ed_dt ORDER BY seq*1 DESC LIMIT 1),0)
+                 )AS upr2
+             ,T1.supAmt2
+             ,T1.tax2
+             ,T1.totAmt2
+             ,T1.dc_ec_divi
+             ,T1.dc_ec_rate
+             ,T1.tax_divi
+             ,T1.vat_divi
+             ,T1.remark
+             ,T1.upr2 AS divi_upr2
+             ,T1.dc_ec_divi AS divi_dc_ec_divi
+             ,T1.dc_ec_rate AS divi_dc_ec_rate
+             ,T1.tax_divi AS divi_tax_divi
+             ,T1.vat_divi AS divi_vat_divi
+        FROM t_messalma08_1 T1 INNER JOIN TB_BASE_ITEM_LIST T2
+                                       ON T1.corpCd = T2.corpCd
+                                      AND T1.itemCd = T2.itemCd
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.ex_no = #{exNo}
+    </select>
+
+    <select id="selectSALMA3508"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* selectSALMA3508 */
+            COUNT(T1.itemCd) AS qty
+        FROM t_mesproma31 T1
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.lot_no = #{lotNo}
+    </select>
+
+    <select id="selectSALMA3509"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* selectSALMA3509 */
+            COUNT(T1.itemCd) AS qty
+        FROM t_messalma08 T1
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.lot_no = #{lotNo}
+    </select>
+
+    <select id="countSALMA3506"  resultMap="SALMA3501List"	parameterType="hashMap">
+        SELECT /* countSALMA3506 */
+            COUNT(ex_no) AS qty
+        FROM t_messalma08_1
+        WHERE corpCd = #{corpCd}
+          AND ex_no = #{exNo}
+    </select>
+    
+    <insert id="insertSALMA3500" parameterType="hashMap">
+        INSERT INTO /* insertSALMA3500 */
+        t_messalma07(
+            corpCd
+            ,busiCd
+            ,ex_no
+            ,ex_dt
+            ,sale_close_divi
+            ,custCd
+            ,supp_cd
+            ,pic_cd
+            ,depaCd
+            ,empCd
+            ,remark
+            ,close_yn
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,(SELECT CONCAT(DATE_FORMAT(NOW(),'%Y%m'),LPAD(IFNULL(MAX(SUBSTR(ex_no,7,12)),0)+1,5,'0')) FROM t_messalma07 WHERE corpCd = #{corpCd} AND DATE_FORMAT(NOW(),'%Y%m') = DATE_FORMAT(ex_dt,'%Y%m'))
+            ,#{exDt}
+            ,#{saleCloseDivi}
+            ,#{custCd}
+            ,#{suppCd}
+            ,#{picCd}
+            ,#{depaCd}
+            ,#{empCd}
+            ,#{remark}
+            ,#{closeYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+    
+    <insert id="insertSALMA3501" parameterType="hashMap">
+        INSERT INTO /* insertSALMA3501 */
+        t_messalma08(
+             corpCd
+            ,ex_no
+            ,seq
+            ,itemCd
+            ,tax_divi
+            ,vat_divi
+            ,boxQty
+            ,qty
+            ,storCd
+            ,lot_no
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{exNo}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM t_messalma08 WHERE corpCd = #{corpCd} AND ex_no = #{exNo})
+             ,T1.itemCd
+             ,'01'
+             ,'01'
+             ,T1.boxQty
+             ,T1.qty
+             ,#{storCd}
+             ,T1.lot_no
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+        FROM t_mesproma31 T1
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.lot_no = #{lotNo}
+
+    </insert>
+
+    <update id="updateSALMA3500" parameterType="hashMap">
+        UPDATE /* updateSALMA3500 */
+        t_messalma07 SET
+            ex_dt = #{exDt}
+            ,sale_close_divi = #{saleCloseDivi}
+            ,custCd = #{custCd}
+            ,supp_cd = #{suppCd}
+            ,pic_cd = #{picCd}
+            ,depaCd = #{depaCd}
+            ,empCd = #{empCd}
+            ,remark = #{remark}
+            ,close_yn = #{closeYn}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND busiCd = #{busiCd}
+        AND ex_no = #{exNo}
+    </update>
+    
+    <update id="updateSALMA3501" parameterType="hashMap">
+        UPDATE /* updateSALMA3501 */
+        t_messalma08 SET
+            itemCd = #{itemCd}
+            ,tax_divi = #{taxDivi}
+            ,vat_divi = #{vatDivi}
+            ,boxQty = #{boxQty}
+            ,qty = #{qty}
+            ,upr = #{upr}
+            ,supAmt = #{supAmt}
+            ,tax = #{tax}
+            ,totAmt = #{totAmt}
+            ,dc_ec_divi = #{dcEcDivi}
+            ,dc_ec_rate = #{dcEcRate}
+            ,upr2 = #{upr2}
+            ,supAmt2 = #{supAmt2}
+            ,tax2 = #{tax2}
+            ,totAmt2 = #{totAmt2}
+            ,storCd = #{storCd}
+            ,locaCd = #{locaCd}
+            ,deli_close_dt = #{deliCloseDt}
+            ,ex_due_dt = #{exDueDt}
+            ,estiCd = #{estiCd}
+            ,reord_no = #{reordNo}
+            ,ex_requ_no = #{exRequNo}
+            ,pj_cd = #{projCd}
+            ,remark = #{remark}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+        AND seq = #{seq}
+    </update>
+
+    <update id="updateSALMA3502" parameterType="hashMap">
+        UPDATE /* updateSALMA3502 */
+        t_messalma08 SET
+            dc_ec_divi = #{dcEcDivi}
+            ,dc_ec_rate = #{dcEcRate}
+            ,upr2 = #{upr2}
+            ,supAmt2 = #{supAmt2}
+            ,tax2 = #{tax2}
+            ,totAmt2 = #{totAmt2}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+        AND itemCd = #{itemCd}
+        AND dc_ec_divi = #{dbDcEcDivi}
+        AND dc_ec_rate = #{dbDcEcRate}
+    </update>
+
+    <update id="updateSALMA3503" parameterType="hashMap">
+        UPDATE /* updateSALMA3503 */
+        t_messalma06 SET
+            apply_qty = #{applyQty}
+           ,updId = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND ex_requ_no = #{exRequNo}
+          AND seq = #{seq}
+    </update>
+
+    <update id="resetSALMA3503" parameterType="hashMap">
+        UPDATE /* resetSALMA3503 */
+        t_messalma06 SET
+            apply_qty = 0
+           ,updId = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND ex_requ_no = #{exRequNo}
+    </update>
+
+    <update id="updateSALMA3505" parameterType="hashMap">
+        UPDATE /* updateSALMA3505 */
+        t_messalma04 SET
+            apply_qty = #{applyQty}
+           ,updId = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND reord_no = #{reordNo}
+          AND seq = #{seq}
+    </update>
+
+    <update id="resetSALMA3505" parameterType="hashMap">
+        UPDATE /* resetSALMA3505 */
+        t_messalma04 SET
+            apply_qty = 0
+           ,updId = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND reord_no = #{reordNo}
+    </update>
+
+    <update id="closeYnSALMA3500" parameterType="hashMap">
+        UPDATE /* closeYnSALMA3500 */
+        t_messalma07 SET
+           close_yn = #{closeYn}
+        WHERE corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+    </update>
+
+    <delete id="deleteSALMA3500"  parameterType="hashMap">
+        DELETE
+        FROM t_messalma07
+        WHERE corpCd = #{corpCd}
+          AND busiCd = #{busiCd}
+          AND ex_no = #{exNo}
+    </delete>
+    
+    <delete id="deleteSALMA3501"  parameterType="hashMap">
+        DELETE /* deleteSALMA3501 */
+        FROM t_messalma08
+        WHERE corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteSALMA3502"  parameterType="hashMap">
+        DELETE /* deleteSALMA3502 */
+        FROM t_messalma08_1
+        WHERE corpCd = #{corpCd}
+        AND ex_no = #{exNo}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteSALMA3503"  parameterType="hashMap">
+        DELETE /* deleteSALMA3503 */
+        FROM t_messalma08
+        WHERE corpCd = #{corpCd}
+        AND lot_no = #{lotNo}
+    </delete>
+
+    <insert id="applySALMA3503" parameterType="hashMap">
+        CALL p_applySALMA(#{corpCd}, #{exRequNo}, #{userId}, '3');
+    </insert>
+
+    <insert id="applySALMA3505" parameterType="hashMap">
+        CALL p_applySALMA(#{corpCd}, #{reordNo}, #{userId}, '4');
+    </insert>
+
+    <insert id="applySALMADcAtmTax" parameterType="hashMap">
+        CALL p_applySALMADcAtmTax(#{corpCd}, #{exNo}, #{itemCd}, #{upr}, #{dcEcDivi}, #{dcEcRate}, #{userId}, '1');
+    </insert>
+
+    <insert id="saleCloseSALMA3500" parameterType="hashMap">
+        CALL p_applySALMA(#{corpCd}, #{exNo}, #{userId}, '6');
+    </insert>
+
+    <insert id="saleCloseSALMA3501" parameterType="hashMap">
+        CALL p_finishSALMA(#{corpCd}, #{exNo}, #{exNoList}, #{userId}, '1');
+    </insert>
+
+    <select id="applyBarcode2Item"  resultMap="applyBarcode2Item"	parameterType="hashMap">
+        SELECT /* applyBarcode2Item */
+            T1.itemCd
+             ,T2.itemNm
+             ,T2.stan
+             ,T2.acDiviCd
+             ,T2.tax_divi
+             ,'01' AS vat_divi
+             ,T2.inveUnit
+             ,CAST(IFNULL(MAX(T3.sale_upr),0) as CHAR(50)) AS upr
+             ,T1.qty
+        FROM t_mesbasma17 T1 INNER JOIN TB_BASE_ITEM_LIST T2 ON T1.corpCd=T2.corpCd AND T1.itemCd=T2.itemCd
+                             INNER JOIN t_mesbasma14 T3 ON T2.corpCd=T3.corpCd AND T2.itemCd=T3.itemCd
+        WHERE 1=1
+          AND T1.corpCd = #{corpCd}
+          AND T1.barcode = #{barcode}
+    </select>
+
+    <update id="applySALMA3506" parameterType="java.util.Map">
+        /* applySALMA3506 : 집계데이터 생성*/
+        INSERT INTO
+        t_messalma08_1(
+                         corpCd
+                        ,ex_no
+                        ,seq
+                        ,itemCd
+                        ,boxQty
+                        ,bund_qty
+                        ,each_qty
+                        ,qty
+                        ,upr2
+                        ,supAmt2
+                        ,tax2
+                        ,totAmt2
+                        ,dc_ec_divi
+                        ,dc_ec_rate
+                        ,tax_divi
+                        ,vat_divi
+                        ,remark
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        VALUES
+            (#{corpCd}
+            ,#{exNo}
+            ,(SELECT IFNULL(MAX(CAST(I1.seq as signed)),0)+1 FROM t_messalma08_1 I1 WHERE I1.corpCd = #{corpCd} AND I1.ex_no = #{exNo})
+            ,#{itemCd}
+            ,#{boxQty}
+            ,#{bundQty}
+            ,#{eachQty}
+            ,#{qty}
+            ,#{upr2}
+            ,#{supAmt2}
+            ,#{tax2}
+            ,#{totAmt2}
+            ,#{dcEcDivi}
+            ,#{dcEcRate}
+            ,#{taxDivi}
+            ,#{vatDivi}
+            ,#{remark}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now())
+    </update>
+
+    <update id="resetSALMA3506"  parameterType="hashMap">
+        /* resetSALMA3506 : 상세데이터 단가, 할인할증구분, 할인할증율 초기화*/
+        UPDATE t_messalma08 T1
+        SET upr2 = 0
+          ,dc_ec_divi = '01'
+          ,dc_ec_rate = '0'
+          ,updId = #{userId}
+          ,updDttm = now()
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.ex_no = #{exNo}
+    </update>
+
+    <delete id="resetSALMA3507"  parameterType="hashMap">
+        /* resetSALMA3507 : 집계데이터 삭제*/
+        DELETE /* resetSALMA3506 */
+        FROM t_messalma08_1
+        WHERE corpCd = #{corpCd}
+          AND ex_no = #{exNo};
+    </delete>
+</mapper>

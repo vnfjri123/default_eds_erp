@@ -1,0 +1,40 @@
+::placeholder{
+    color: black !important;
+}
+
+.ui-dialog{
+    user-select: none;
+    border: black 1px solid;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    z-index: 99;
+}
+
+.ui-dialog-titlebar{
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.ui-dialog-content{
+    height: auto;
+    min-height: auto !important;
+    text-align: center;
+}
+
+.ui-dialog-content > button{
+    margin: 1rem;
+}
+
+.ui-widget-overlay {
+    width: 100vw;
+    height: 99vh;
+    z-index: 98;
+    position: absolute;
+    background: black;
+    top: 0;
+    opacity: 0.7;
+}

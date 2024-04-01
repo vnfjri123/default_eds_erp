@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.myapp.eds.ims.controller.error.ErrorMapper">
+
+    <select id="selectError" resultType="com.springboot.myapp.eds.ims.vo.error.errorVO">
+        SELECT T1.`index`,
+        T1.`siteIndex`,
+        T1.`busiCd`,
+        T1.`corpCd`,
+        T1.`depaCd`,
+        T1.`inpDttm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        T1.`updDttm`,
+        T1.`title`,
+        T1.`content`,
+        # T1.`content` AS contentDb,
+        T1.`receiptDt`,
+        T1.`completionDt`,
+        T1.`progressDivi`,
+        (SELECT empNm
+        FROM TB_BASE_USER_LIST I1
+        WHERE I1.corpCd = #{corpCd}
+        AND I1.empCd = T1.handler) AS handler,
+        T1.`depaNm`,
+        T2.`ad`,
+        T2.`siteNm`,
+        T2.clasifyDivi,
+        T2.`modelDivi`,
+        T2.`modelNm`
+        FROM tb_ims_error T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.corpCd = #{corpCd}
+        <if test="title != null and !title.equals('')">
+            AND `title` like '%' #{title} '%'
+        </if>
+        <if test="siteNm != null and !siteNm.equals('')">
+            AND `siteNm` like '%' #{siteNm} '%'
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND `ad` like '%' #{ad} '%'
+        </if>
+        <if test="progressDivi != null and !progressDivi.equals('')">
+            AND t1.progressDivi = #{progressDivi}
+        </if>
+        <if test="depaCd != null and !depaCd.equals('')">
+            AND t1.depaCd = #{depaCd}
+        </if>
+        ORDER BY T1.`progressDivi` ASC, T1.`index` DESC;
+    </select>
+
+    <select id="selectErrorByIndex" resultType="com.springboot.myapp.eds.ims.vo.error.errorVO">
+        SELECT T1.`index`,
+               T1.`siteIndex`,
+               T1.`busiCd`,
+               T1.`corpCd`,
+               T1.`depaCd`,
+               T1.`inpDttm`,
+               (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+               (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+               T1.`updDttm`,
+               T1.`title`,
+               T1.`content`,
+               T1.`receiptDt`,
+               T1.`completionDt`,
+               T1.`progressDivi`,
+               (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.handler) AS handler,
+               T2.`siteNm`,
+               T2.`projNm`,
+               T2.`projCd`,
+               T2.`ad`,
+               T2.clasifyDivi,
+               T2.`depaNm`,
+               T2.`modelDivi`,
+               T2.`modelNm`,
+               T2.`installDt`,
+               T2.`batteryDt`
+        FROM tb_ims_error T1 LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.`index` = #{index}
+    </select>
+
+    <select id="selectErrorImageList" resultType="com.springboot.myapp.eds.ims.vo.error.errorImageVO">
+        SELECT
+        T1.`index`,
+        T1.`errorIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`,
+        T1.`inpId`,
+        T1.`inpDttm`,
+        T1.`empNm`
+        FROM tb_ims_error_image T1
+        LEFT JOIN tb_ims_error T2 ON T1.errorIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="errorIndex != null and !errorIndex.equals('')">
+            AND T1.`errorIndex` = #{errorIndex}
+        </if>
+    </select>
+
+    <insert id="insertError" parameterType="hashMap">
+        <selectKey keyProperty="errorIndex" resultType="int" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO tb_ims_error
+        (`siteIndex`,
+        `depaCd`,
+         `depaNm`,
+        `corpCd`,
+        `busiCd`,
+        `inpId`,
+        `inpDttm`,
+        `title`,
+        `content`,
+        `receiptDt`,
+        `completionDt`,
+        `progressDivi`
+        <if test="progressDivi == 02">
+            ,`handler`
+        </if>
+        )
+        SELECT #{siteIndex},
+        #{depaCd},
+        #{depaNm},
+        #{corpCd},
+        #{busiCd},
+        #{userId},
+        now(),
+        #{title},
+        #{content},
+        #{receiptDt},
+        #{completionDt},
+        #{progressDivi}
+        <if test="progressDivi == 02">
+            ,#{userId}
+        </if>
+    </insert>
+
+    <insert id="insertErrorImage" parameterType="hashMap">
+        INSERT INTO tb_ims_error_image
+        (`errorIndex`,
+         `corpCd`,
+         `busiCd`,
+         `saveNm`,
+         `origNm`,
+         `saveRoot`,
+         `ext`,
+         `size`,
+         `inpId`,
+         `inpDttm`,
+         `empNm`)
+        SELECT #{errorIndex},
+               #{corpCd},
+               #{busiCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{userId},
+               now(),
+               #{empNm}
+    </insert>
+
+    <update id="updateError" parameterType="hashMap">
+        UPDATE tb_ims_error
+        <set>
+            `updId` = #{userId},
+            `updDttm` = now(),
+            `title` = #{title},
+            `content` = #{content},
+            `receiptDt` = #{receiptDt},
+            `completionDt` = #{completionDt},
+            `progressDivi` = #{progressDivi},
+            <if test="progressDivi == 02 and handler == ''">
+                `handler` = #{userId},
+            </if>
+            <if test="progressDivi == 01 and handler != ''">
+                `handler` = NULL,
+                `completionDt` = NULL
+            </if>
+        </set>
+        WHERE corpCd = #{corpCd}
+        AND `index` = #{index}
+    </update>
+
+    <delete id="deleteError" parameterType="hashMap">
+        DELETE
+        FROM tb_ims_error
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+    </delete>
+
+    <delete id="deleteErrorImageList" parameterType="hashMap">
+        DELETE
+        FROM tb_ims_error_image
+        WHERE `corpCd` = #{corpCd}
+          AND `busiCd` = #{busiCd}
+          AND `errorIndex` = #{errorIndex}
+          AND `saveNm` = #{saveNm}
+    </delete>
+</mapper>

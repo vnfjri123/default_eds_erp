@@ -1,0 +1,1683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.project.projectProjMapper">
+
+    <select id="selectProjMgtList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjListVO">
+        SELECT /* selectProjMgtList */
+        T1.corpCd
+        ,T1.busiCd
+        ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+        ,T1.estCd
+        ,T1.projCd
+        ,T1.projDivi
+        ,T1.deadDivi
+        ,T1.sccDivi
+        ,T1.projNm
+        ,T1.estDt
+        ,T1.validDt
+        ,T1.cntDt
+        ,T1.initiateDt
+        ,T1.dueDt
+        ,T1.endDt
+        ,T1.custCd
+        ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+        ,T1.manCd
+        ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+        ,T1.depaCd
+        ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+        ,(SELECT CONCAT(I2.empNm,' 외 ',COUNT(I2.empNm)-1,'명') AS worker_nm
+        FROM TB_PROJECT_PART_LIST I1
+        INNER JOIN TB_BASE_USER_LIST I2
+        ON I1.corpCd = I2.corpCd
+        AND I1.partCd = I2.empCd
+        WHERE I1.corpCd= #{corpCd}
+        AND I1.projCd= T1.projCd
+        ORDER BY I1.seq*1 ASC) AS partPopup
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt) END AS supAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt) END AS vatAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt) END AS totAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt3 ELSE SUM(T2.supAmt3) END AS supAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt3 ELSE SUM(T2.vatAmt3) END AS vatAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS totAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt4) END AS supAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt4) END AS vatAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt4) END AS totAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt3 ELSE SUM(T2.supAmt5) END AS supAmt5
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt3 ELSE SUM(T2.vatAmt5) END AS vatAmt5
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt5) END AS totAmt5
+        ,IFNULL((SELECT SUM(IFNULL(I1.totAmt,0)) FROM tb_project_cost_list  I1 WHERE I1.corpCd = #{corpCd} AND I1.projCd = T1.projCd),0) AS costTotAmt
+        ,T1.clas
+        ,T1.item
+        ,T1.payTm
+        ,T1.note
+        ,T1.note1
+        ,T1.note2
+        ,T1.submitCd
+        ,T1.margin
+        ,T1.profit
+        ,T1.margin2
+        ,T1.profit2
+        ,T1.margin3
+        ,T1.profit3
+        ,T1.manager
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+        ON T1.corpCd = T2.corpCd
+        AND T1.projCd = T2.projCd
+        WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="projNm != null and !projNm.equals('')">
+            AND T1.projNm like '%' #{projNm} '%'
+        </if>
+        AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+        GROUP BY T1.corpCd, T1.projCd
+        ORDER BY T1.projCd*1 DESC
+    </select>
+
+    <select id="selectProjSchList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjSchListVO">
+        SELECT /* selectProjSchList */
+            T1.corpCd
+            ,T1.busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,T1.estCd
+            ,T1.projCd
+            ,T1.projDivi
+            ,T1.sccDivi
+            ,T1.projNm
+            ,T1.estDt
+            ,T1.validDt
+            ,T1.cntDt
+            ,T1.initiateDt
+            ,T1.dueDt
+            ,T1.endDivi
+            ,T1.endDt
+            ,T1.custNm
+            ,SUM(T1.conTotAmt) AS conTotAmt
+            ,SUM(T1.salTotAmt) AS salTotAmt
+            ,SUM(T1.costTotAmt) AS costTotAmt
+            ,SUM(T1.colTotAmt) AS colTotAmt
+            ,IF(COALESCE(T1.margin3, 0) = 0 OR COALESCE(T1.margin3, 0) = ''
+                ,IF(COALESCE(T1.margin2, 0) = 0 OR COALESCE(T1.margin2, 0) = ''
+                    ,COALESCE(T1.margin, 0)
+                    ,COALESCE(T1.margin2, 0)
+                    )
+                ,COALESCE(T1.margin3, 0)
+                ) AS edmsMargin
+            ,T1.note1
+            ,T1.inpNm
+            ,T1.updNm
+            ,T1.manNm
+            ,T1.depaNm
+            ,T1.clas
+            ,T1.item
+        FROM (
+            SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+                ,T1.projCd
+                ,T1.projDivi
+                ,T1.sccDivi
+                ,T1.projNm
+                ,T1.estDt
+                ,T1.validDt
+                ,T1.cntDt
+                ,T1.initiateDt
+                ,T1.dueDt
+                ,IF(CHAR_LENGTH(T1.endDt) <![CDATA[<]]> 8,'진행중',IF(ISNULL(T1.endDt),'진행중','완료')) AS endDivi
+                ,T1.endDt
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+                ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS conTotAmt
+                ,0 AS salTotAmt
+                ,0 AS costTotAmt
+                ,0 AS colTotAmt
+                ,T1.margin
+                ,T1.margin2
+                ,T1.margin3
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+                ,T1.note1
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+                ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd = #{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+                ,T1.clas
+                ,T1.item
+              FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+                ON T1.corpCd = T2.corpCd
+               AND T1.projCd = T2.projCd
+             WHERE T1.corpCd = #{corpCd}
+            <if test="busiCd != null and !busiCd.equals('')">
+               AND T1.busiCd = #{busiCd}
+            </if>
+            <if test="authDivi == '3' or authDivi.equals('3')">
+               AND T1.depaCd = #{depaCd}
+            </if>
+            <if test="authDivi == '4' or authDivi.equals('4')">
+               AND T1.depaCd = #{depaCd}
+               AND T1.empCd = #{empCd}
+            </if>
+            <if test="projNm != null and !projNm.equals('')">
+               AND T1.projNm like '%' #{projNm} '%'
+            </if>
+             GROUP BY T1.corpCd, T1.projCd
+            UNION ALL
+            SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+                ,T1.projCd
+                ,T1.projDivi
+                ,T1.sccDivi
+                ,T1.projNm
+                ,T1.estDt
+                ,T1.validDt
+                ,T1.cntDt
+                ,T1.initiateDt
+                ,T1.dueDt
+                ,IF(CHAR_LENGTH(T1.endDt) <![CDATA[<]]> 8,'진행중',IF(ISNULL(T1.endDt),'진행중','완료')) AS endDivi
+                ,T1.endDt
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+                ,0 AS conTotAmt
+                ,SUM(IFNULL(T2.totAmt3,0)) AS salTotAmt
+                ,0 AS costTotAmt
+                ,0 AS colTotAmt
+                ,''
+                ,''
+                ,''
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+                ,T1.note1
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+                ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+                ,''
+                ,''
+              FROM TB_PROJECT_LIST T1 LEFT JOIN tb_yeongeob_sal_list  T2
+                ON T1.corpCd = T2.corpCd
+               AND T1.projCd = T2.projCd
+             WHERE T1.corpCd = #{corpCd}
+            <if test="busiCd != null and !busiCd.equals('')">
+               AND T1.busiCd = #{busiCd}
+            </if>
+            <if test="projNm != null and !projNm.equals('')">
+               AND T1.projNm like '%' #{projNm} '%'
+            </if>
+             GROUP BY T1.corpCd, T1.projCd
+            UNION ALL
+                SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+                ,T1.projCd
+                ,T1.projDivi
+                ,T1.sccDivi
+                ,T1.projNm
+                ,T1.estDt
+                ,T1.validDt
+                ,T1.cntDt
+                ,T1.initiateDt
+                ,T1.dueDt
+                ,IF(CHAR_LENGTH(T1.endDt) <![CDATA[<]]> 8,'진행중',IF(ISNULL(T1.endDt),'진행중','완료')) AS endDivi
+                ,T1.endDt
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+                ,0 AS conTotAmt
+                ,0 AS salTotAmt
+                ,SUM(IFNULL(T2.totAmt,0)) AS costTotAmt
+                ,0 AS colTotAmt
+                ,''
+                ,''
+                ,''
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+                ,T1.note1
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+                ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+                ,''
+                ,''
+              FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_COST_LIST  T2
+                ON T1.corpCd = T2.corpCd
+               AND T1.projCd = T2.projCd
+             WHERE T1.corpCd = #{corpCd}
+            <if test="busiCd != null and !busiCd.equals('')">
+               AND T1.busiCd = #{busiCd}
+            </if>
+            <if test="projNm != null and !projNm.equals('')">
+               AND T1.projNm like '%' #{projNm} '%'
+            </if>
+             GROUP BY T1.corpCd, T1.projCd
+            UNION ALL
+            SELECT
+                T1.corpCd
+                ,T1.busiCd
+                ,T1.estCd
+                ,T1.projCd
+                ,T1.projDivi
+                ,T1.sccDivi
+                ,T1.projNm
+                ,T1.estDt
+                ,T1.validDt
+                ,T1.cntDt
+                ,T1.initiateDt
+                ,T1.dueDt
+                ,IF(CHAR_LENGTH(T1.endDt) <![CDATA[<]]> 8,'진행중',IF(ISNULL(T1.endDt),'진행중','완료')) AS endDivi
+                ,T1.endDt
+                ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+                ,0 AS conTotAmt
+                ,0 AS salTotAmt
+                ,0 AS costTotAmt
+                ,SUM(IFNULL(T2.totAmt3,0)) AS colTotAmt
+                ,''
+                ,''
+                ,''
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+                ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+                ,T1.note1
+                ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+                ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+                ,''
+                ,''
+              FROM TB_PROJECT_LIST T1 LEFT JOIN tb_gumae_col_list T2
+                ON T1.corpCd = T2.corpCd
+               AND T1.projCd = T2.projCd
+             WHERE T1.corpCd = #{corpCd}
+            <if test="busiCd != null and !busiCd.equals('')">
+               AND T1.busiCd = #{busiCd}
+            </if>
+            <if test="projNm != null and !projNm.equals('')">
+               AND T1.projNm like '%' #{projNm} '%'
+            </if>
+             GROUP BY T1.corpCd, T1.projCd
+        ) T1
+        WHERE 1=1
+        <if test = "stDt != null and !stDt.equals('')">
+            AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+        </if>
+        GROUP BY T1.corpCd, T1.projCd
+        ORDER BY T1.projCd*1 DESC
+    </select>
+
+    <select id="selectProjItemList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjItemListVO">
+        SELECT /* selectProjItemList */
+        corpCd
+        ,busiCd
+        ,estCd
+        ,projCd
+        ,seq
+        ,itemCd
+        ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.itemCd = T1.itemCd) as itemNm
+        ,unit
+        ,standard
+        ,vatDivi
+        ,taxDivi
+        ,qty
+        ,cost
+        ,supAmt
+        ,vatAmt
+        ,totAmt
+        ,cost2
+        ,supAmt2
+        ,vatAmt2
+        ,totAmt2
+        ,cost3
+        ,supAmt3
+        ,vatAmt3
+        ,totAmt3
+        ,cost4
+        ,supAmt4
+        ,vatAmt4
+        ,totAmt4
+        ,cost5
+        ,supAmt5
+        ,vatAmt5
+        ,totAmt5
+        ,saleDivi
+        ,saleRate
+        ,note
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_ITEM_LIST T1
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY seq*1 ASC
+    </select>
+
+    <select id="selectProjPartList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjPartListVO">
+        SELECT /* selectProjPartList */
+        corpCd
+        ,busiCd
+        ,estCd
+        ,projCd
+        ,seq
+        ,partCd
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.partCd) AS partNm
+        ,note
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_PART_LIST T1
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY seq*1 ASC
+    </select>
+
+    <select id="selectProjFileList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjFileListVO">
+        SELECT /* selectProjFileList */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        ,T1.projCd
+        ,T1.seq
+        ,T1.saveNm
+        ,T1.origNm
+        ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+        ,T1.ext
+        ,T1.size
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,note
+        ,inpDttm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,updDttm
+        FROM TB_PROJECT_FILE_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.projCd = #{projCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+
+    <select id="selectProjCostList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCostListVO">
+        SELECT /* selectProjCostList */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        ,T1.projCd
+        ,T1.seq
+        ,T1.costDt
+        ,T1.accountCd
+        ,(SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd=#{corpCd} AND I1.accountCd like T1.accountCd) AS accountNm
+        ,T1.custCd
+        ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+        ,T1.depaCd
+        ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.busiCd = #{busiCd} AND I1.depaCd=T1.depaCd) AS depaNm
+        ,credCd
+        ,expeDivi
+        ,note
+        ,supAmt
+        ,vatAmt
+        ,totAmt
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_COST_LIST T1
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY seq*1 ASC
+    </select>
+
+    <select id="selectProjMemoList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjMemoListVO">
+        SELECT /* selectProjMemoList */
+        corpCd
+        ,busiCd
+        ,estCd
+        ,projCd
+        ,seq
+        ,note
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,DATE_FORMAT(updDttm, '%Y-%m-%d %H:%i:%s') AS updDttm
+        FROM TB_PROJECT_MEMO_LIST T1
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY seq*1 ASC
+    </select>
+
+    <select id="selectProjCostTot" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCostListVO">
+        select /* selectProjCostTot */
+        *
+        from (
+        select
+        T1.corpCd,
+        T1.busiCd,
+        T1.projCd,
+        T1.estCd,
+        '01' as accountDivi,
+        'sales' as accountCd,
+        '매출' as accountNm,
+        SUM(IFNULL(T1.totAmt3,0)) as totAmt
+        from tb_yeongeob_sal_list T1
+        where T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        and T1.projCd = #{projCd}
+        GROUP BY T1.corpCd, T1.projCd
+        union all
+        select
+        T1.corpCd,
+        T1.busiCd,
+        T1.projCd,
+        T1.estCd,
+        '02' as accountDivi,
+        T1.accountCd,
+        (SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd=#{corpCd} AND I1.accountCd = T1.accountCd) AS accountNm,
+        -SUM(IFNULL(T1.totAmt,0)) as totAmt
+        from tb_project_cost_list T1
+        where T1.corpCd = #{corpCd}
+        and T1.projCd = #{projCd}
+        GROUP BY T1.corpCd, T1.projCd, T1.accountCd
+        ) T1
+    </select>
+
+    <select id="selectProjCostDet" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCostListVO">
+        <if test="accountDivi.equals('01')">
+            SELECT /* selectProjCostDet */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.estCd
+            ,T1.projCd
+            ,T1.salDt AS costDt
+            ,T1.custCd
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,T1.depaCd
+            ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.busiCd = #{busiCd} AND I1.depaCd=T1.depaCd) AS depaNm
+            ,note1 AS note
+            ,supAmt3
+            ,vatAmt3
+            ,totAmt3 AS totAmt
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            FROM tb_yeongeob_sal_list T1
+            WHERE corpCd = #{corpCd}
+            AND projCd = #{projCd}
+        </if>
+        <if test="accountDivi.equals('02')">
+            SELECT /* selectProjCostDet */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.estCd
+            ,T1.projCd
+            ,T1.seq
+            ,T1.costDt
+            ,T1.accountCd
+            ,(SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd=#{corpCd} AND I1.accountCd like T1.accountCd) AS accountNm
+            ,T1.custCd
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,T1.depaCd
+            ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.busiCd = #{busiCd} AND I1.depaCd=T1.depaCd) AS depaNm
+            ,credCd
+            ,expeDivi
+            ,note
+            ,supAmt
+            ,vatAmt
+            ,totAmt
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            FROM TB_PROJECT_COST_LIST T1
+            WHERE corpCd = #{corpCd}
+            AND projCd = #{projCd}
+            AND accountCd = #{accountCd}
+            ORDER BY seq*1 ASC
+        </if>
+    </select>
+
+    <select id="selectProjCompMgtList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCompListVO">
+        SELECT /* selectProjCompMgtList */
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        ,T1.projCd
+        ,T1.projCompCd
+        ,T1.projDivi
+        ,T1.deadDivi
+        ,T1.sccDivi
+        ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) AS projNm
+        ,T1.estDt
+        ,T1.validDt
+        ,T1.cntDt
+        ,T1.dueDt
+        ,T1.endDt
+        ,T1.custCd
+        ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+        ,T1.manCd
+        ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+        ,T1.depaCd
+        ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+        ,(SELECT CONCAT(I2.empNm,' 외 ',COUNT(I2.empNm)-1,'명') AS worker_nm
+        FROM TB_PROJECT_COMP_PART_LIST I1
+        INNER JOIN TB_BASE_USER_LIST I2
+        ON I1.corpCd = I2.corpCd
+        AND I1.partCd = I2.empCd
+        WHERE I1.corpCd= #{corpCd}
+        AND I1.projCompCd= T1.projCompCd
+        ORDER BY I1.seq*1 ASC) AS partPopup
+        ,T1.supAmt2
+        ,T1.vatAmt2
+        ,T1.totAmt2
+        ,T1.supAmt3
+        ,T1.vatAmt3
+        ,T1.totAmt3
+        ,T1.clas
+        ,T1.item
+        ,T1.payTm
+        ,T1.note
+        ,T1.note1
+        ,T1.note2
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_COMP_LIST T1
+        LEFT JOIN tb_project_list T2
+        ON T1.corpCd = T2.corpCd
+        AND T1.projCd = T2.projCd
+        WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="projNm != null and !projNm.equals('')">
+            AND T2.projNm like '%' #{projNm} '%'
+        </if>
+        AND T1.cntDt BETWEEN #{stDt} AND #{edDt}
+        GROUP BY T1.corpCd, T1.busiCd, T1.projCompCd
+        ORDER BY T1.projCompCd*1 DESC
+    </select>
+
+    <select id="selectProjCompPartList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCompPartListVO">
+        SELECT /* selectProjCompPartList */
+            corpCd
+             ,busiCd
+             ,estCd
+             ,projCd
+             ,projCompCd
+             ,seq
+             ,partCd
+             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.partCd) AS partNm
+             ,note
+             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_COMP_PART_LIST T1
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+        ORDER BY seq*1 ASC
+    </select>
+
+    <select id="selectProjCompCostList" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjCompCostListVO">
+        SELECT /* selectProjCompCostList */
+            T1.corpCd
+             ,T1.busiCd
+             ,T1.estCd
+             ,T1.projCd
+             ,T1.projCompCd
+             ,T1.seq
+             ,T1.costDt
+             ,T1.accountCd
+             ,(SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd=#{corpCd} AND I1.accountCd like T1.accountCd) AS accountNm
+             ,T1.custCd
+             ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+             ,T1.depaCd
+             ,(SELECT I1.depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.busiCd = #{busiCd} AND I1.depaCd=T1.depaCd) AS depaNm
+             ,credCd
+             ,expeDivi
+             ,note
+             ,supAmt
+             ,vatAmt
+             ,totAmt
+             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_COMP_COST_LIST T1
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+        ORDER BY seq*1 ASC
+    </select>
+
+    <insert id="insertProjMgtList" parameterType="hashMap">
+        INSERT INTO /* insertProjMgtList */
+        TB_PROJECT_LIST(
+        corpCd
+        ,busiCd
+        ,estCd
+        ,projCd
+        ,deadDivi
+        ,projDivi
+        ,sccDivi
+        ,projNm
+        ,estDt
+        ,validDt
+        ,cntDt
+        ,initiateDt
+        ,dueDt
+        ,endDt
+        ,custCd
+        ,manCd
+        ,depaCd
+        ,empCd
+        ,supAmt
+        ,vatAmt
+        ,totAmt
+        ,supAmt2
+        ,vatAmt2
+        ,totAmt2
+        ,supAmt3
+        ,vatAmt3
+        ,totAmt3
+        ,supAmt4
+        ,vatAmt4
+        ,totAmt4
+        ,supAmt5
+        ,vatAmt5
+        ,totAmt5
+        ,clas
+        ,item
+        ,payTm
+        ,note
+        ,note1
+        ,note2
+        ,submitCd
+        ,margin
+        ,profit
+        ,margin2
+        ,profit2
+        ,margin3
+        ,profit3
+        ,manager
+        ,inpId
+        ,inpDttm
+        ,updId
+        ,updDttm
+        )
+        SELECT
+        #{corpCd}
+        ,#{busiCd}
+        ,#{estCd}
+        ,#{projCd}
+        ,#{deadDivi}
+        ,#{projDivi}
+        ,#{sccDivi}
+        ,#{projNm}
+        ,#{estDt}
+        ,#{validDt}
+        ,#{cntDt}
+        ,#{initiateDt}
+        ,#{dueDt}
+        ,#{endDt}
+        ,#{custCd}
+        ,#{manCd}
+        ,#{depaCd}
+        ,#{empCd}
+        ,#{supAmt}
+        ,#{vatAmt}
+        ,#{totAmt}
+        ,#{supAmt2}
+        ,#{vatAmt2}
+        ,#{totAmt2}
+        ,#{supAmt3}
+        ,#{vatAmt3}
+        ,#{totAmt3}
+        ,#{supAmt4}
+        ,#{vatAmt4}
+        ,#{totAmt4}
+        ,#{supAmt5}
+        ,#{vatAmt5}
+        ,#{totAmt5}
+        ,#{clas}
+        ,#{item}
+        ,#{payTm}
+        ,#{note}
+        ,#{note1}
+        ,#{note2}
+        ,#{submitCd}
+        ,#{margin}
+        ,#{profit}
+        ,#{margin2}
+        ,#{profit2}
+        ,#{margin3}
+        ,#{profit3}
+        ,#{manager}
+        ,#{userId}
+        ,now()
+        ,#{userId}
+        ,now()
+        <selectKey keyProperty="projCd" resultType="java.lang.String" order="BEFORE">
+            <if test = "projCd == null or projCd.equals('')">
+                SELECT  CONCAT(DATE_FORMAT(IFNULL(#{initiateDt},now()),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(projCd*1)+1,7,12),0),5,'0')) FROM TB_PROJECT_LIST WHERE corpCd = #{corpCd} AND DATE_FORMAT(IFNULL(#{initiateDt},now()),'%Y%m') = SUBSTR(projCd,1,6)
+            </if>
+        </selectKey>
+    </insert>
+
+    <insert id="insertProjItemList" parameterType="hashMap">
+        INSERT INTO /* insertProjItemList */
+            TB_PROJECT_ITEM_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,itemCd
+                                ,vatDivi
+                                ,taxDivi
+                                ,qty
+                                ,cost
+                                ,supAmt
+                                ,vatAmt
+                                ,totAmt
+                                ,cost2
+                                ,supAmt2
+                                ,vatAmt2
+                                ,totAmt2
+                                ,cost3
+                                ,supAmt3
+                                ,vatAmt3
+                                ,totAmt3
+                                ,cost4
+                                ,supAmt4
+                                ,vatAmt4
+                                ,totAmt4
+                                ,cost5
+                                ,supAmt5
+                                ,vatAmt5
+                                ,totAmt5
+                                ,saleDivi
+                                ,saleRate
+                                ,note
+                                ,depaCd
+                                ,empCd
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+                                ,standard
+                                ,unit
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_ITEM_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCd = #{projCd})
+             ,#{itemCd}
+             ,#{vatDivi}
+             ,#{taxDivi}
+             ,#{qty}
+             ,#{cost}
+             ,#{supAmt}
+             ,#{vatAmt}
+             ,#{totAmt}
+             ,#{cost2}
+             ,#{supAmt2}
+             ,#{vatAmt2}
+             ,#{totAmt2}
+             ,#{cost3}
+             ,#{supAmt3}
+             ,#{vatAmt3}
+             ,#{totAmt3}
+             ,#{cost4}
+             ,#{supAmt4}
+             ,#{vatAmt4}
+             ,#{totAmt4}
+             ,#{cost5}
+             ,#{supAmt5}
+             ,#{vatAmt5}
+             ,#{totAmt5}
+             ,#{saleDivi}
+             ,#{saleRate}
+             ,#{note}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+             ,#{standard}
+             ,#{unit}
+    </insert>
+
+    <insert id="insertProjPartList" parameterType="hashMap">
+        INSERT INTO /* insertProjPartList */
+            TB_PROJECT_PART_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,partCd
+                                ,note
+                                ,depaCd
+                                ,empCd
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_PART_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCd = #{projCd})
+             ,#{partCd}
+             ,#{note}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjFileList" parameterType="hashMap">
+        INSERT INTO /* insertSendEmailAtchInfo */
+            TB_PROJECT_FILE_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,saveNm
+                                ,origNm
+                                ,saveRoot
+                                ,ext
+                                ,size
+                                ,depaCd
+                                ,empCd
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM TB_PROJECT_FILE_LIST WHERE corpCd = #{corpCd} AND projCd = #{projCd})
+             ,#{saveNm}
+             ,#{origNm}
+             ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+             ,#{ext}
+             ,#{size}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjCostList" parameterType="hashMap">
+        INSERT INTO /* insertProjCostList */
+            TB_PROJECT_COST_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,costDt
+                                ,accountCd
+                                ,custCd
+                                ,depaCd
+                                ,empCd
+                                ,credCd
+                                ,expeDivi
+                                ,note
+                                ,supAmt
+                                ,vatAmt
+                                ,totAmt
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_COST_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCd = #{projCd})
+             ,#{costDt}
+             ,#{accountCd}
+             ,#{custCd}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{credCd}
+             ,#{expeDivi}
+             ,#{note}
+             ,#{supAmt}
+             ,#{vatAmt}
+             ,#{totAmt}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjMemoList" parameterType="hashMap">
+        INSERT INTO /* insertProjMemoList */
+            TB_PROJECT_MEMO_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,note
+                                ,depaCd
+                                ,empCd
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_MEMO_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCd = #{projCd})
+             ,#{note}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjCompMgtList" parameterType="hashMap">
+        INSERT INTO /* insertProjCompMgtList */
+            TB_PROJECT_COMP_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,projCompCd
+                                ,deadDivi
+                                ,projDivi
+                                ,sccDivi
+                                ,estDt
+                                ,validDt
+                                ,cntDt
+                                ,dueDt
+                                ,endDt
+                                ,custCd
+                                ,manCd
+                                ,depaCd
+                                ,empCd
+                                ,supAmt2
+                                ,vatAmt2
+                                ,totAmt2
+                                ,supAmt3
+                                ,vatAmt3
+                                ,totAmt3
+                                ,clas
+                                ,item
+                                ,payTm
+                                ,note
+                                ,note1
+                                ,note2
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,(SELECT
+                   CONCAT(DATE_FORMAT(now(),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(projCompCd*1)+1,7,12),0),5,'0'))
+               FROM TB_PROJECT_COMP_LIST
+               WHERE corpCd = #{corpCd}
+                 AND DATE_FORMAT(now(),'%Y%m') = SUBSTR(projCompCd,1,6))
+             ,#{deadDivi}
+             ,#{projDivi}
+             ,#{sccDivi}
+             ,#{estDt}
+             ,#{validDt}
+             ,#{cntDt}
+             ,#{dueDt}
+             ,#{endDt}
+             ,#{custCd}
+             ,#{manCd}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{supAmt2}
+             ,#{vatAmt2}
+             ,#{totAmt2}
+             ,#{supAmt3}
+             ,#{vatAmt3}
+             ,#{totAmt3}
+             ,#{clas}
+             ,#{item}
+             ,#{payTm}
+             ,#{note}
+             ,#{note1}
+             ,#{note2}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjCompPartList" parameterType="hashMap">
+        INSERT INTO /* insertProjCompPartList */
+            TB_PROJECT_COMP_PART_LIST(
+                                      corpCd
+                                     ,busiCd
+                                     ,estCd
+                                     ,projCd
+                                     ,projCompCd
+                                     ,seq
+                                     ,depaCd
+                                     ,empCd
+                                     ,note
+                                     ,inpId
+                                     ,inpDttm
+                                     ,updId
+                                     ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,#{projCompCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_COMP_PART_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCompCd = #{projCompCd})
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{note}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertProjCompCostList" parameterType="hashMap">
+        INSERT INTO /* insertProjCompCostList */
+            TB_PROJECT_COMP_COST_LIST(
+                                      corpCd
+                                     ,busiCd
+                                     ,estCd
+                                     ,projCd
+                                     ,projCompCd
+                                     ,seq
+                                     ,costDt
+                                     ,accountCd
+                                     ,custCd
+                                     ,depaCd
+                                     ,empCd
+                                     ,credCd
+                                     ,expeDivi
+                                     ,note
+                                     ,supAmt
+                                     ,vatAmt
+                                     ,totAmt
+                                     ,inpId
+                                     ,inpDttm
+                                     ,updId
+                                     ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{projCd}
+             ,#{projCompCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_PROJECT_COMP_COST_LIST
+               WHERE corpCd = #{corpCd}
+                 AND projCompCd = #{projCompCd})
+             ,#{costDt}
+             ,#{accountCd}
+             ,#{custCd}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{credCd}
+             ,#{expeDivi}
+             ,#{note}
+             ,#{supAmt}
+             ,#{vatAmt}
+             ,#{totAmt}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <update id="updateProjMgtList" parameterType="hashMap">
+        UPDATE /* updateProjMgtList */
+            TB_PROJECT_LIST SET
+            deadDivi = #{deadDivi}
+                              ,projDivi = #{projDivi}
+                              ,sccDivi = #{sccDivi}
+                              ,projNm = #{projNm}
+                              ,estDt = #{estDt}
+                              ,validDt = #{validDt}
+                              ,cntDt = #{cntDt}
+                              ,initiateDt = #{initiateDt}
+                              ,dueDt = #{dueDt}
+                              ,endDt = #{endDt}
+                              ,custCd = #{custCd}
+                              ,manCd = #{manCd}
+                              ,depaCd = #{depaCd}
+                              ,supAmt = #{supAmt}
+                              ,vatAmt = #{vatAmt}
+                              ,totAmt = #{totAmt}
+                              ,supAmt2 = #{supAmt2}
+                              ,vatAmt2 = #{vatAmt2}
+                              ,totAmt2 = #{totAmt2}
+                              ,supAmt3 = #{supAmt3}
+                              ,vatAmt3 = #{vatAmt3}
+                              ,totAmt3 = #{totAmt3}
+                              ,supAmt4 = #{supAmt4}
+                              ,vatAmt4 = #{vatAmt4}
+                              ,totAmt4 = #{totAmt4}
+                              ,supAmt5 = #{supAmt5}
+                              ,vatAmt5 = #{vatAmt5}
+                              ,totAmt5 = #{totAmt5}
+                              ,profit = #{profit}
+                              ,margin = #{margin}
+                              ,profit2 = #{profit2}
+                              ,margin2 = #{margin2}
+                              ,profit3 = #{profit3}
+                              ,margin3 = #{margin3}
+                              ,clas = #{clas}
+                              ,item = #{item}
+                              ,payTm = #{payTm}
+                              ,submitCd=#{submitCd}
+                              ,manager=#{manager}
+                              ,note = #{note}
+                              ,note1 = #{note1}
+                              ,note2 = #{note2}
+                              ,updId = #{userId}
+                              ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+    </update>
+
+    <update id="updateProjItemList" parameterType="hashMap">
+        UPDATE /* updateProjItemList */
+            TB_PROJECT_ITEM_LIST SET
+            itemCd = #{itemCd}
+                                   ,vatDivi = #{vatDivi}
+                                   ,taxDivi = #{taxDivi}
+                                   ,qty = #{qty}
+                                   ,cost = #{cost}
+                                   ,supAmt = #{supAmt}
+                                   ,vatAmt = #{vatAmt}
+                                   ,totAmt = #{totAmt}
+                                   ,cost2 = #{cost2}
+                                   ,supAmt2 = #{supAmt2}
+                                   ,vatAmt2 = #{vatAmt2}
+                                   ,totAmt2 = #{totAmt2}
+                                   ,cost3 = #{cost3}
+                                   ,supAmt3 = #{supAmt3}
+                                   ,vatAmt3 = #{vatAmt3}
+                                   ,totAmt3 = #{totAmt3}
+                                   ,cost4 = #{cost4}
+                                   ,supAmt4 = #{supAmt4}
+                                   ,vatAmt4 = #{vatAmt4}
+                                   ,totAmt4 = #{totAmt4}
+                                   ,cost5 = #{cost5}
+                                   ,supAmt5 = #{supAmt5}
+                                   ,vatAmt5 = #{vatAmt5}
+                                   ,totAmt5 = #{totAmt5}
+                                   ,saleDivi = #{saleDivi}
+                                   ,saleRate = #{saleRate}
+                                   ,note = #{note}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjPartList" parameterType="hashMap">
+        UPDATE /* updateProjPartList */
+            TB_PROJECT_PART_LIST SET
+            partCd = #{partCd}
+                                   ,note = #{note}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjFileList" parameterType="hashMap">
+        UPDATE /* updateProjFileList */
+            TB_PROJECT_FILE_LIST SET
+            note = #{note}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjCostList" parameterType="hashMap">
+        UPDATE /* updateProjCostList */
+            TB_PROJECT_COST_LIST SET
+            costDt = #{costDt}
+                                   ,accountCd = #{accountCd}
+                                   ,custCd = #{custCd}
+                                   ,depaCd = #{depaCd}
+                                   ,credCd = #{credCd}
+                                   ,expeDivi = #{expeDivi}
+                                   ,note = #{note}
+                                   ,supAmt = #{supAmt}
+                                   ,vatAmt = #{vatAmt}
+                                   ,totAmt = #{totAmt}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjMemoList" parameterType="hashMap">
+        UPDATE /* updateProjMemoList */
+            TB_PROJECT_MEMO_LIST SET
+            note = #{note}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjCompMgtList" parameterType="hashMap">
+        UPDATE /* updateProjCompMgtList */
+            TB_PROJECT_COMP_LIST SET
+            deadDivi = #{deadDivi}
+                                   ,projDivi = #{projDivi}
+                                   ,sccDivi = #{sccDivi}
+                                   ,estDt = #{estDt}
+                                   ,validDt = #{validDt}
+                                   ,cntDt = #{cntDt}
+                                   ,dueDt = #{dueDt}
+                                   ,endDt = #{endDt}
+                                   ,custCd = #{custCd}
+                                   ,projCd = #{projCd}
+                                   ,manCd = #{manCd}
+                                   ,depaCd = #{depaCd}
+                                   ,supAmt2 = #{supAmt2}
+                                   ,vatAmt2 = #{vatAmt2}
+                                   ,totAmt2 = #{totAmt2}
+                                   ,supAmt3 = #{supAmt3}
+                                   ,vatAmt3 = #{vatAmt3}
+                                   ,totAmt3 = #{totAmt3}
+                                   ,clas = #{clas}
+                                   ,item = #{item}
+                                   ,payTm = #{payTm}
+                                   ,note = #{note}
+                                   ,note1 = #{note1}
+                                   ,note2 = #{note2}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+    </update>
+
+    <update id="updateProjCompPartList" parameterType="hashMap">
+        UPDATE /* updateProjCompPartList */
+            TB_PROJECT_COMP_PART_LIST SET
+            partCd = #{partCd}
+                                        ,note = #{note}
+                                        ,updId = #{userId}
+                                        ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+          AND seq = #{seq}
+    </update>
+
+    <update id="updateProjCompCostList" parameterType="hashMap">
+        UPDATE /* updateProjCompCostList */
+            TB_PROJECT_COMP_COST_LIST SET
+            costDt = #{costDt}
+                                        ,accountCd = #{accountCd}
+                                        ,custCd = #{custCd}
+                                        ,depaCd = #{depaCd}
+                                        ,credCd = #{credCd}
+                                        ,expeDivi = #{expeDivi}
+                                        ,note = #{note}
+                                        ,supAmt = #{supAmt}
+                                        ,vatAmt = #{vatAmt}
+                                        ,totAmt = #{totAmt}
+                                        ,updId = #{userId}
+                                        ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+          AND seq = #{seq}
+    </update>
+
+    <delete id="deleteProjMgtList"  parameterType="hashMap">
+        DELETE /* deleteProjMgtList */
+        FROM TB_PROJECT_LIST
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+    </delete>
+
+    <delete id="deleteProjItemList"  parameterType="hashMap">
+        DELETE /* deleteProjItemList */
+        FROM TB_PROJECT_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjPartList"  parameterType="hashMap">
+        DELETE /* deleteProjPartList */
+        FROM TB_PROJECT_PART_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjFileList"  parameterType="hashMap">
+        DELETE /* deleteProjFileList */
+        FROM TB_PROJECT_FILE_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjCostList"  parameterType="hashMap">
+        DELETE /* deleteProjCostList */
+        FROM TB_PROJECT_COST_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjMemoList"  parameterType="hashMap">
+        DELETE /* deleteProjMemoList */
+        FROM TB_PROJECT_MEMO_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjEmailList"  parameterType="hashMap">
+        DELETE /*deleteProjEmailList*/
+        FROM tb_project_email_list
+        WHERE corpCd = #{corpCd}
+        AND projCd = #{projCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjCompMgtList"  parameterType="hashMap">
+        DELETE /* deleteProjCompMgtList */
+        FROM TB_PROJECT_COMP_LIST
+        WHERE corpCd = #{corpCd}
+          AND projCompCd = #{projCompCd}
+    </delete>
+
+    <delete id="deleteProjCompPartList"  parameterType="hashMap">
+        DELETE /* deleteProjCompPartList */
+        FROM TB_PROJECT_COMP_PART_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCompCd = #{projCompCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteProjCompCostList"  parameterType="hashMap">
+        DELETE /* deleteProjCompCostList */
+        FROM TB_PROJECT_COMP_COST_LIST
+        WHERE corpCd = #{corpCd}
+        AND projCompCd = #{projCompCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <insert id="aEstMgtList" parameterType="hashMap">
+        INSERT INTO /* aEstMgtList */
+        TB_PROJECT_LIST(
+        corpCd
+        ,busiCd
+        ,estCd
+        ,projCd
+        ,deadDivi
+        ,projDivi
+        ,sccDivi
+        ,projNm
+        ,estDt
+        ,validDt
+        ,cntDt
+        ,initiateDt
+        ,dueDt
+        ,endDt
+        ,custCd
+        ,manCd
+        ,depaCd
+        ,empCd
+        ,supAmt2
+        ,vatAmt2
+        ,totAmt2
+        ,supAmt3
+        ,vatAmt3
+        ,totAmt3
+        ,clas
+        ,item
+        ,payTm
+        ,note1
+        ,note2
+        ,inpId
+        ,inpDttm
+        ,updId
+        ,updDttm
+        )
+        SELECT
+        T1.corpCd
+        ,T1.busiCd
+        ,T1.estCd
+        ,(SELECT
+        CONCAT(DATE_FORMAT(now(),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(projCd*1)+1,7,12),0),5,'0'))
+        FROM TB_PROJECT_LIST
+        WHERE corpCd = #{corpCd}
+        AND DATE_FORMAT(now(),'%Y%m') = SUBSTR(projCd,1,6))
+        ,T1.deadDivi
+        ,''
+        ,T1.sccDivi
+        ,T1.projNm
+        ,T1.estDt
+        ,T1.validDt
+        ,DATE_FORMAT(now(), '%Y%m%d')
+        ,''
+        ,''
+        ,''
+        ,T1.custCd
+        ,T1.manCd
+        ,T1.depaCd
+        ,T1.empCd
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt2
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt2
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt2
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt3
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt3
+        ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt3
+        ,T1.clas
+        ,T1.item
+        ,T1.payTm
+        ,T1.note1
+        ,T1.note2
+        ,#{userId}
+        ,now()
+        ,#{userId}
+        ,now()
+        FROM TB_YEONGEOB_EST_LIST T1 LEFT JOIN TB_YEONGEOB_EST_ITEM_LIST T2
+        ON T1.corpCd = T2.corpCd
+        AND T1.estCd = T2.estCd
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.estCd = #{estCd}
+        GROUP BY T1.corpCd, T1.busiCd, T1.estCd
+        <selectKey keyColumn="projCd" keyProperty="projCd" order="AFTER" resultType="java.lang.String">
+            SELECT projCd
+            FROM TB_PROJECT_LIST
+            WHERE corpCd = #{corpCd}
+            ORDER BY projCd DESC
+            LIMIT 1;
+        </selectKey>
+    </insert>
+
+    <insert id="aEstItemList" parameterType="hashMap">
+        INSERT INTO /* aEstItemList */
+            TB_PROJECT_ITEM_LIST(
+                                 corpCd
+                                ,busiCd
+                                ,estCd
+                                ,projCd
+                                ,seq
+                                ,itemCd
+                                ,vatDivi
+                                ,taxDivi
+                                ,qty
+                                ,cost
+                                ,supAmt
+                                ,vatAmt
+                                ,totAmt
+                                ,cost2
+                                ,supAmt2
+                                ,vatAmt2
+                                ,totAmt2
+                                ,cost3
+                                ,supAmt3
+                                ,vatAmt3
+                                ,totAmt3
+                                ,saleDivi
+                                ,saleRate
+                                ,note
+                                ,depaCd
+                                ,empCd
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            T1.corpCd
+             ,T1.busiCd
+             ,T1.estCd
+             ,#{projCd}
+             ,T1.seq
+             ,T1.itemCd
+             ,T1.vatDivi
+             ,T1.taxDivi
+             ,T1.qty
+             ,T1.cost
+             ,T1.supAmt
+             ,T1.vatAmt
+             ,T1.totAmt
+             ,T1.cost2
+             ,T1.supAmt2
+             ,T1.vatAmt2
+             ,T1.totAmt2
+             ,T1.cost2
+             ,T1.supAmt2
+             ,T1.vatAmt2
+             ,T1.totAmt2
+             ,T1.saleDivi
+             ,T1.saleRate
+             ,T1.note
+             ,T1.depaCd
+             ,T1.empCd
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+        FROM TB_YEONGEOB_EST_ITEM_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.estCd = #{estCd}
+        ORDER BY seq*1 ASC
+    </insert>
+
+    <update id="deadLineProjMgtList" parameterType="hashMap">
+        UPDATE /* deadLineProjMgtList */
+            TB_PROJECT_LIST SET
+            deadDivi = #{deadDivi}
+        WHERE corpCd = #{corpCd}
+          AND projCd = #{projCd}
+    </update>
+</mapper>

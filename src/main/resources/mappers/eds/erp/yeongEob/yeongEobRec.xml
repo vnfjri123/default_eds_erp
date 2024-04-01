@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.yeongEob.yeongEobRecMapper">
+
+    <select id="selectRecMgtList" resultType="com.springboot.myapp.eds.erp.vo.yeongEob.yeongEobRecListVO">
+SELECT /* selectRecMgtList */
+            T1.corpCd
+             ,T1.busiCd
+             ,T1.salCd
+             ,T1.estCd
+             ,T1.projCd
+             ,T1.projDivi
+             ,T1.deadDivi
+             ,T1.salDivi
+             ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) AS projNm
+             ,T1.estDt
+             ,T1.validDt
+             ,(SELECT I1.cntDt FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) AS cntDt
+             ,T1.dueDt
+             ,T1.endDt
+             ,T1.salDt
+             ,T1.custCd
+             ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+             ,T1.manCd
+             ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+             ,T1.depaCd
+             ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+             ,SUM(T1.supAmt3) AS supAmt3
+             ,SUM(T1.vatAmt3) AS vatAmt3
+             ,SUM(T1.totAmt3) AS totAmt3
+             ,T1.clas
+             ,T1.item
+             ,T1.payTm
+             ,T1.note1
+             ,T1.note2
+        FROM (                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+                      ,T1.estCd
+                      ,T1.projCd
+                      ,T1.salCd
+                      ,T1.projDivi
+                      ,T1.deadDivi
+                      ,T1.salDivi
+                      ,T1.estDt
+                      ,T1.validDt
+                      ,T1.cntDt
+                      ,T1.dueDt
+                      ,T1.endDt
+                      ,T1.salDt
+                      ,T1.custCd
+                      ,T1.manCd
+                      ,T1.depaCd
+                      ,SUM(T1.supAmt3) AS supAmt3
+                      ,SUM(T1.vatAmt3) AS vatAmt3
+                      ,SUM(T1.totAmt3) AS totAmt3
+                      ,T1.clas
+                      ,T1.item
+                      ,T1.payTm
+                      ,T1.note1
+                      ,T1.note2
+                 FROM tb_yeongeob_sal_list T1
+                 WHERE T1.corpCd = #{corpCd}
+                 GROUP BY T1.corpCd,T1.busiCd,T1.salCd
+                 UNION ALL
+                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+                      ,T1.estCd
+                      ,T1.projCd
+                      ,T1.salCd
+                      ,T1.projDivi
+                      ,T1.deadDivi
+                      ,T1.sccDivi
+                      ,T1.estDt
+                      ,T1.validDt
+                      ,T1.cntDt
+                      ,T1.dueDt
+                      ,T1.endDt
+                      ,T1.colDt
+                      ,T1.custCd
+                      ,T1.manCd
+                      ,T1.depaCd
+                      ,-SUM(T1.supAmt3)
+                      ,-SUM(T1.vatAmt3)
+                      ,-SUM(T1.totAmt3)
+                      ,T1.clas
+                      ,T1.item
+                      ,T1.payTm
+                      ,T1.note1
+                      ,T1.note2
+                 FROM tb_gumae_col_list T1
+                 WHERE T1.corpCd = #{corpCd}
+
+                 GROUP BY T1.corpCd,T1.busiCd,T1.salCd) T1
+        WHERE 1=1
+        and ((SELECT sum(IFNULL(a1.totAmt3,0)) FROM tb_yeongeob_sal_list a1 WHERE a1.projCd=t1.projCd and a1.corpCd = #{corpCd}) - (SELECT ifnull(sum(IFNULL(a1.totAmt3,0)),0) FROM tb_gumae_col_list a1 WHERE a1.projCd=t1.projCd and a1.corpCd = #{corpCd}))  > 0
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        GROUP BY T1.corpCd,T1.busiCd,T1.salCd
+        HAVING SUM(T1.totAmt3)  >  0
+        ORDER BY T1.salDt*1 DESC
+    </select>
+</mapper>

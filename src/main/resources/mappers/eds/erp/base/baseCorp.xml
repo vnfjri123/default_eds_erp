@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseCorpMapper">
+
+    <select id="selectCorpList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCorpListVO">
+        SELECT /* selectBASMA0000 */
+            corpCd
+            ,corpPersDivi
+            ,corpNm
+            ,CAST(AES_DECRYPT(UNHEX(corpNo), #{secretKey}) AS CHAR) AS corpNo
+            ,CAST(AES_DECRYPT(UNHEX(corpRegNo), #{secretKey}) AS CHAR) AS corpRegNo
+            ,ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(zipNo), #{secretKey}) AS CHAR) AS zipNo
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(addrDetail), #{secretKey}) AS CHAR) AS addrDetail
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(faxNo), #{secretKey}) AS CHAR) AS faxNo
+            ,busiType
+            ,busiItem
+            ,useYn
+        FROM
+            TB_BASE_CORP_LIST
+        WHERE 1=1
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+    </select>
+
+    <insert id="insertCorpList" parameterType="hashMap">
+        INSERT INTO /* insertCorpList */
+            TB_BASE_CORP_LIST( corpCd
+                        , corpPersDivi
+                        , corpNo
+                        , corpRegNo
+                        , corpNm
+                        , ownerNm
+                        , zipNo
+                        , addr
+                        , addrDetail
+                        , telNo
+                        , faxNo
+                        , busiType
+                        , busiItem
+                        , useYn
+                        , inpId
+                        , inpDttm
+                        , updId
+                        , updDttm)
+        SELECT (SELECT IFNULL(MAX(CAST(corpCd as signed)), 1000) + 1 FROM TB_BASE_CORP_LIST)
+             , #{corpPersDivi}
+             , HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{corpRegNo}, #{secretKey}))
+             , #{corpNm}
+             , #{ownerNm}
+             , HEX(AES_ENCRYPT(#{zipNo}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+             , #{busiType}
+             , #{busiItem}
+             , #{useYn}
+             , #{userId}
+             , now()
+             , #{userId}
+             , now()
+    </insert>
+
+    <update id="updateCorpList" parameterType="hashMap">
+        UPDATE /* updateCorpList */
+            TB_BASE_CORP_LIST
+        SET corpPersDivi = #{corpPersDivi}
+          , corpNm        = #{corpNm}
+          , corpNo        = HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+          , corpRegNo    = HEX(AES_ENCRYPT(#{corpRegNo}, #{secretKey}))
+          , ownerNm       = #{ownerNm}
+          , zipNo         = HEX(AES_ENCRYPT(#{zipNo}, #{secretKey}))
+          , addr           = HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+          , addrDetail    = HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+          , telNo         = HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+          , faxNo         = HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+          , busiType      = #{busiType}
+          , busiItem      = #{busiItem}
+          , useYn         = #{useYn}
+          , updId         = #{userId}
+          , updDttm       = now()
+        WHERE corpCd = #{corpCd}
+    </update>
+
+    <delete id="deleteCorpList"  parameterType="hashMap">
+        DELETE /* deleteCorpList */
+        FROM TB_BASE_CORP_LIST
+        WHERE corpCd = #{corpCd}
+    </delete>
+</mapper>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.rule.RuleMapper">
+
+    <select id="selectRule" resultType="com.springboot.myapp.eds.erp.vo.rule.RuleVO">
+        SELECT T1.`index`,
+        T1.`corpCd`,
+        T1.`depaCd`,
+        T1.`depaNm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        T1.`inpDttm`,
+        T1.`updDttm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        T1.`title`,
+        T1.`hit`,
+        T1.`read`,
+        T2.`saveNm`,
+        T2.`origNm`,
+        T2.`ext`
+        FROM tb_rule T1
+        LEFT JOIN tb_rule_file T2 ON T1.`index` = T2.`ruleIndex`
+        WHERE T1.corpCd = #{corpCd}
+        <if test="title != null and !title.equals('')">
+            AND title like '%' #{title} '%'
+        </if>
+        ORDER BY `index` DESC;
+    </select>
+
+    <select id="selectRuleFile" resultType="com.springboot.myapp.eds.erp.vo.rule.RuleFileVO">
+        SELECT
+        T1.`index`,
+        T1.`ruleIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`,
+        T1.`inpId`,
+        T1.`inpDttm`
+        FROM tb_rule_file T1
+        LEFT JOIN tb_rule T2 ON T1.`ruleIndex` = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="ruleIndex != null and !ruleIndex.equals('')">
+            AND T1.`ruleIndex` = #{ruleIndex}
+        </if>
+    </select>
+
+    <select id="selectUserInfo"  resultType="hashMap">
+        SELECT DISTINCT
+        T1.corpCd,
+        T1.empCd,
+        CONCAT(T1.empNm,'[',(SELECT depaNm FROM tb_base_depa_list T0 WHERE T0.corpCd = #{corpCd} AND T0.depaCd = T1.depaCd),']') AS userInfo
+        FROM tb_base_user_list T1
+        WHERE T1.corpCd = #{corpCd}
+    </select>
+
+    <insert id="insertRule" parameterType="hashMap">
+        <selectKey keyProperty="ruleIndex" resultType="int" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO tb_rule
+        (corpCd,
+        depaCd,
+        depaNm,
+        inpId,
+        inpDttm,
+        title
+        )
+        SELECT
+        #{corpCd},
+        #{depaCd},
+        #{depaNm},
+        #{userId},
+        now(),
+        #{title}
+    </insert>
+
+    <insert id="insertRuleFile" parameterType="hashMap">
+        INSERT INTO tb_rule_file
+        (`ruleIndex`,
+         `corpCd`,
+         `busiCd`,
+         `saveNm`,
+         `origNm`,
+         `saveRoot`,
+         `ext`,
+         `size`,
+         `inpId`,
+         `inpDttm`
+         )
+        SELECT #{ruleIndex},
+               #{corpCd},
+               #{busiCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{userId},
+               now()
+    </insert>
+
+    <update id="updateRule" parameterType="hashMap">
+        UPDATE tb_rule
+        SET
+            depaCd = #{depaCd},
+            depaNm = #{depaNm},
+            updId = #{userId},
+            updDttm = now(),
+            title = #{title},
+            `read` = NULL
+        WHERE
+            corpCd = #{corpCd}
+        AND `index` = #{index}
+    </update>
+
+    <update id="updateRuleFile" parameterType="hashMap">
+        UPDATE tb_rule_file
+        SET updId    = #{userId},
+            updDttm  = now(),
+            saveNm   = #{saveNm},
+            origNm   = #{origNm},
+            saveRoot = HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+            ext      = #{ext},
+            size     = #{size}
+        WHERE corpCd = #{corpCd}
+          AND `ruleIndex` = #{ruleIndex}
+    </update>
+
+    <update id="updateRead" parameterType="hashMap">
+        <selectKey keyProperty="exists" resultType="Integer" order="BEFORE">
+            SELECT COUNT(*) FROM tb_rule
+            WHERE
+            corpCd = #{corpCd}
+            AND `index` = #{index}
+            AND FIND_IN_SET(#{userId}, `read`) > 0
+        </selectKey>
+
+        UPDATE tb_rule
+        SET
+        `read` = CASE
+        WHEN `read` IS NULL THEN CONCAT_WS(',', #{userId} ',')
+        WHEN #{exists} = 0 THEN CONCAT(`read`, #{userId}, ',')
+        ELSE `read`
+        END
+        WHERE
+        corpCd = #{corpCd}
+        AND `index` = #{index}
+        AND #{exists} = 0
+    </update>
+
+    <update id="readRule" parameterType="hashMap">
+        UPDATE tb_rule
+        SET hit = hit + 1
+        WHERE corpCd = #{corpCd}
+          AND `index` = #{index}
+    </update>
+
+    <delete id="deleteRule" parameterType="hashMap">
+        DELETE
+        FROM tb_rule
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+    </delete>
+</mapper>

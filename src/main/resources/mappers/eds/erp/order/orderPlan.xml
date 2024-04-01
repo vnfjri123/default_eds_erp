@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.order.orderPlanMapper">
+
+    <select id="selectOrderPlanList" resultType="com.springboot.myapp.eds.erp.vo.order.orderPlanListVO">
+      SELECT /* selectOrderPlanList */
+          T1.corpCd,
+          T1.ordPlanCd,
+          T1.ordPlanYear,
+          T1.ordPlanMonth,
+          T1.ordPlanDivi,
+          T1.ordPlanItem,
+          T1.ordPlanBusiCd,
+          T1.ordPlanDepaCd,
+          T1.ordPlanEmpCd,
+          T1.ordPlanBusiDivi,
+          T1.ordPlanCustCd,
+          T1.ordPlanAmt,
+          T1.ordPlanGr,
+          T1.ordPlanNote
+      FROM tb_order_plan_list3 T1
+      WHERE T1.corpCd=#{corpCd}
+        AND T1.ordPlanYear=#{ordPlanSetDt}
+        AND T1.saveDivi = '01'
+      ORDER BY T1.ordPlanDivi, T1.ordPlanItem, T1.ordPlanMonth, T1.ordPlanCd
+    </select>
+
+    <select id="selectOrderPlanListForList" resultType="com.springboot.myapp.eds.erp.vo.order.orderPlanListVO">
+      SELECT /* selectOrderPlanListForList */
+          T1.corpCd,
+          T1.ordPlanCd,
+          T1.ordPlanYear,
+          T1.ordPlanMonth,
+          T1.ordPlanDivi,
+          T1.ordPlanItem,
+          T1.ordPlanBusiCd,
+          T1.ordPlanDepaCd,
+          T1.ordPlanEmpCd,
+          T1.ordPlanBusiDivi,
+          CONCAT(
+                  (SELECT /* 대분류 */
+                       I2.commCdNm
+                   FROM tb_system_sha_list I1
+                            INNER JOIN tb_system_sha_det I2
+                                       ON I1.corpCd = I2.corpCd
+                                           AND I1.groupNo = I2.groupNo
+                   WHERE I1.corpCd = #{corpCd}
+                     AND I1.groupCd = 'COM046'
+                     AND I2.commCd = T1.ordPlanBusiDivi),
+                  '-',
+                  (SELECT /* 중분류 */
+                       I2.commCdNm
+                   FROM tb_system_sha_list I1
+                            INNER JOIN tb_system_sha_det I2
+                                       ON I1.corpCd = I2.corpCd
+                                           AND I1.groupNo = I2.groupNo
+                   WHERE I1.corpCd = #{corpCd}
+                     AND I1.groupCd = 'COM043'
+                     AND I2.commCd = T1.ordPlanDivi),
+                  '-',
+                  (SELECT /* 소분류 */
+                       I2.commCdNm
+                   FROM tb_system_sha_list I1
+                            INNER JOIN tb_system_sha_det I2
+                                       ON I1.corpCd = I2.corpCd
+                                           AND I1.groupNo = I2.groupNo
+                   WHERE I1.corpCd = #{corpCd}
+                     AND I1.groupCd = 'COM044'
+                     AND I2.commCd = T1.ordPlanItem),
+                  '-',
+                  T1.ordPlanCustCd,
+                  '-',
+                  (SELECT
+                       empNm
+                   FROM TB_BASE_USER_LIST I1
+                   WHERE I1.corpCd = #{corpCd}
+                     AND I1.empCd = T1.ordPlanEmpCd)
+          ) AS ordPlanCustCd,
+          T1.ordPlanAmt,
+          T1.ordPlanGr,
+          T1.ordPlanNote
+      FROM tb_order_plan_list3 T1
+      WHERE T1.corpCd=#{corpCd}
+        AND T1.ordPlanYear = #{ordPlanYear}
+        AND T1.ordPlanMonth = #{ordPlanMonth}
+        AND T1.saveDivi = '01'
+      ORDER BY T1.ordPlanDivi, T1.ordPlanItem, T1.ordPlanMonth, T1.ordPlanCd
+    </select>
+
+    <select id="selectOrderPlanDiviItem" resultType="com.springboot.myapp.eds.erp.vo.order.orderPlanListVO">
+      SELECT /* selectOrderPlanDiviItem */
+          T1.ordPlanDivi,
+          T1.ordPlanItem
+        FROM tb_order_plan_list3 T1
+       WHERE T1.corpCd=#{corpCd}
+         AND T1.ordPlanYear=#{ordPlanSetDt}
+       GROUP BY T1.ordPlanDivi, T1.ordPlanItem
+       ORDER BY T1.ordPlanDivi, T1.ordPlanItem
+    </select>
+
+    <select id="selectOrderPlanSetList" resultType="com.springboot.myapp.eds.erp.vo.order.orderPlanSetListVO">
+      SELECT /* selectOrderPlanSetList */
+          T1.corpCd,
+          T1.ordPlanSetDt,
+          T1.ordInp02,
+          T1.ordInp03,
+          T1.ordInp04,
+          T1.salInp02,
+          T1.salInp03,
+          T1.salInp04,
+          T1.inpId,
+          T1.updId,
+          (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm,
+          (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+      FROM tb_order_plan_set_list T1
+      WHERE T1.corpCd=#{corpCd}
+      AND T1.ordPlanSetDt=#{ordPlanSetDt}
+    </select>
+
+    <insert id="insertOrderPlanList" parameterType="hashMap">
+        INSERT INTO tb_order_plan_list3 ( /* insertOrderPlanList */
+            corpCd
+            ,ordPlanCd
+            ,ordPlanYear
+            ,ordPlanMonth
+            ,ordPlanDivi
+            ,ordPlanItem
+            ,ordPlanBusiCd
+            ,ordPlanDepaCd
+            ,ordPlanEmpCd
+            ,ordPlanBusiDivi
+            ,ordPlanCustCd
+            ,ordPlanAmt
+            ,ordPlanGr
+            ,ordPlanNote
+            ,saveDivi
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT
+            #{corpCd},
+            (SELECT IFNULL(MAX(I1.ordPlanCd*1),0)+1
+             FROM tb_order_plan_list3 I1
+             WHERE I1.corpCd = #{corpCd}),
+            #{ordPlanYear},
+            #{ordPlanMonth},
+            #{ordPlanDivi},
+            #{ordPlanItem},
+            #{ordPlanBusiCd},
+            #{ordPlanDepaCd},
+            #{ordPlanEmpCd},
+            #{ordPlanBusiDivi},
+            #{ordPlanCustCd},
+            #{ordPlanAmt},
+            #{ordPlanGr},
+            #{ordPlanNote},
+            #{saveDivi},
+            #{userId},
+            now(),
+            #{userId},
+            now()
+    </insert>
+
+    <insert id="cuOrderPlanSetList" parameterType="hashMap">
+        INSERT INTO tb_order_plan_set_list( /* cuOrderPlanSetList */
+            corpCd,
+            ordPlanSetDt,
+            ordInp02,
+            ordInp03,
+            ordInp04,
+            salInp02,
+            salInp03,
+            salInp04,
+            inpId,
+            inpDttm,
+            updId,
+            updDttm
+        )
+        SELECT
+            #{corpCd},
+            #{ordPlanSetDt},
+            #{ordInp02},
+            #{ordInp03},
+            #{ordInp04},
+            #{salInp02},
+            #{salInp03},
+            #{salInp04},
+            #{userId},
+            now(),
+            #{userId},
+            now()
+        ON DUPLICATE KEY UPDATE
+            ordInp02 = #{ordInp02},
+            ordInp03 = #{ordInp03},
+            ordInp04 = #{ordInp04},
+            salInp02 = #{salInp02},
+            salInp03 = #{salInp03},
+            salInp04 = #{salInp04},
+            updId = #{userId},
+            updDttm = now()
+    </insert>
+
+    <update id="updateOrderPlanList" parameterType="hashMap">
+        UPDATE tb_order_plan_list3 /* updateOrderPlanList */
+           SET ordPlanYear = #{ordPlanYear},
+               ordPlanMonth = #{ordPlanMonth},
+               ordPlanDivi = #{ordPlanDivi},
+               ordPlanItem = #{ordPlanItem},
+               ordPlanBusiCd = #{ordPlanBusiCd},
+               ordPlanDepaCd = #{ordPlanDepaCd},
+               ordPlanEmpCd = #{ordPlanEmpCd},
+               ordPlanBusiDivi = #{ordPlanBusiDivi},
+               ordPlanCustCd = #{ordPlanCustCd},
+               ordPlanAmt = #{ordPlanAmt},
+               ordPlanGr = #{ordPlanGr},
+               ordPlanNote = #{ordPlanNote},
+               updId = #{userId},
+               updDttm = now()
+         WHERE corpCd = #{corpCd}
+           AND ordPlanCd = #{ordPlanCd}
+    </update>
+
+    <delete id="deleteOrderPlanList"  parameterType="hashMap">
+        UPDATE tb_order_plan_list3 /* deleteOrderPlanList */
+        SET saveDivi = #{saveDivi},
+            updId = #{userId},
+            updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND ordPlanCd = #{ordPlanCd}
+    </delete>
+
+</mapper>

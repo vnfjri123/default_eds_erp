@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.file.fileMapper">
+
+    <select id="selectFileDownloadHistory" resultType="com.springboot.myapp.eds.erp.vo.file.fileDownloadHistoryListVO">
+        SELECT /* selectFileDownloadHistory */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.seq
+            ,CAST(AES_DECRYPT(UNHEX(T1.origNm), #{secretKey}) AS CHAR) AS origNm
+            ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) AS saveRoot
+            ,CAST(AES_DECRYPT(UNHEX(T1.menuPath), #{secretKey}) AS CHAR) AS menuPath
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.inpDttm
+          FROM tb_system_file_download_history_list T1
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.busiCd = #{busiCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+           AND T1.inpId = #{empCd}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+    
+    <insert id="insertFileDownloadHistory" parameterType="hashMap">
+        INSERT INTO /* insertFileDownloadHistory */
+            tb_system_file_download_history_list(
+            corpCd
+            ,busiCd
+            ,seq
+            ,origNm
+            ,saveRoot
+            ,menuPath
+            ,inpId
+            ,inpDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_system_file_download_history_list WHERE corpCd = #{corpCd})
+            ,HEX(AES_ENCRYPT(#{origNm}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{menuPath}, #{secretKey}))
+            ,#{userId}
+            ,now()
+    </insert>
+</mapper>

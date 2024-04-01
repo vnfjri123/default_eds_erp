@@ -1,0 +1,295 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+		 pageEncoding="UTF-8"%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- 공통코드 CSS SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<style>
+	@font-face {
+		font-family: 'Pretendard-Regular';
+		src: url('/bootstrap-4.6.2/dist2/font/Pretendard-Bold.woff') format('woff');
+		font-weight: 700;
+		font-style: normal;
+	}
+	* {
+		font-family: 'Pretendard-Regular';
+		font-size: 0.9rem;
+	}
+</style>
+<%------------------------------------------------------------------------------------------------------------------------
+----- 공통코드 CSS SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- 공통코드 Enum, EnumKeys SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src='/js/com/common.js'></script>
+<script type="text/javascript" src='/js/com/commonCode.js'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+----- 공통코드 Enum, EnumKeys SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- 공통 기본 스크립트 SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<%--일정 주기 업데이트 START--%>
+<script><c:set var="common_include_js_curr"><fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyyMMddhhmmss" /></c:set></script>
+<%--일정 주기 업데이트 END--%>
+
+<script type="text/javascript" src='/js/com/eds.common.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/com/eds.edms.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/com/eds.popup.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/com/eds.iframe.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/com/eds.jrreport.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+
+<script type="text/javascript" src='/js/util/eds.sysma.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/util/eds.basma.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<script type="text/javascript" src='/js/util/eds.workLog.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+----- 공통 기본 스크립트 SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- JQUERY SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src='/AdminLTE_main/plugins/jquery-ui/jquery-ui.min.js'></script>
+<script type="text/javascript"  src="/AdminLTE_main/plugins/jquery-validation/jquery.validate.min.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- JQUERY SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- FONTAWESOME SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link type="text/css" rel="stylesheet" href="/css/AdminLTE_main/plugins/fontawesome-free/css/all.min.css">
+<%------------------------------------------------------------------------------------------------------------------------
+---- FONTAWESOME SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- BOOTSTRAP SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link type="text/css" rel="stylesheet" href="/bootstrap-4.6.2/dist2/css/bootstrap.min.css">
+<script type="text/javascript" src='/bootstrap-4.6.2/dist2/js/bootstrap.min.js'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- BOOTSTRAP SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- CHARTJS SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script type="text/javascript" src='/chartjs/dist/chart.umd.js'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- CHARTJS SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- ADMIN LTE TREE SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link type="text/css" rel="stylesheet" href="/css/AdminLTE_main/dist/css/adminLte.css">
+<script type="text/javascript" src='/css/AdminLTE_main/dist/js/adminLte.js'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- ADMIN LTE TREE SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- ADMIN LTE  ION SLIDER  SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link rel="stylesheet" href="/AdminLTE_main/plugins/ion-rangeslider/css/ion.rangeSlider.min.css">
+<script src="/AdminLTE_main/plugins/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- ADMIN LTE  ION SLIDER  SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- BOOTSTRAP SELECT2 SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link rel="stylesheet" href="/AdminLTE_main/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="/AdminLTE_main/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<script type="text/javascript" src="/AdminLTE_main/plugins/select2/js/select2.full.min.js"></script>
+<script type="text/javascript" src="/AdminLTE_main/plugins/select2/js/i18n/ko.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- BOOTSTRAP SELECT2 SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- SWEETALERT2 SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script type="text/javascript" src="/AdminLTE_main/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- SWEETALERT2 SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- NPM FLATPICKR SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link rel="stylesheet" href="/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="/flatpickr/dist/plugins/monthSelect/style.css">
+
+<script type="text/javascript" src="/flatpickr/dist/flatpickr.min.js"></script>
+<script type="text/javascript" src="/flatpickr/dist/l10n/ko.js"></script>
+<script type="text/javascript" src="/flatpickr/dist/plugins/monthSelect/index.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- NPM FLATPICKR SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- xlsx SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- xlsx SET END
+--------------------------------------------------------------------------------------------------------------------------%>
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- TUI GRID SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<link type="text/css" rel="stylesheet" href="/tui/tui-grid/dist/tui-grid.css" />
+<link type="text/css" rel="stylesheet" href="/tui/tui-date-picker/dist/tui-date-picker.css" />
+<link type="text/css" rel="stylesheet" href="/tui/tui-time-picker/dist/tui-time-picker.css" />
+<style>
+	.objective.tui-grid-cell {
+		/*background: #efefef;*/
+		background: #dbdbdb;
+	}
+	.ownedObjective.tui-grid-cell {
+		/*background: #dcecfd;*/
+		background: #dbdbdb;
+	}
+	.keyResult.tui-grid-cell {
+		/*background: #efefef;*/
+		background: #efefef;
+	}
+	.ownedKeyResult.tui-grid-cell {
+		/*background: #dbdbdb;*/
+		background: #efefef;
+	}
+	.selected.tui-grid-cell:not(.tui-grid-cell-row-header) {
+		background: #111f94 !important;
+		color: #fdfdfd !important;
+	}
+	.selectedCell.tui-grid-cell:not(.tui-grid-cell-row-header) {
+		color: #fdfdfd !important;
+	}
+	.tui-grid-cell {
+		border:unset;
+	}
+	.tui-grid-cell-editable {
+		border:1px solid #efefef;
+		background: #f6f7f8 !important;
+	}
+	.tui-grid-border-line-top{
+		border-top-color: #fff !important;
+	}
+	.tui-grid-layer-focus-deactive,
+	.tui-grid-layer-focus-border{
+		/*background-color: #e7f2fd !important; !*for selected*!*/
+		display: none !important;
+	}
+
+	.tui-grid-rside-area {
+		/*border: 1px solid #000;*/
+		/*border-radius: 8px;*/
+	}
+</style>
+
+<script src="/tui/tui-pagination/dist/tui-pagination.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/moment.min.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/chance.min.js"></script>
+<script src="/tui/tui-time-picker/dist/tui-time-picker.js"></script>
+<script src="/tui/tui-date-picker/dist/tui-date-picker.js"></script>
+<script src="/tui/tui-grid/dist/tui-grid.js"></script>
+<script>
+	tui.Grid.setLanguage('ko');
+	var TimePicker = tui.TimePicker;
+	var DatePicker = tui.DatePicker;
+
+	tui.Grid.applyTheme('default',{
+		selection: {
+			background: '#fff',
+			border: '#fff',
+		},
+		scrollbar: {
+			background: '#fff',
+			thumb: '#eee',
+			active: '#eee'
+		},
+		row: {
+			hover: {
+				background: 'none',
+			},
+		},
+		area: {
+			header: {
+				border: '#fff',
+			},
+			summary: {
+				border: '#fff',
+			},
+		},
+		cell: {
+			normal: {
+				background: '#f8f9fa',
+				showVerticalBorder: true,
+				/*showHorizontalBorder: false,*/
+			},
+			header: {
+				background: '#fff',
+				border: '#fff',
+				/*showVerticalBorder: true*/
+			},
+			rowHeader: {
+				background: '#fff',
+				border: '#fff',
+				showVerticalBorder: true
+			},
+			summary: {
+				background: '#dedcd3',
+				border: '#cfcdc7',
+				showVerticalBorder: true,
+			},
+			selectedHeader: {
+				background: '#fff',
+			},
+			selectedRowHeader: {
+				background: '#fff',
+			},
+			editable: {
+				background: '#fff'
+			},
+			selectedHeader: {
+				background: '#fff'
+			},
+			focused: {
+				border: '#fff',
+			},
+			disabled: {
+				background: '#f6f7f8',
+				text: '#333333'
+			},
+			required: {
+				background: '#fff',
+			},
+			invalid: {
+				background: '#ffe5e5',
+			},
+		},
+	});
+</script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- TUI GRID SET END
+--------------------------------------------------------------------------------------------------------------------------%>

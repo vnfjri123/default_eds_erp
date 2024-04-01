@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.alarm.alarmMapper">
+
+    <select id="selectAlarmList"  resultType="com.springboot.myapp.eds.erp.vo.alarm.alarmListVO">
+        SELECT /* selectAlarmList */
+            T1.corpCd
+            ,T1.empCd
+            ,T1.empNm
+            ,T1.seq
+            ,T1.navMessage
+            ,T1.inpDttm
+            ,T1.target
+            ,T1.stateDivi
+            ,T1.submitCd
+            ,T1.submitNm
+            ,T1.readDivi
+            ,T2.submitDivi
+            ,T2.currApproverCd
+            ,T2.docDivi
+        FROM
+            tb_noti_alarm_list T1 left JOIN tb_edms_submit_list t2 ON T1.corpCd=T2.corpCd AND T1.submitCd = T2.submitCd
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.target=#{userId}
+        <if test="readDivi != null and !readDivi.equals('')">
+            AND T1.readDivi=#{readDivi}
+        </if>
+         <if test="submitDivi != null and !submitDivi.equals('') and !submitDivi.equals('00')">
+            AND T2.submitDivi=#{submitDivi}
+        </if>
+        <if test="stateDivi != null and !stateDivi.equals('') and !stateDivi.equals('00')">
+            AND T1.stateDivi=#{stateDivi}
+        </if>
+        AND saveDivi='00'
+        order by seq desc
+
+    </select>
+
+    <select id="selectAlarmSubmit"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsSubmitListVO">
+        SELECT /*selectSubmitTempList*/
+        t1.docDivi,
+        t1.submitCd,
+        t1.submitNm,
+        t1.submitDt,
+        t1.submitDivi,
+        t1.currApproverCd
+        FROM tb_edms_submit_list t1 
+		WHERE
+		t1.corpCd= #{corpCd} 
+        AND t1.submitCd =#{submitCd}
+        <if test = "submitNm != null and !submitNm.equals('')">
+            AND t1.submitNm=#{submitNm}
+        </if>
+    </select>
+
+    <select id="selectAlarmTargetInfo"  resultType="java.util.Map">
+        SELECT /*selectAlarmTargetInfo*/
+               T1.empNm,
+               T1.depaCd,
+               (SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm,
+               CAST(AES_DECRYPT(UNHEX(emailKakaowork), #{secretKey}) AS CHAR) AS email
+          FROM tb_base_user_list T1
+		 WHERE T1.corpCd= #{corpCd}
+           AND T1.empCd =#{schEmpCd}
+    </select>
+    
+
+    <insert id="insertAlarmList" parameterType="hashMap">
+        INSERT INTO /* insertAlarmList */
+        TB_noti_alarm_LIST(
+            corpCd
+            ,empCd
+            ,empNm
+            ,seq
+            ,navMessage
+            ,saveDivi
+            ,submitCd
+            ,submitNm
+            ,stateDivi
+            ,target
+            ,readDivi
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT #{corpCd}
+            ,#{empCd}
+            ,#{empNm}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM tb_noti_alarm_list
+              WHERE corpCd = #{corpCd}
+                AND target = #{target})
+            ,#{navMessage}
+            ,'00'
+            ,#{submitCd}
+            ,#{submitNm}
+            ,#{stateDivi}
+            ,#{target}
+            ,'00'
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+    <insert id="insertAlarmChat" parameterType="hashMap">
+        INSERT INTO /* insertAlarmChat */
+        TB_noti_alarm_LIST(
+            corpCd
+            ,empCd
+            ,empNm
+            ,seq
+            ,navMessage
+            ,saveDivi
+            ,submitCd
+            ,submitNm
+            ,stateDivi
+            ,target
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+            SELECT 
+            #{corpCd}
+            ,#{empCd}
+            ,#{empNm}
+            ,(SELECT IFNULL(MAX(CAST(t3.seq as SIGNED)),0)+1
+              FROM tb_noti_alarm_list t3
+              WHERE t3.corpCd = #{corpCd}
+                AND t3.target = t2.approverCd)
+            ,#{navMessage}  
+            ,'00'  
+            ,#{submitCd}
+            ,#{submitNm}
+            ,#{stateDivi}
+            ,t2.approverCd
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            FROM tb_edms_user_list t2 
+            WHERE 
+            t2.corpCd=#{corpCd} 
+            AND t2.submitCd = #{submitCd} 
+            and t2.approverCd != #{empCd} 
+            AND t2.approverDivi ='01'
+            AND t2.seq <![CDATA[<=]]> (SELECT seq FROM tb_edms_user_list T3 WHERE T3.corpCd=#{corpCd}  AND T3.submitCd = #{submitCd}  AND T3.approverCd= #{currApproverCd} AND T3.approverDivi ='01' )
+            GROUP BY t2.approverCd
+    </insert>
+
+    <update id="updateAlarmList" parameterType="hashMap">
+        UPDATE /* updateAlarmList */
+            TB_noti_alarm_LIST
+        SET 
+           readDivi = #{readDivi}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND target = #{target}
+        AND seq = #{seq}
+    </update>
+
+    <delete id="deleteAlarmList"  parameterType="hashMap">
+        UPDATE /* deleteAlarmList */
+        TB_noti_alarm_LIST
+        SET
+        saveDivi='01'
+        WHERE corpCd = #{corpCd}
+          AND target = #{deleteTarget}
+        <if test = "seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+        AND saveDivi != '01'
+    </delete>
+    
+    
+</mapper>

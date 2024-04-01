@@ -1,0 +1,322 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+		 pageEncoding="UTF-8"%>
+<%-- xlsx JS--%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
+<%-- TUI-Editor JS --%>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+
+	toastui.Editor.setLanguage(['ko', 'ko-KR'], {
+		Markdown: '마크다운',
+		WYSIWYG: '위지윅',
+		Write: '편집하기',
+		Preview: '미리보기',
+		Headings: '제목크기',
+		Paragraph: '본문',
+		Bold: '굵게',
+		Italic: '기울임꼴',
+		Strike: '취소선',
+		Code: '인라인 코드',
+		Line: '문단나눔',
+		Blockquote: '인용구',
+		'Unordered list': '글머리 기호',
+		'Ordered list': '번호 매기기',
+		Task: '체크박스',
+		Indent: '들여쓰기',
+		Outdent: '내어쓰기',
+		'Insert link': '링크 삽입',
+		'Insert CodeBlock': '코드블럭 삽입',
+		'Insert table': '표 삽입',
+		'Insert image': '이미지 삽입',
+		Heading: '제목',
+		'Image URL': '이미지 주소',
+		'Select image file': '이미지 파일을 선택하세요.',
+		'Choose a file': '파일 선택',
+		'No file': '선택된 파일 없음',
+		Description: '설명',
+		OK: '확인',
+		More: '더 보기',
+		Cancel: '취소',
+		File: '파일',
+		URL: '주소',
+		'Link text': '링크 텍스트',
+		'Add row to up': '위에 행 추가',
+		'Add row to down': '아래에 행 추가',
+		'Add column to left': '왼쪽에 열 추가',
+		'Add column to right': '오른쪽에 열 추가',
+		'Remove row': '행 삭제',
+		'Remove column': '열 삭제',
+		'Align column to left': '열 왼쪽 정렬',
+		'Align column to center': '열 가운데 정렬',
+		'Align column to right': '열 오른쪽 정렬',
+		'Remove table': '표 삭제',
+		'Would you like to paste as table?': '표형태로 붙여 넣겠습니까?',
+		'Text color': '글자 색상',
+		'Auto scroll enabled': '자동 스크롤 켜짐',
+		'Auto scroll disabled': '자동 스크롤 꺼짐',
+		'Choose language': '언어 선택',
+	});
+</script>
+
+<%-- TUI-Grid JS --%>
+<script src="/tui/tui-pagination/dist/tui-pagination.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/moment.min.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/chance.min.js"></script>
+<script src="/tui/tui-time-picker/dist/tui-time-picker.js"></script>
+<script src="/tui/tui-date-picker/dist/tui-date-picker.js"></script>
+<script src="/tui/tui-grid/dist/tui-grid.js"></script>
+
+	<style>
+
+		/**********************************************************************
+         * To Apply eds ERP PROGRAM CSS In Tui Grid START
+         ***********************************************************************/
+
+		dialog {
+			border: none;
+		}
+
+		.tui-grid-container {
+			font-family: 'Noto Sans KR', sans-serif;
+		}
+		.tui-grid-container p,
+		.tui-grid-container input,
+		.tui-grid-container textarea {
+			font-family: 'Noto Sans KR', sans-serif;
+		}
+		.tui-grid-btn-filter {
+			background: url('/tui/img/eds_filter.png');
+			margin-left: 5px;
+			margin-bottom: 1px;
+			height: 13px;
+			width: 13px;
+			background-repeat : no-repeat;
+			background-size : cover;
+		 }
+		.tui-grid-btn-filter-active {
+			background: url('/tui/img/eds_filter_action.png');
+			background-size : cover;
+		}
+		.tui-grid-filter-dropdown {
+			margin: 9px 7px 5px 7px;
+		}
+		.tui-grid-layer-state {
+			background: #eeeeee;
+		}
+		.tui-grid-layer-focus-border {
+			border-radius: 20%;
+		}
+		.tui-grid-layer-selection {
+			opacity: 0.15;
+		}
+		.tui-grid-border-line-left {
+			background-color: #cfd1d6;
+		}
+		.tui-grid-tree-icon i {
+			margin-left: unset;
+		}
+		.tui-grid-tree-extra-content {
+			margin-left: unset;
+		}
+		.tui-grid-cell.tui-grid-cell-header {
+			background-color: #6d6766;
+			color: #fdfdfd;
+		}
+		.tui-grid-body-area {
+			background-color: #eeeeee;
+		}
+		.tui-grid-body-area.tui-grid-body-area{
+			background-color: #eeeeee;
+		}
+		.tui-grid-body-area .tui-grid-cell-disabled{
+			color:#000
+		}
+		.tui-grid-layer-state{
+			border-left: 1px solid #eeeeee;
+		}
+
+		/**********************************************************************
+         * To Apply eds ERP PROGRAM CSS In Tui Grid END
+         ***********************************************************************/
+
+		/**********************************************************************
+         * To Apply AddClass Evant CSS In Tui Grid START
+         ***********************************************************************/
+
+		.tui-grid-summary-area .tui-grid-cell {
+			text-align: right;
+			font-weight: bold;
+			color: #4b4b4b;
+		}
+
+		/*setFocusedRowColor*/
+		.focused.tui-grid-cell {
+			background: #e1ecf1;
+		}
+		.subTotal.tui-grid-cell {
+			background: #ffffef;
+		}
+		.applyYn.tui-grid-cell {
+			background: #dbad3a;
+		}
+		.selected.tui-grid-cell {
+			background: #dbad3a;
+		}
+		.white.tui-grid-cell {
+			background: #fff;
+			color: #000;
+		}
+		.red.tui-grid-cell {
+			color: red;
+		}
+
+		/**********************************************************************
+         * To Apply AddClass Evant CSS In Tui Grid END
+         ***********************************************************************/
+
+		/**********************************************************************
+         * File Upload css START
+         ***********************************************************************/
+		.filebox input[type="file"] {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			/*overflow: hidden;*/
+			clip:rect(0,0,0,0);
+			border: 0;
+		}
+
+		.filebox label {
+			display: inline-block;
+			padding: .31em 1.0em;
+			margin-bottom: unset;
+			color: #999;
+			font-size: inherit;
+			line-height: normal;
+			vertical-align: middle;
+			background-color: #fdfdfd;
+			cursor: pointer;
+			border: 1px solid #ebebeb;
+			border-bottom-color: #e2e2e2;
+			border-radius: .25em; }
+
+		/* named upload */
+		.filebox .upload-name {
+			width: 218px;
+			display: inline-block;
+			padding: .31em .5em; /* label의 패딩값과 일치 */
+			font-size: inherit;
+			font-family: inherit;
+			line-height: normal;
+			vertical-align: middle;
+			background-color: #f5f5f5;
+			border: 1px solid #ebebeb;
+			border-bottom-color: #e2e2e2;
+			border-radius: .25em;
+			-webkit-appearance: none; /* 네이티브 외형 감추기 */
+			-moz-appearance: none;
+			appearance: none;
+		}
+
+		/**********************************************************************
+         * File Upload css END
+         ***********************************************************************/
+	</style>
+
+	<script>
+
+		/* 생성자 생성 */
+		var TimePicker = tui.TimePicker;
+		var DatePicker = tui.DatePicker;
+
+		/**********************************************************************
+		 * To Apply ApplyTheme CSS In Tui Grid START
+		 ***********************************************************************/
+		tui.Grid.setLanguage('ko');
+
+		// tui.Grid.applyTheme('striped',{
+		tui.Grid.applyTheme('default',{
+			selection: {
+				background: '#4daaf9',
+				border: '#4daaf9',
+			},
+			scrollbar: {
+				background: '#f5f5f5',
+				thumb: '#d9d9d9',
+				active: '#c1c1c1'
+			},
+			row: {
+				hover: {
+					background: '#e4edf4'
+				},
+				even: {
+					background: '#fdfdfd'
+				},
+				odd: {
+					background: '#f2f2f2'
+				},
+			},
+			area: {
+				header: {
+					border: '#6d6766',
+				},
+				summary: {
+					border: '#cfd1d6',
+				},
+			},
+			cell: {
+				normal: {
+					background: '#f4f4f4',
+					border: '#cfd1d6',
+					showVerticalBorder: true,
+					/*showHorizontalBorder: false,*/
+				},
+				header: {
+					background: '#6d6766',
+					border: '#cfd1d6',
+					/*showVerticalBorder: true*/
+				},
+				rowHeader: {
+					background: '#fff',
+					border: '#cfd1d6',
+					showVerticalBorder: true
+				},
+				summary: {
+					background: '#dedcd3',
+					border: '#cfcdc7',
+					showVerticalBorder: true,
+				},
+				selectedHeader: {
+					background: '#dbe9f5',
+				},
+				selectedRowHeader: {
+					background: '#dbe9f5',
+				},
+				editable: {
+					background: '#fff'
+				},
+				selectedHeader: {
+					background: '#6d6766'
+				},
+				focused: {
+					border: '#6eafb6',
+				},
+				disabled: {
+					background: 'none',
+					text: '#b0b0b0'
+				},
+				required: {
+					background: '#fffdeb',
+				},
+				invalid: {
+					background: '#ffe5e5',
+				},
+			},
+		});
+		/**********************************************************************
+		 * To Apply ApplyTheme CSS In Tui Grid END
+		 ***********************************************************************/
+	</script>

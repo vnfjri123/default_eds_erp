@@ -1,0 +1,11 @@
+@font-face {
+    src : url("../css/NotoSansKR-Regular.ttf"); 
+    font-family: "Noto Sans KR" 
+}
+/* html {
+    font-size: 16px; 
+  } */
+body{
+    font-family: 'Noto Sans KR'!important;
+    
+    }

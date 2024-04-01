@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.guMae.guMaeColMapper">
+
+    <select id="selectColMgtList" resultType="com.springboot.myapp.eds.erp.vo.guMae.guMaeColListVO">
+        SELECT /* selectColMgtList */
+            T1.corpCd
+            ,T1.busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,T1.estCd
+            ,T1.projCd
+            ,T1.colCd
+            ,T1.projDivi
+            ,T1.deadDivi
+            ,T1.sccDivi
+            ,T1.colDivi
+            ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) AS projNm
+            ,T1.estDt
+            ,T1.validDt
+            ,T1.cntDt
+            ,T1.dueDt
+            ,T1.endDt
+            ,T1.colDt
+            ,T1.custCd
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,T1.manCd
+            ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+            ,T1.depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+            ,T1.supAmt2
+            ,T1.vatAmt2
+            ,T1.totAmt2
+            ,T1.supAmt3
+            ,T1.vatAmt3
+            ,T1.totAmt3
+            ,T1.clas
+            ,T1.item
+            ,T1.payTm
+            ,T1.note1
+            ,T1.note2
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+          FROM tb_gumae_col_list T1
+         WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+           AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+           AND T1.depaCd = #{depaCd}
+           AND T1.empCd = #{empCd}
+        </if>
+        <if test="projNm != null and !projNm.equals('')">
+            AND (SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd=#{corpCd} AND I1.projCd like T1.projCd) like '%' #{projNm} '%'
+        </if>
+        AND T1.colDt BETWEEN #{stDt} AND #{edDt}
+        GROUP BY T1.corpCd, T1.busiCd, T1.colCd
+        ORDER BY T1.colCd*1 DESC
+    </select>
+    
+    <insert id="insertColMgtList" parameterType="hashMap">
+        INSERT INTO /* insertColMgtList */
+        tb_gumae_col_list(
+            corpCd
+            ,busiCd
+            ,estCd
+            ,projCd
+            ,colCd
+            ,deadDivi
+            ,projDivi
+            ,sccDivi
+            ,colDivi
+            ,estDt
+            ,validDt
+            ,cntDt
+            ,dueDt
+            ,endDt
+            ,colDt
+            ,custCd
+            ,manCd
+            ,depaCd
+            ,supAmt2
+            ,vatAmt2
+            ,totAmt2
+            ,supAmt3
+            ,vatAmt3
+            ,totAmt3
+            ,clas
+            ,item
+            ,payTm
+            ,note1
+            ,note2
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{estCd}
+            ,#{projCd}
+            ,(SELECT
+            CONCAT(DATE_FORMAT(now(),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(colCd*1)+1,7,12),0),5,'0'))
+            FROM tb_gumae_col_list
+            WHERE corpCd = #{corpCd}
+                AND DATE_FORMAT(now(),'%Y%m') = SUBSTR(colCd,1,6))
+            ,#{deadDivi}
+            ,#{projDivi}
+            ,#{sccDivi}
+            ,#{colDivi}
+            ,#{estDt}
+            ,#{validDt}
+            ,#{cntDt}
+            ,#{dueDt}
+            ,#{endDt}
+            ,#{colDt}
+            ,#{custCd}
+            ,#{manCd}
+            ,#{depaCd}
+            ,#{supAmt2}
+            ,#{vatAmt2}
+            ,#{totAmt2}
+            ,#{supAmt3}
+            ,#{vatAmt3}
+            ,#{totAmt3}
+            ,#{clas}
+            ,#{item}
+            ,#{payTm}
+            ,#{note1}
+            ,#{note2}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateColMgtList" parameterType="hashMap">
+        UPDATE /* updateColMgtList */
+        tb_gumae_col_list SET
+            deadDivi = #{deadDivi}
+            ,projDivi = #{projDivi}
+            ,sccDivi = #{sccDivi}
+            ,colDivi = #{colDivi}
+            ,estDt = #{estDt}
+            ,validDt = #{validDt}
+            ,cntDt = #{cntDt}
+            ,dueDt = #{dueDt}
+            ,endDt = #{endDt}
+            ,colDt = #{colDt}
+            ,custCd = #{custCd}
+            ,manCd = #{manCd}
+            ,projCd = #{projCd}
+            ,depaCd = #{depaCd}
+            ,supAmt2 = #{supAmt2}
+            ,vatAmt2 = #{vatAmt2}
+            ,totAmt2 = #{totAmt2}
+            ,supAmt3 = #{supAmt3}
+            ,vatAmt3 = #{vatAmt3}
+            ,totAmt3 = #{totAmt3}
+            ,clas = #{clas}
+            ,item = #{item}
+            ,payTm = #{payTm}
+            ,note1 = #{note1}
+            ,note2 = #{note2}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND colCd = #{colCd}
+    </update>
+
+    <delete id="deleteColMgtList"  parameterType="hashMap">
+        DELETE /* deleteColMgtList */
+        FROM tb_gumae_col_list
+        WHERE corpCd = #{corpCd}
+          AND colCd = #{colCd}
+    </delete>
+
+    <delete id="deleteColEmailList"  parameterType="hashMap">
+        DELETE /*deleteColEmailList*/
+        FROM tb_guMae_col_email_list
+        WHERE corpCd = #{corpCd}
+          AND colCd = #{colCd}
+        <if test="seq != null and !seq.equals('')">
+          AND seq = #{seq}
+        </if>
+    </delete>
+
+    <insert id="aRecMgtList" parameterType="hashMap">
+        INSERT INTO /*aRecMgtList*/
+            tb_gumae_col_list(
+                              corpCd
+                             ,busiCd
+                             ,estCd
+                             ,salCd
+                             ,projCd
+                             ,colCd
+                             ,deadDivi
+                             ,projDivi
+                             ,sccDivi
+                             ,estDt
+                             ,validDt
+                             ,cntDt
+                             ,dueDt
+                             ,endDt
+                             ,colDt
+                             ,custCd
+                             ,manCd
+                             ,depaCd
+                             ,supAmt2
+                             ,vatAmt2
+                             ,totAmt2
+                             ,supAmt3
+                             ,vatAmt3
+                             ,totAmt3
+                             ,clas
+                             ,item
+                             ,payTm
+                             ,note1
+                             ,note2
+                             ,inpId
+                             ,inpDttm
+                             ,updId
+                             ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,#{salCd}
+             ,#{projCd}
+             ,(SELECT
+                   CONCAT(DATE_FORMAT(now(),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(colCd*1)+1,7,12),0),5,'0'))
+               FROM tb_gumae_col_list
+               WHERE corpCd = #{corpCd}
+                 AND DATE_FORMAT(now(),'%Y%m') = SUBSTR(colCd,1,6))
+             ,#{projDivi}
+             ,#{deadDivi}
+             ,#{salDivi}
+             ,#{estDt}
+             ,#{validDt}
+             ,#{cntDt}
+             ,#{dueDt}
+             ,#{endDt}
+             ,DATE_FORMAT(now(), '%Y%m%d')
+             ,#{custCd}
+             ,#{manCd}
+             ,#{depaCd}
+             ,0
+             ,0
+             ,0
+             ,#{supAmt3}
+             ,#{vatAmt3}
+             ,#{totAmt3}
+             ,#{clas}
+             ,#{item}
+             ,#{payTm}
+             ,#{note1}
+             ,#{note2}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <update id="deadLineColMgtList" parameterType="hashMap">
+        UPDATE /*deadLineColMgtList*/
+            tb_gumae_col_list SET
+            deadDivi = #{deadDivi}
+        WHERE corpCd = #{corpCd}
+          AND colCd = #{colCd}
+    </update>
+</mapper>

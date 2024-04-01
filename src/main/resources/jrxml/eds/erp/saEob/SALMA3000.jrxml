@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SALMA3000" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d11241c1-465f-4cd8-a6f5-3e25620aec2f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value=" sinsungpack"/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<parameter name="exNo" class="java.lang.String"/>
+	<parameter name="secretKey" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="num2han" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select 1;]]>
+	</queryString>
+	<field name="1" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="1"/>
+		<property name="com.jaspersoft.studio.field.label" value="1"/>
+	</field>
+	<title>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport isUsingCache="false">
+				<reportElement x="5" y="0" width="140" height="0" uuid="b67fc532-e14b-4ddf-81f5-09aa93ac3a52">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$P{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$P{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="exNo">
+					<subreportParameterExpression><![CDATA[$P{exNo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="secretKey">
+					<subreportParameterExpression><![CDATA[$P{secretKey}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="num2han">
+					<subreportParameterExpression><![CDATA[$P{num2han}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"SALMA3000_1.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="426" y="0" width="257" height="0" uuid="026f8891-a570-421a-9f9a-7b497ff906ea"/>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$P{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$P{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="exNo">
+					<subreportParameterExpression><![CDATA[$P{exNo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="secretKey">
+					<subreportParameterExpression><![CDATA[$P{secretKey}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="num2han">
+					<subreportParameterExpression><![CDATA[$P{num2han}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"SALMA3000_2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+</jasperReport>

@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.edms.edmsSubmitMapper">
+    <select id="selectHomeList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsHomeListVO">
+        SELECT 
+        COUNT(case when t1.submitDivi='01' AND DATEDIFF(NOW(),DATE_FORMAT(t1.submitDt, '%y-%m-%d'))<![CDATA[>=]]>7 AND t1.currApproverCd = #{userId} AND t2.approverDivi='01' then 0 end) AS 'longUnSubmit'
+        ,COUNT(case when t1.submitDivi='01' AND t2.approverDivi='01' AND t1.currApproverCd = #{userId} then 0 end) as 'unSubmit'
+        ,COUNT(case when t2.approverDivi='02' AND t1.submitDivi = '03' AND  t2.endDivi != '01' then 0 end) as 'unCc'
+        ,COUNT(case when t2.approverDivi='01' AND t1.submitDivi = '03' then 0 end) as 'completeSubmit' 
+        FROM tb_edms_user_list t2 LEFT JOIN tb_edms_submit_list t1 ON t1.submitCd= t2.submitCd AND t1.corpCd=t2.corpCd
+        WHERE t2.approverCd=#{userId}
+    </select>
+
+    <select id="selectSubmitList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsSubmitListVO">
+        SELECT /*selectSubmitList*/
+        t1.corpCd,
+        t5.corpNm,
+        t1.busiCd,
+        (SELECT k1.busiNm FROM tb_base_busi_list k1 WHERE t1.busiCd=k1.busiCd AND t1.corpCd=k1.corpCd) AS busiNm,
+        t3.busiCd as inpBusi,
+        t4.busiNm as inpBusiNm,
+        t1.docDivi,
+        t1.submitCd,
+        t1.submitNm,
+        t1.submitDt,
+        t1.submitDivi,
+        t1.currApproverCd,
+        t1.inpId,
+        t1.completeDt,
+        t3.saveNm,
+        t3.corpCd as inpCorpCd,
+        t5.corpNm as inpCorpNm,
+        CAST(AES_DECRYPT(UNHEX(t3.ext), #{secretKey}) AS CHAR) AS ext,
+        t3.empNm as inpNm,
+        t1.updDttm,
+        t3.respDivi,
+        t3.posiDivi,
+        t6.depaNm,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then t2.approverCd end) AS appUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then t2.approverCd end) AS ccUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then appName.empNm end) AS appUsersName,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then appName.empNm end) AS ccUsersName
+         FROM tb_edms_submit_list t1 LEFT JOIN tb_edms_user_list t2 ON ( t1.submitCd=t2.submitCd AND t1.corpCd=t2.corpCd)
+         LEFT JOIN tb_base_user_list appName ON t2.approverCd=appName.empCd AND appName.corpCd=t2.corpCd
+         LEFT JOIN tb_base_user_list t3 ON t1.inpId=t3.empCd AND t3.corpCd=t1.corpCd
+         LEFT JOIN tb_base_busi_list t4 ON t3.busiCd=t4.busiCd and t4.corpCd=t1.corpCd
+         LEFT JOIN tb_base_corp_list t5 ON t1.corpCd=t5.corpCd AND t5.corpCd=t1.corpCd
+         LEFT JOIN tb_base_depa_list t6 ON t3.depaCd=t6.depaCd AND t6.corpCd=t1.corpCd
+		WHERE
+		t1.corpCd= #{corpCd} 
+        AND T1.inpId=#{userId}
+        <if test = "stDt != null and !stDt.equals('')">
+            <if test = "!(edmsDivi == '08' or edmsDivi == '06' or edmsDivi == '07')">
+                AND t1.submitDt BETWEEN #{stDt} AND #{edDt}
+            </if>
+            <if test = "(edmsDivi == '08' or edmsDivi == '06' or edmsDivi == '07')">
+                AND DATE_FORMAT(t1.completeDt, '%Y%m%d') BETWEEN #{stDt} AND #{edDt}
+            </if>
+        </if>
+        <if test = "submitCd != null and !submitCd.equals('')">
+            AND t1.submitCd =#{submitCd}
+        </if>
+        <if test = "submitNm != null and !submitNm.equals('')">
+           AND t1.submitNm like '%' #{submitNm} '%'
+        </if>
+        <if test = "docDivi != null and !docDivi.equals('')">
+           AND t1.docDivi = #{docDivi}
+        </if>
+
+        <if test = "submitDivi != null and !submitDivi.equals('') and !(edmsDivi == '08' or edmsDivi == '06' or edmsDivi == '07')">
+            AND t1.submitDivi=#{submitDivi}
+            GROUP BY t1.submitCd
+            order by t1.submitDt DESC, t1.updDttm DESC
+        </if>
+        <if test = "edmsDivi == '08'">
+            AND (t1.submitDivi='03' OR t1.submitDivi='04')
+            GROUP BY t1.submitCd
+            order by t1.completeDt DESC
+        </if>
+        <if test = "edmsDivi == '06' or edmsDivi == '07'">
+            AND t1.submitDivi=#{submitDivi}
+            GROUP BY t1.submitCd
+            order by t1.completeDt DESC
+        </if>
+
+    </select>
+    <select id="selectSubmitTempList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsSubmitListVO">
+        SELECT /*selectSubmitTempList*/
+        t1.corpCd,
+        t5.corpNm,
+        t1.busiCd,
+        (SELECT k1.busiNm FROM tb_base_busi_list k1 WHERE t1.busiCd=k1.busiCd AND t1.corpCd=k1.corpCd) AS busiNm,
+        t3.busiCd as inpBusi,
+        t4.busiNm as inpBusiNm,
+        t1.docDivi,
+        t1.submitCd,
+        t1.submitNm,
+        t1.submitDt,
+        t1.submitDivi,
+        t1.currApproverCd,
+        t1.inpId,
+        t1.completeDt,
+        t3.saveNm,
+        t3.corpCd as inpCorpCd,
+        t5.corpNm as inpCorpNm,
+        CAST(AES_DECRYPT(UNHEX(t3.ext), #{secretKey}) AS CHAR) AS ext,
+        t3.empNm as inpNm,
+        t1.updDttm,
+        t3.respDivi,
+        t3.posiDivi,
+        t6.depaNm,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then t2.approverCd end) AS appUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then t2.approverCd end) AS ccUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then appName.empNm end) AS appUsersName,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then appName.empNm end) AS ccUsersName
+         FROM tb_edms_submit_list t1 LEFT JOIN tb_edms_user_list t2 ON ( t1.submitCd=t2.submitCd AND t1.corpCd=t2.corpCd)
+         LEFT JOIN tb_base_user_list appName ON t2.approverCd=appName.empCd AND appName.corpCd=t2.corpCd
+         LEFT JOIN tb_base_user_list t3 ON t1.inpId=t3.empCd AND t3.corpCd=t1.corpCd
+         LEFT JOIN tb_base_busi_list t4 ON t3.busiCd=t4.busiCd and t4.corpCd=t1.corpCd
+         LEFT JOIN tb_base_corp_list t5 ON t1.corpCd=t5.corpCd AND t5.corpCd=t1.corpCd
+         LEFT JOIN tb_base_depa_list t6 ON t3.depaCd=t6.depaCd AND t6.corpCd=t1.corpCd
+		WHERE
+		t1.corpCd= #{corpCd} 
+        AND t1.submitCd =#{submitCd}
+        <if test = "submitNm != null and !submitNm.equals('')">
+            AND t1.submitNm=#{submitNm}
+        </if>
+		GROUP BY t1.submitCd
+    </select>       
+    <select id="selectSubmitReqList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsSubmitListVO">
+      SELECT /*selectSubmitReqList*/
+        t1.corpCd,
+        t5.corpNm,
+        t1.busiCd,
+        (SELECT k1.busiNm FROM tb_base_busi_list k1 WHERE t1.busiCd=k1.busiCd AND t1.corpCd=k1.corpCd) AS busiNm,
+        t3.busiCd as inpBusi,
+        t4.busiNm as inpBusiNm,
+        t1.docDivi,
+        t1.submitCd,
+        t1.submitNm,
+        t1.submitDt,
+        t1.submitDivi,
+        t1.currApproverCd,
+        t1.inpId,
+        t1.completeDt,
+        t3.saveNm,
+        t3.corpCd as inpCorpCd,
+        t5.corpNm as inpCorpNm,
+        CAST(AES_DECRYPT(UNHEX(t3.ext), #{secretKey}) AS CHAR) AS ext,
+        t3.empNm as inpNm,
+        t1.updDttm,
+        t3.respDivi,
+        t3.posiDivi,
+        t6.depaNm,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then t2.approverCd end) AS appUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then t2.approverCd end) AS ccUsers ,
+      	GROUP_CONCAT(case when t2.approverDivi='01' then appName.empNm end) AS appUsersName,
+      	GROUP_CONCAT(case when t2.approverDivi='02' then appName.empNm end) AS ccUsersName
+         FROM tb_edms_submit_list t1 LEFT JOIN tb_edms_user_list t2 ON ( t1.submitCd=t2.submitCd AND t1.corpCd=t2.corpCd)
+         LEFT JOIN tb_base_user_list appName ON t2.approverCd=appName.empCd AND appName.corpCd=t2.corpCd
+         LEFT JOIN tb_base_user_list t3 ON t1.inpId=t3.empCd AND t3.corpCd=t1.corpCd
+         LEFT JOIN tb_base_busi_list t4 ON t3.busiCd=t4.busiCd and t4.corpCd=t1.corpCd
+         LEFT JOIN tb_base_corp_list t5 ON t1.corpCd=t5.corpCd AND t5.corpCd=t1.corpCd
+         LEFT JOIN tb_base_depa_list t6 ON t3.depaCd=t6.depaCd AND t6.corpCd=t1.corpCd
+		WHERE
+		t1.corpCd= #{corpCd} 
+        <if test = "stDt != null and !stDt.equals('')">
+            <if test = "!(edmsDivi == '08' or edmsDivi == '06' or edmsDivi == '07' or edmsDivi== '09')">
+                AND t1.submitDt BETWEEN #{stDt} AND #{edDt}
+            </if>
+            <if test = "(edmsDivi == '08' or edmsDivi == '06' or edmsDivi == '07' or edmsDivi== '09')">
+                AND DATE_FORMAT(t1.completeDt, '%Y%m%d') BETWEEN #{stDt} AND #{edDt}
+            </if>
+        </if>
+        <if test = "submitCd != null and !submitCd.equals('')">
+            AND t1.submitCd =#{submitCd}
+        </if>
+        <if test = "submitNm != null and !submitNm.equals('')">
+           AND t1.submitNm like '%' #{submitNm} '%'
+        </if>
+        <if test = "docDivi != null and !docDivi.equals('')">
+           AND t1.docDivi = #{docDivi}
+        </if>
+        <if test = "submitDivi != null and !submitDivi.equals('') and !(edmsDivi == '08'or edmsDivi == '06' or edmsDivi == '07') and (edmsDivi != '09') and (edmsDivi != '05')">
+            AND t1.submitDivi=#{submitDivi}
+            AND t1.currApproverCd= #{userId}
+            GROUP BY t1.submitCd
+		    HAVING GROUP_CONCAT(case when t2.approverDivi=#{approverDivi} then t2.approverCd end) LIKE '%' #{userId} '%'
+            order by t1.submitDt DESC, t1.updDttm DESC
+        </if>
+        <if test = "edmsDivi == '05'">
+            AND submitDivi = '03'
+            GROUP BY t1.submitCd
+		    HAVING GROUP_CONCAT(case when t2.approverDivi=#{approverDivi} AND endDivi=#{endDivi} then t2.approverCd end) LIKE '%' #{userId} '%'
+            order by t1.submitDt DESC, t1.updDttm DESC
+        </if>
+        <if test = "edmsDivi == '08'">
+            AND (t1.submitDivi='03' OR t1.submitDivi='04')
+            GROUP BY t1.submitCd
+		    HAVING GROUP_CONCAT(case when t2.approverDivi=#{approverDivi} then t2.approverCd end) LIKE '%' #{userId} '%'
+            order by t1.completeDt DESC
+        </if>
+        <if test = "edmsDivi == '06' or edmsDivi == '07'">
+            AND t1.submitDivi=#{submitDivi}
+            GROUP BY t1.submitCd
+            HAVING GROUP_CONCAT(case when t2.approverDivi=#{approverDivi} then t2.approverCd end) LIKE '%' #{userId} '%'
+            order by t1.completeDt DESC
+        </if>
+        <if test = "edmsDivi == '09'">
+            <if test = "authDivi!= '01'">
+                AND t6.depaCd=#{depaCd}
+            </if>
+            AND t1.submitDivi=#{submitDivi}
+            GROUP BY t1.submitCd
+            order by t1.completeDt DESC
+        </if>
+
+	</select> 
+    <select id="selectSubmitComList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsComListVO">
+     SELECT
+       COUNT(case when t1.submitDivi='03' then 0 END ) AS 'com'
+      ,COUNT(case when t1.submitDivi='04' then 0 end) as 'cancelCom'
+      ,COUNT(case when t1.submitDivi='03' OR t1.submitDivi = '04' then 0 end) as 'allCom'
+      ,COUNT(case when t1.submitDivi='01' then 0 end) as 'appCount'
+      FROM tb_edms_submit_list t1 
+      WHERE 
+      t1.corpCd=#{corpCd}
+    <if test = "edmsDivi == '01'">
+        and t1.inpId=#{userId}
+    </if>
+    <if test = "edmsDivi == '02'">
+        and #{userId}=(SELECT approverCd from tb_edms_user_list t2 WHERE t2.approverDivi='01' AND t2.submitCd=t1.submitCd AND t2.approverCd=#{userId})
+    </if>
+      
+     <if test = "stDt != null and !stDt.equals('')">
+         AND DATE_FORMAT(t1.completeDt, '%Y%m%d') BETWEEN #{stDt} AND #{edDt}
+     </if>
+    <if test = "submitNm != null and !submitNm.equals('')">
+        AND t1.submitNm like '%' #{submitNm} '%'
+    </if>
+    <if test = "docDivi != null and !docDivi.equals('')">
+        AND t1.docDivi = #{docDivi}
+    </if>
+    </select>
+
+     <select id="selectEdmsFileList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsFileListVO">
+        SELECT /* selectEDMSFileList */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.submitCd
+            ,T1.seq
+            ,T1.saveNm
+            ,T1.origNm
+            ,CAST(AES_DECRYPT(UNHEX(saveRoot), #{secretKey}) AS CHAR) as saveRoot
+            ,T1.ext
+            ,T1.size
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,note
+            ,inpDttm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,updDttm
+            ,inpId
+        FROM TB_EDMS_FILE_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+        ORDER BY T1.seq*1 DESC
+    </select>
+    <select id="selectApproveUserList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsApproveUserListVO">
+        SELECT /* selectApproveUserList */
+            seq,
+            inpId,
+            (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS empNm,
+            approverCd
+        FROM
+            tb_edms_user_list T1
+        WHERE 1=1
+        AND T1.corpCd=#{corpCd}
+        AND T1.submitCd=#{submitCd}
+        AND T1.approverDivi='01'
+    </select>
+     <select id="selectCcUserList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsApproveUserListVO">
+        SELECT /* selectCcUserList */
+            seq,
+            inpId,
+            (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS empNm,
+            approverCd
+        FROM
+            tb_edms_user_list T1
+        WHERE 1=1
+        AND T1.corpCd=#{corpCd}
+        AND T1.submitCd=#{submitCd}
+        AND T1.approverDivi='02'
+    </select>
+    
+    <select id="selectEdmsMessageList"  resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsApproveUserListVO">
+        SELECT /* selectEdmsMessageList */
+            corpCd,
+            seq,
+            submitCd,
+            approverCd,
+            (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.approverCd) AS empNm,
+            message,
+            inpDttm
+        FROM
+            tb_edms_message_list T1
+        WHERE 1=1
+        AND T1.corpCd=#{corpCd}
+        AND T1.submitCd=#{submitCd}
+    </select>
+
+    <insert id="insertSubmitList" parameterType="hashMap">
+        INSERT INTO /* insertSubmitList */
+            tb_edms_submit_list( 
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,submitDivi
+            ,currApproverCd
+            ,deadDivi
+            ,docDivi 
+            ,statusDivi
+            ,submitDt
+            ,submitNm
+            ,useYn   
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT 
+            #{corpCd}
+            ,#{busiCd}    
+            ,#{submitCd}  
+            ,#{submitDivi}
+            ,#{currApproverCd}
+            ,#{deadDivi}
+            ,#{docDivi}
+            ,#{statusDivi}
+            ,#{submitDt}
+            ,#{submitNm}
+            ,#{useYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        ON DUPLICATE KEY UPDATE 
+            deadDivi=#{deadDivi},
+            docDivi =#{docDivi},
+            submitDt=#{submitDt},
+            submitNm=#{submitNm},
+            statusDivi=#{statusDivi},
+            submitDivi=#{submitDivi},
+            currApproverCd=#{currApproverCd},
+            useYn=#{useYn},
+            updId=#{userId},
+            updDttm=now()
+            <selectKey keyProperty="submitCd" resultType="java.lang.String" order="BEFORE">
+                <if test = "submitCd == null or submitCd.equals('')">
+                    SELECT CONCAT(DATE_FORMAT(NOW(),'%Y%m%d'),LPAD(IFNULL(MAX(SUBSTR(submitCd,9,5)),0)+1,5,'0')) as submitCd  FROM tb_edms_submit_list WHERE corpCd = #{corpCd} AND DATE_FORMAT(NOW(),'%Y%m%d') = DATE_FORMAT(inpDttm,'%Y%m%d')
+                </if>
+                <if test = "submitCd != null and !submitCd.equals('')">
+                    SELECT submitCd from tb_edms_submit_list where submitCd=#{submitCd};
+                </if>
+            </selectKey>
+    </insert>
+    <insert id="insertApproveList" parameterType="hashMap">
+        INSERT INTO /* insertApproverList */
+            tb_edms_submit_list( 
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,submitDivi
+            ,currApproverCd
+            ,deadDivi
+            ,docDivi 
+            ,statusDivi
+            ,submitDt
+            ,submitNm
+            ,useYn   
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT 
+            #{corpCd}
+            ,#{busiCd}    
+            ,#{submitCd}  
+            ,#{submitDivi}
+            ,#{currApproverCd}
+            ,#{deadDivi}
+            ,#{docDivi}
+            ,#{statusDivi}
+            ,#{submitDt}
+            ,#{submitNm}
+            ,#{useYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        ON DUPLICATE KEY UPDATE 
+            submitDivi=#{submitDivi},
+            currApproverCd=#{currApproverCd},
+            completeDt=now()
+            <!-- updId=#{userId},
+            updDttm=now() -->
+    </insert>
+    <update id="insertApproveConfirmList" parameterType="hashMap">
+    <!-- 결재승인확인-->
+        UPDATE /* insertApproveConfirmList */
+            tb_edms_user_list
+        SET endDivi='01',
+            updId=#{userId},
+            updDttm=now()
+        WHERE approverCd = #{userId}
+        AND submitCd = #{submitCd}
+        AND approverDivi = '01'
+    </update>
+    <update id="insertCcConfirmList" parameterType="hashMap">
+    <!-- 결재완료-->
+        UPDATE /* insertCcConfirmList */
+            tb_edms_user_list
+        SET endDivi='01',
+            updId=#{userId},
+            updDttm=now()
+        WHERE approverCd = #{userId}
+        AND submitCd = #{submitCd}
+        AND approverDivi = '02'
+    </update>
+    <update id="insertDeclineList" parameterType="hashMap">
+     <!-- 결재거절=>반려함-->
+        UPDATE /* insertDeclineList */
+        tb_edms_submit_list
+        SET submitDivi='04',
+            completeDt=now()
+            <!-- updId=#{userId},
+            updDttm=now() -->
+        WHERE
+        corpCd= #{corpCd}
+        AND submitCd= #{submitCd}
+        
+    </update>
+    <update id="insertCancelList" parameterType="hashMap">
+     <!-- 결재취소=>임시저장-->
+        UPDATE /* insertCancelList */
+        tb_edms_submit_list
+        SET submitDivi='02'
+            <!-- updId=#{userId},
+            updDttm=now() -->
+        WHERE
+        corpCd= #{corpCd}
+        AND submitCd= #{submitCd}
+    </update>
+    
+    <insert id="insertApproveUserList" parameterType="hashMap">
+        INSERT INTO /* insertApproveUserList */
+            tb_edms_user_list( 
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,approverDivi
+            ,seq
+            ,approverCd
+            ,endDivi
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT 
+            #{corpCd}
+            ,#{busiCd}    
+            ,#{submitCd}  
+            ,#{approverDivi}
+            ,#{seq}
+            ,#{approverCd}
+            ,#{endDivi}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        ON DUPLICATE KEY UPDATE 
+            approverCd=#{approverCd},
+            updId=#{userId},
+            updDttm=now()
+    </insert>
+    <insert id="insertEdmsFileList" parameterType="hashMap">
+        INSERT INTO 
+            TB_EDMS_FILE_LIST(
+                                corpCd
+                                ,busiCd
+                                ,submitCd
+                                ,seq
+                                ,saveNm
+                                ,origNm
+                                ,saveRoot
+                                ,ext
+                                ,size
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{submitCd}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM TB_EDMS_FILE_LIST WHERE corpCd = #{corpCd} AND submitCd = #{submitCd})
+            ,#{saveNm}
+            ,#{origNm}
+            ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+            ,#{ext}
+            ,#{size}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+    <insert id="insertMessageList" parameterType="hashMap">
+        INSERT INTO /* insertMessageList */
+            tb_edms_message_list( 
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,seq
+            ,approverCd
+            ,message
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT 
+            #{corpCd}
+            ,#{busiCd}    
+            ,#{submitCd}  
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM tb_edms_message_list
+              WHERE corpCd = #{corpCd}
+                AND submitCd = #{submitCd})
+            ,#{approverCd}
+            ,#{message}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <delete id="deleteSubmitList"  parameterType="hashMap">
+        DELETE /* deleteSubmitList */
+        FROM tb_edms_submit_list
+        WHERE corpCd = #{corpCd} and submitCd = #{submitCd}
+    </delete>
+    <delete id="deleteEdmsFileList"  parameterType="hashMap">
+        DELETE /* deleteEdmsFileList */
+        FROM TB_EDMS_FILE_LIST
+        WHERE corpCd = #{corpCd}
+        AND submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+    <delete id="deleteMessageList"  parameterType="hashMap">
+        DELETE /* deleteMessageList */
+        FROM tb_edms_message_list
+        WHERE corpCd = #{corpCd}
+        AND submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+     <delete id="deleteSubmitUserList"  parameterType="hashMap">
+        DELETE /* deleteSubmitUserList */
+        FROM tb_edms_user_list
+        WHERE corpCd = #{corpCd}
+        AND submitCd = #{submitCd}
+    </delete>
+</mapper>

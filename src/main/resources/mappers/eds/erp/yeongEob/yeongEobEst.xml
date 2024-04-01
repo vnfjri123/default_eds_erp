@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.yeongEob.yeongEobEstMapper">
+
+    <select id="selectEstMgtList" resultType="com.springboot.myapp.eds.erp.vo.yeongEob.yeongEobEstListVO">
+        SELECT /* selectEstMgtList */
+        T1.corpCd
+        ,T1.busiCd
+        ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+        ,T1.estCd
+        ,T1.deadDivi
+        ,T1.sccDivi
+        ,T1.projNm
+        ,T1.estDt
+        ,T1.validDt
+        ,T1.custCd
+        ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+        ,T1.manCd
+        ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+        ,manNote
+        ,T1.depaCd
+        ,T1.profit
+        ,T1.margin
+        ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt ELSE SUM(T2.supAmt) END AS supAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt ELSE SUM(T2.vatAmt) END AS vatAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt ELSE SUM(T2.totAmt) END AS totAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt2
+        ,T1.clas
+        ,T1.item
+        ,T1.payTm
+        ,T1.note1
+        ,T1.note2
+        ,T1.note3
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        ,T1.submitCd
+        FROM TB_YEONGEOB_EST_LIST T1 LEFT JOIN TB_YEONGEOB_EST_ITEM_LIST T2
+        ON T1.corpCd = T2.corpCd
+        AND T1.estCd = T2.estCd
+        WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="projNm != null and !projNm.equals('')">
+            AND T1.projNm like '%' #{projNm} '%'
+        </if>
+        AND T1.estDt BETWEEN #{stDt} AND #{edDt}
+        GROUP BY T1.corpCd, T1.busiCd, T1.estCd
+        ORDER BY T1.estDt*1 DESC, T1.estCd*1 DESC
+    </select>
+
+    <select id="selectEstItemList" resultType="com.springboot.myapp.eds.erp.vo.yeongEob.yeongEobEstItemListVO">
+        SELECT /* selectEstItemList */
+        corpCd
+        ,busiCd
+        ,estCd
+        ,seq
+        ,itemCd
+        ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.itemCd = T1.itemCd) as itemNm
+        ,CASE
+        WHEN ISNULL(CHAR_LENGTH(standard)) = 1 || CHAR_LENGTH(standard) = 0 THEN (SELECT I1.standard FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.itemCd = T1.itemCd)
+        ELSE standard
+        END AS standard
+        ,unit
+        ,vatDivi
+        ,taxDivi
+        ,qty
+        ,cost
+        ,supAmt
+        ,vatAmt
+        ,totAmt
+        ,cost2
+        ,supAmt2
+        ,vatAmt2
+        ,totAmt2
+        ,cost3
+        ,supAmt3
+        ,vatAmt3
+        ,totAmt3
+        ,saleDivi
+        ,saleRate
+        ,note
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_YEONGEOB_EST_ITEM_LIST T1
+        WHERE corpCd = #{corpCd}
+        AND estCd = #{estCd}
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        ORDER BY seq*1 ASC
+    </select>
+
+    <insert id="insertEstMgtList" parameterType="hashMap">
+        INSERT INTO /* insertEstMgtList */
+        TB_YEONGEOB_EST_LIST(
+            corpCd
+            ,busiCd
+            ,estCd
+            ,deadDivi
+            ,sccDivi
+            ,projNm
+            ,estDt
+            ,validDt
+            ,custCd
+            ,manCd
+            ,manNote
+            ,depaCd
+            ,empCd
+            ,supAmt
+            ,vatAmt
+            ,totAmt
+            ,supAmt2
+            ,vatAmt2
+            ,totAmt2
+            ,profit
+            ,margin
+            ,clas
+            ,item
+            ,payTm
+            ,note1
+            ,note2
+            ,note3
+            ,submitCd
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,(SELECT CONCAT(DATE_FORMAT(now(),'%Y%m'),LPAD(IFNULL(SUBSTR(MAX(estCd*1)+1,7,12),0),5,'0')) FROM TB_YEONGEOB_EST_LIST WHERE corpCd = #{corpCd} AND DATE_FORMAT(now(),'%Y%m') = SUBSTR(estCd,1,6))
+            ,#{deadDivi}
+            ,#{sccDivi}
+            ,#{projNm}
+            ,#{estDt}
+            ,#{validDt}
+            ,#{custCd}
+            ,#{manCd}
+            ,#{manNote}
+            ,#{depaCd}
+            ,#{empCd}
+            ,#{supAmt}
+            ,#{vatAmt}
+            ,#{totAmt}
+            ,#{supAmt2}
+            ,#{vatAmt2}
+            ,#{totAmt2}
+            ,#{profit}
+            ,#{margin}
+            ,#{clas}
+            ,#{item}
+            ,#{payTm}
+            ,#{note1}
+            ,#{note2}
+            ,#{note3}
+            ,#{submitCd}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+        <selectKey keyColumn="estCd" keyProperty="estCd" order="AFTER" resultType="java.lang.String">
+            SELECT estCd
+            FROM TB_YEONGEOB_EST_LIST
+            WHERE corpCd = #{corpCd}
+            ORDER BY estCd DESC
+            LIMIT 1;
+        </selectKey>
+    </insert>
+
+    <insert id="insertEstItemList" parameterType="hashMap">
+        INSERT INTO /* insertEstItemList */
+            TB_YEONGEOB_EST_ITEM_LIST(
+                                      corpCd
+                                     ,busiCd
+                                     ,estCd
+                                     ,seq
+                                     ,itemCd
+                                     ,vatDivi
+                                     ,taxDivi
+                                     ,standard
+                                     ,unit
+                                     ,depaCd
+                                     ,empCd
+                                     ,qty
+                                     ,cost
+                                     ,supAmt
+                                     ,vatAmt
+                                     ,totAmt
+                                     ,cost2
+                                     ,supAmt2
+                                     ,vatAmt2
+                                     ,totAmt2
+                                     ,cost3
+                                     ,supAmt3
+                                     ,vatAmt3
+                                     ,totAmt3
+                                     ,saleDivi
+                                     ,saleRate
+                                     ,note
+                                     ,inpId
+                                     ,inpDttm
+                                     ,updId
+                                     ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{busiCd}
+             ,#{estCd}
+             ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+               FROM TB_YEONGEOB_EST_ITEM_LIST
+               WHERE corpCd = #{corpCd}
+                 AND estCd = #{estCd})
+             ,#{itemCd}
+             ,#{vatDivi}
+             ,#{taxDivi}
+             ,#{standard}
+             ,#{unit}
+             ,#{depaCd}
+             ,#{empCd}
+             ,#{qty}
+             ,#{cost}
+             ,#{supAmt}
+             ,#{vatAmt}
+             ,#{totAmt}
+             ,#{cost2}
+             ,#{supAmt2}
+             ,#{vatAmt2}
+             ,#{totAmt2}
+             ,#{cost3}
+             ,#{supAmt3}
+             ,#{vatAmt3}
+             ,#{totAmt3}
+             ,#{saleDivi}
+             ,#{saleRate}
+             ,#{note}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <update id="updateEstMgtList" parameterType="hashMap">
+        UPDATE /* updateEstMgtList */
+            TB_YEONGEOB_EST_LIST SET
+            deadDivi = #{deadDivi}
+                                   ,sccDivi = #{sccDivi}
+                                   ,projNm = #{projNm}
+                                   ,estDt = #{estDt}
+                                   ,validDt = #{validDt}
+                                   ,custCd = #{custCd}
+                                   ,manCd = #{manCd}
+                                   ,manNote = #{manNote}
+                                   ,depaCd = #{depaCd}
+                                   ,supAmt = #{supAmt}
+                                   ,vatAmt = #{vatAmt}
+                                   ,totAmt = #{totAmt}
+                                   ,supAmt2 = #{supAmt2}
+                                   ,vatAmt2 = #{vatAmt2}
+                                   ,totAmt2 = #{totAmt2}
+                                   ,profit = #{profit}
+                                   ,margin = #{margin}
+                                   ,clas = #{clas}
+                                   ,item = #{item}
+                                   ,payTm = #{payTm}
+                                   ,note1 = #{note1}
+                                   ,note2 = #{note2}
+                                   ,note3 = #{note3}
+                                   ,updId = #{userId}
+                                   ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND estCd = #{estCd}
+    </update>
+
+    <update id="updateEstItemList" parameterType="hashMap">
+        UPDATE /* updateEstItemList */
+            TB_YEONGEOB_EST_ITEM_LIST SET
+            itemCd = #{itemCd}
+                                        ,vatDivi = #{vatDivi}
+                                        ,taxDivi = #{taxDivi}
+                                        ,standard = #{standard}
+                                        ,unit = #{unit}
+                                        ,qty = #{qty}
+                                        ,cost = #{cost}
+                                        ,supAmt = #{supAmt}
+                                        ,vatAmt = #{vatAmt}
+                                        ,totAmt = #{totAmt}
+                                        ,cost2 = #{cost2}
+                                        ,supAmt2 = #{supAmt2}
+                                        ,vatAmt2 = #{vatAmt2}
+                                        ,totAmt2 = #{totAmt2}
+                                        ,cost3 = #{cost3}
+                                        ,supAmt3 = #{supAmt3}
+                                        ,vatAmt3 = #{vatAmt3}
+                                        ,totAmt3 = #{totAmt3}
+                                        ,saleDivi = #{saleDivi}
+                                        ,saleRate = #{saleRate}
+                                        ,note = #{note}
+                                        ,updId = #{userId}
+                                        ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND estCd = #{estCd}
+          AND seq = #{seq}
+    </update>
+
+    <delete id="deleteEstMgtList"  parameterType="hashMap">
+        DELETE /* deleteEstMgtList */
+        FROM TB_YEONGEOB_EST_LIST
+        WHERE corpCd = #{corpCd}
+          AND estCd = #{estCd}
+    </delete>
+
+    <delete id="deleteEstItemList"  parameterType="hashMap">
+        DELETE /* deleteEstItemList */
+        FROM TB_YEONGEOB_EST_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+        AND estCd = #{estCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteEstEmailList"  parameterType="hashMap">
+        DELETE /*deleteEstEmailList*/
+        FROM tb_yeongeob_est_email_list
+        WHERE corpCd = #{corpCd}
+        AND estCd = #{estCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <update id="deadLineEstMgtList" parameterType="hashMap">
+        UPDATE /* deadLineEstMgtList */
+            TB_YEONGEOB_EST_LIST SET
+            deadDivi = #{deadDivi}
+        WHERE corpCd = #{corpCd}
+          AND estCd = #{estCd}
+    </update>
+</mapper>

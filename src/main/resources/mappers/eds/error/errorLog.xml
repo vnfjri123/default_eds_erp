@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.error.controller.error.errorLogMapper">
+
+    <select id="selectErrorLogList"  resultType="com.springboot.myapp.eds.error.vo.error.errorLogListVO">
+        SELECT /* selectErrorLogList */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,seq
+            ,riskLevel
+            ,procStat
+            ,modulNm
+            ,mamuNm
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm
+            ,empCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empCd) AS empNm
+            ,reqCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.reqCd) AS reqNm
+            ,note1
+            ,note2
+            ,T1.inpDttm
+            ,T1.procDttm
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_ERROR_LOG_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="empCd != null and !empCd.equals('')">
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="authDivi == '3' or authDivi.equals('3')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="authDivi == '4' or authDivi.equals('4')">
+            AND T1.depaCd = #{depaCd}
+            AND T1.empCd = #{empCd}
+        </if>
+        <if test="riskLevel != null and !riskLevel.equals('')">
+            AND riskLevel = #{riskLevel}
+        </if>
+        <if test="procStat != null and !procStat.equals('')">
+            AND procStat = #{procStat}
+        </if>
+        ORDER BY seq*1 DESC
+    </select>
+
+    <insert id="insertErrorLogList" parameterType="hashMap">
+        INSERT INTO /* insertErrorLogList */
+        TB_ERROR_LOG_LIST(
+                          corpCd
+                         ,seq
+                         ,riskLevel
+                         ,procStat
+                         ,modulNm
+                         ,mamuNm
+                         ,busiCd
+                         ,depaCd
+                         ,empCd
+                         ,reqCd
+                         ,note1
+                         ,note2
+                         ,inpId
+                         ,inpDttm
+                         ,updId
+                         ,updDttm
+                         ,procDttm)
+        SELECT
+            #{corpCd}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM TB_ERROR_LOG_LIST
+              WHERE corpCd = #{corpCd})
+            ,#{riskLevel}
+            ,#{procStat}
+            ,#{modulNm}
+            ,#{mamuNm}
+            ,#{busiCd}
+            ,#{depaCd}
+            ,#{empCd}
+            ,#{reqCd}
+            ,#{note1}
+            ,#{note2}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ,''
+    </insert>
+
+    <update id="updateErrorLogList" parameterType="hashMap">
+        UPDATE /* updateErrorLogList */
+            TB_ERROR_LOG_LIST
+        SET riskLevel = #{riskLevel}
+           ,procStat = #{procStat}
+           ,modulNm = #{modulNm}
+           ,mamuNm = #{mamuNm}
+           ,busiCd = #{busiCd}
+           ,depaCd = #{depaCd}
+           ,empCd = #{empCd}
+           ,reqCd = #{reqCd}
+           ,note1 = #{note1}
+           ,note2 = #{note2}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND seq = #{seq}
+    </update>
+
+    <delete id="deleteErrorLogList"  parameterType="hashMap">
+        DELETE /* deleteErrorLogList */
+        FROM TB_ERROR_LOG_LIST
+        WHERE corpCd = #{corpCd}
+          AND seq = #{seq}
+    </delete>
+</mapper>

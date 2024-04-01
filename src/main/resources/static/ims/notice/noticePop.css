@@ -1,0 +1,107 @@
+strong {
+    font-weight: 700 !important;
+}
+
+p{
+    margin: unset !important;
+}
+
+b p {
+    font-weight: 500 !important;
+}
+
+.a-link{
+    padding: 0 0.5rem 0 0.5rem;
+}
+
+.modal-footer {
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+}
+
+.pop-content img {
+    max-width: 100%;
+}
+
+.pop-content {
+    max-height: 45vh;
+    overflow: hidden scroll;
+}
+
+.btn-secondary:hover,
+.btn-danger:hover{
+    box-shadow: unset !important;
+}
+
+#pills-tab {
+    width: 100%;
+    white-space: nowrap !important;
+    overflow-x: scroll !important;
+    display: inline-block !important;
+}
+
+.nav-item {
+    display: inline-block !important;
+}
+
+.btn {
+    margin: unset !important;
+}
+
+table {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 12px 0 14px;
+    color: #222;
+    width: auto;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+
+table th,
+table td {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 5px 14px 5px 12px;
+    height: 32px;
+}
+
+table th {
+    background-color: #555;
+    font-weight: 300;
+    color: #fff;
+    padding-top: 6px;
+}
+
+.dz-default.dz-message {
+    display: none;
+    user-select: none;
+}
+
+
+/*.layerPopup img{*/
+/*    margin-bottom : 20px;}*/
+/*.layerPopup:before {display:block; content:""; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:9000}*/
+/*.layerPopup .layerBox {    z-index:10000;*/
+/*    position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); padding:30px; background:#fff; border-radius:6px; }*/
+/*.layerPopup .layerBox .title {margin-bottom:10px; padding-bottom:10px; font-weight:600; border-bottom:1px solid #d9d9d9;}*/
+/*.layerPopup .layerBox .btnTodayHide {*/
+/*    font-size:14px; font-weight:600; color:black;*/
+/*    float: left;text-decoration:none;width: 150px;*/
+/*    height : 30px;line-height:30px;border:black solid 1px; text-align : center;text-decoration:none;*/
+/*}*/
+/*.layerPopup div{*/
+/*    display : inline;*/
+/*}*/
+/*.layerPopup form{*/
+/*    margin-top : 5px;*/
+/*    font-size:16px; font-weight:600;*/
+/*    weight: 100%;*/
+/*    height : 30px;*/
+/*    line-height:30px*/
+/*}*/
+/*.layerPopup #close {*/
+/*    font-size:16px; font-weight:600; width: 40px; height : 30px;color:black; float: right; line-height:30px; text-align : center;text-decoration:underline;*/
+/*}*/
+/*.layerPopup a{*/
+/*    text-decoration : none;*/
+/*    color : black;width: 50px;height : 40px;*/
+/*}*/

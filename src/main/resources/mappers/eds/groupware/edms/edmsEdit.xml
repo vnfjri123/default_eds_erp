@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.edms.edmsEditMapper">
+
+    <select id="selectEditList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsEditListVO">
+        SELECT /* selectEditList */
+            T1.corpCd
+            ,T1.manCd as empCd
+            ,T1.depaCd
+            ,T1.manCd
+            ,T1.editerArea
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,T1.editerArea
+          FROM TB_EDMS_EDIT_LIST T1
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.submitCd = #{submitCd}
+        GROUP BY T1.corpCd, T1.submitCd
+        ORDER BY T1.submitCd*1 DESC
+    </select>
+    <select id="selectEditFileList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsEditFileListVO">
+        SELECT /* selectEditFileList */
+            T1.corpCd
+            ,T1.submitCd
+            ,T1.seq
+            ,CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) as saveRoot
+            ,T1.size
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,inpDttm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,updDttm
+        FROM TB_EDMS_Edit_FILE_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+        AND T1.submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </select>
+    <insert id="insertEditList" parameterType="hashMap">
+        INSERT INTO /* insertEditList */
+        TB_EDMS_EDIT_LIST(
+            corpCd
+            ,submitCd
+            ,editerArea
+            ,depaCd
+            ,manCd
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{submitCd}
+            ,#{editerArea}
+            ,#{depaCd}
+            ,#{manCd}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ON DUPLICATE KEY UPDATE 
+             editerArea=#{editerArea},
+             depaCd=#{depaCd},
+             manCd=#{manCd},
+             updId=#{userId},
+             updDttm=now()
+    </insert>
+    <insert id="insertEditFileList" parameterType="hashMap">
+        INSERT INTO 
+            TB_EDMS_EDIT_FILE_LIST(
+                                corpCd
+                                ,submitCd
+                                ,seq
+                                ,saveRoot
+                                ,size
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{submitCd}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM TB_EDMS_EDIT_FILE_LIST WHERE corpCd = #{corpCd} AND submitCd = #{submitCd})
+            ,HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey}))
+            ,#{size}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+    <delete id="deleteEditList"  parameterType="hashMap">
+        DELETE /* deleteEditList */
+        FROM TB_EDMS_EDIT_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+
+    <delete id="deleteEditItemList"  parameterType="hashMap">
+        DELETE /* deleteEditItemList */
+        FROM TB_EDMS_EDIT_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+    <delete id="deleteEditFileList"  parameterType="hashMap">
+        DELETE /* deleteEditFileList */
+        FROM TB_EDMS_EDIT_FILE_LIST
+        WHERE corpCd = #{corpCd}
+        AND submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+</mapper>

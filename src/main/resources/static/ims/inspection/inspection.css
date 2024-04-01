@@ -1,0 +1,68 @@
+.tui-grid-cell-content{
+    text-overflow: ellipsis;
+}
+
+.grid-cell-inspectDt{
+
+}
+
+.tui-grid-cell.highlight-cell{
+    background-color: rgba(239,151,44,0.1);
+}
+
+.tui-grid-cell.highlight-cell2{
+    background-color: rgba(239,151,44,0.1);
+}
+
+.show-status {
+    float: left;
+    margin-left: 1rem;
+}
+
+.monthly{
+    background-color: rgba(174, 214, 241, 0.3) !important;
+}
+
+.quarterly{
+    background-color: rgba(246, 221, 204, 0.3) !important;
+}
+
+.completed {
+    background-color: #E5E8E8 !important;
+    color: #7B7D7D !important;
+}
+.completedMon {
+    background-color: #a4a4a4 !important;
+    color: white !important;
+}
+
+span.monthly {
+    display: inline-block;
+    text-align: center;
+    width: 31.45px;
+    border-radius: 1rem;
+    border: 1px solid rgba(174, 214, 241, 1);
+}
+span.quarterly {
+    border-radius: 1rem;
+    border: 1px solid rgba(246, 221, 204, 1);
+}
+span.completed {
+    border-radius: 1rem;
+    border: 1px solid #E5E8E8;
+}
+span.completedMon {
+    border-radius: 1rem;
+    border: 1px solid #a4a4a4;
+}
+
+
+.tui-grid-table > tbody > tr > td{
+    border-style: hidden;
+    overflow: visible;
+}
+
+.tui-grid-summary-area .tui-grid-cell{
+    text-align: center !important;
+    letter-spacing: 1px !important;
+}

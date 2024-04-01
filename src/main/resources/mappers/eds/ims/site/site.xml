@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.ims.controller.site.SiteMapper">
+
+    <select id="selectSite" resultType="com.springboot.myapp.eds.ims.vo.site.siteVO">
+        SELECT `index`,
+               `corpCd`,
+               `depaCd`,
+               `depaNm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empNm) AS empNm,
+               `projNm`,
+               `projCd`,
+               `inpDttm`,
+               `updDttm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+               `ad`,
+               `address`,
+               `siteNm`,
+               `dualSt`,
+               `installDt`,
+               `clasifyDivi`,
+               `modelDivi`,
+               `speakerSt`,
+               `installDivi`,
+               `SpeakerDx`,
+               `satelliteDivi`,
+               `satelliteId`,
+               `commDivi`,
+               `comm9k`,
+               `commTD`,
+               `telNo`,
+               `ipAdr`,
+               `mcuV`,
+               `batteryDt`,
+               `latitude`,
+               `longitude`,
+               `serviceDivi`,
+               `checkCycle`,
+               `remark`,
+               `districtDivi`,
+               `modelNm`,
+               `maker`,
+               `networkDivi`,
+               `chargeDivi`,
+               `examDt`,
+               `sensor`,
+               `measureUnit`,
+               `sensorInstallDt`,
+               `sensorExamNo`,
+               `year`,
+               `carryOverIndex`
+        FROM tb_ims_site T1
+        WHERE corpCd = #{corpCd}
+        <if test="year != null and !year.equals('')">
+            AND `year` = #{year}
+        </if>
+        <if test="siteNm != null and !siteNm.equals('')">
+            AND `siteNm` like '%' #{siteNm} '%'
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND `ad` = #{ad}
+        </if>
+        <if test="depaCd != null and depaCd.equals('1012')">
+            AND depaCd = '1012'
+        </if>
+        <if test="depaCd != null and depaCd.equals('1008')">
+            AND (depaCd = '1008' or depaCd = '1009')
+        </if>
+        <if test="depaCd != null and depaCd.equals('1009')">
+            AND (depaCd = '1009' or depaCd = '1008')
+        </if>
+        <if test="swLng != '' and swLng != null and neLng != '' and neLng != null">
+            AND (longitude BETWEEN #{swLng} AND #{neLng})
+        </if>
+        <if test="swLat != '' and swLat != null and neLat != '' and neLat != null">
+            AND (latitude BETWEEN #{swLat} AND #{neLat})
+        </if>
+        ORDER BY `index` DESC;
+    </select>
+
+    <select id="selectSitePop" resultType="com.springboot.myapp.eds.ims.vo.site.siteVO">
+        SELECT `index`,
+        `corpCd`,
+        `depaCd`,
+        `depaNm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empNm) AS empNm,
+        `projNm`,
+        `projCd`,
+        `inpDttm`,
+        `updDttm`,
+        (SELECT updId FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        `ad`,
+        `address`,
+        `siteNm`,
+        `dualSt`,
+        `installDt`,
+        `clasifyDivi`,
+        `modelDivi`,
+        `speakerSt`,
+        `installDivi`,
+        `speakerDx`,
+        `satelliteDivi`,
+        `satelliteId`,
+        `commDivi`,
+        `comm9k`,
+        `commTD`,
+        `telNo`,
+        `ipAdr`,
+        `mcuV`,
+        `batteryDt`,
+        `latitude`,
+        `longitude`,
+        `serviceDivi`,
+        `checkCycle`,
+        `remark`,
+        `districtDivi`,
+        `modelNm`,
+        `maker`,
+        `networkDivi`,
+        `chargeDivi`,
+        `examDt`,
+        `sensor`,
+        `measureUnit`,
+        `sensorInstallDt`,
+        `sensorExamNo`,
+        `year`
+        FROM tb_ims_site T1
+        WHERE corpCd = #{corpCd}
+        AND (carryOverDivi IS NULL OR NOT (carryOverDivi = 'Y'))
+        <if test="depaCd.equals('1012')">
+            AND depaCd = '1012'
+        </if>
+        <if test="depaCd.equals('1008') or depaCd.equals('1009')">
+            AND (depaCd = '1008' or depaCd = '1009')
+        </if>
+        <if test="year != null and !year.equals('')">
+            AND year = #{year}
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND ad = #{ad}
+        </if>
+        <if test="siteNm != null and !siteNm.equals('')">
+            AND `siteNm` like '%' #{siteNm} '%'
+        </if>
+<!--        <if test="depaCd.equals('1008')">-->
+<!--            AND depaCd = '1008'-->
+<!--        </if>-->
+<!--        <if test="depaCd.equals('1009')">-->
+<!--            AND depaCd = '1009'-->
+<!--        </if>-->
+        ORDER BY `index` DESC;
+    </select>
+
+    <select id="selectSiteByIndex" resultType="com.springboot.myapp.eds.ims.vo.site.siteVO">
+        SELECT `index`,
+               `corpCd`,
+               `depaCd`,
+               `depaNm`,
+               `empNm`,
+               `projNm`,
+               `projCd`,
+               `inpDttm`,
+               `updDttm`,
+               `updId`,
+               `ad`,
+               `address`,
+               `siteNm`,
+               `dualSt`,
+               `installDt`,
+               `clasifyDivi`,
+               `modelDivi`,
+               `speakerSt`,
+               `installDivi`,
+               `SpeakerDx`,
+               `satelliteDivi`,
+               `satelliteId`,
+               `commDivi`,
+               `comm9k`,
+               `commTD`,
+               `telNo`,
+               `ipAdr`,
+               `mcuV`,
+               `batteryDt`,
+               `latitude`,
+               `longitude`,
+               `serviceDivi`,
+               `checkCycle`,
+               `remark`,
+               `districtDivi`,
+               `modelNm`,
+               `maker`,
+               `networkDivi`,
+               `chargeDivi`,
+               `examDt`,
+               `sensor`,
+               `measureUnit`,
+               `sensorInstallDt`,
+               `sensorExamNo`,
+               `carryOverIndex`
+        FROM tb_ims_site
+        WHERE `index` = #{index}
+    </select>
+
+    <insert id="insertSite"
+            useGeneratedKeys="true"
+            keyProperty="index"
+            keyColumn="index"
+            parameterType="hashMap">
+        <selectKey keyProperty="siteIndex" resultType="int" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO tb_ims_site
+        (`corpCd`,
+        `depaCd`,
+        `depaNm`,
+        `empNm`,
+         `projNm`,
+         `projCd`,
+        `inpDttm`,
+        `ad`,
+        `address`,
+        `siteNm`,
+        `dualSt`,
+        `installDt`,
+        `clasifyDivi`,
+        `modelDivi`,
+        `speakerSt`,
+        `installDivi`,
+        `speakerDx`,
+        `satelliteDivi`,
+        `satelliteId`,
+        `commDivi`,
+        `comm9k`,
+        `commTD`,
+        `telNo`,
+        `ipAdr`,
+        `mcuV`,
+        `batteryDt`,
+        `latitude`,
+        `longitude`,
+        `serviceDivi`,
+        `checkCycle`,
+        `remark`,
+        `districtDivi`,
+        `modelNm`,
+        `maker`,
+        `networkDivi`,
+        `chargeDivi`,
+        `examDt`,
+        `sensor`,
+        `measureUnit`,
+        `sensorInstallDt`,
+        `sensorExamNo`
+        <if test="year != null and !year.equals('')">
+            , `year`
+        </if>
+        <if test="year == null">
+            , `year`
+        </if>
+        <if test="carryOverIndex != null and !carryOverIndex.equals('')">
+            , `carryOverIndex`
+        </if>
+        )
+        SELECT #{corpCd},
+        #{depaCd},
+        #{depaNm},
+        #{userId},
+        #{projNm},
+        #{projCd},
+        now(),
+        #{ad},
+        #{address},
+        #{siteNm},
+        #{dualSt},
+        ifnull(#{installDt}, now()),
+        #{clasifyDivi},
+        #{modelDivi},
+        #{speakerSt},
+        #{installDivi},
+        #{speakerDx},
+        #{satelliteDivi},
+        #{satelliteId},
+        #{commDivi},
+        #{comm9k},
+        #{commTD},
+        #{telNo},
+        #{ipAdr},
+        #{mcuV},
+        ifnull(#{batteryDt}, now()),
+        #{latitude},
+        #{longitude},
+        #{serviceDivi},
+        #{checkCycle},
+        #{remark},
+        #{districtDivi},
+        #{modelNm},
+        #{maker},
+        #{networkDivi},
+        #{chargeDivi},
+        #{examDt},
+        #{sensor},
+        #{measureUnit},
+        #{sensorInstallDt},
+        #{sensorExamNo}
+        <if test="year != null and !year.equals('')">
+            , #{year}
+        </if>
+        <if test="year == null">
+            , (SELECT left(initiateDt,4) FROM tb_project_list WHERE corpCd = #{corpCd} AND projCd = #{projCd})
+        </if>
+        <if test="carryOverIndex != null and !carryOverIndex.equals('')">
+            , #{carryOverIndex}
+        </if>
+    </insert>
+
+    <select id="selectSiteImageList" resultType="com.springboot.myapp.eds.ims.vo.site.siteImageVO">
+        SELECT
+        T1.`index`,
+        T1.`siteIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`,
+        T1.`inpId`,
+        T1.`inpDttm`,
+        T1.`empNm`,
+        T2.`year`
+        FROM tb_ims_site_image T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="siteIndex != null and !siteIndex.equals('')">
+            AND T1.`siteIndex` = #{siteIndex}
+        </if>
+        <if test="year != null and !year.equals('')">
+            AND T2.`year` = #{year}
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND T2.`ad` = #{ad}
+        </if>
+        ORDER BY `index`;
+    </select>
+
+    <insert id="insertSiteImage" parameterType="hashMap">
+        INSERT INTO tb_ims_site_image
+        (`siteIndex`,
+         `corpCd`,
+         `busiCd`,
+         `saveNm`,
+         `origNm`,
+         `saveRoot`,
+         `ext`,
+         `size`,
+         `inpId`,
+         `inpDttm`,
+         `empNm`)
+        SELECT #{siteIndex},
+               #{corpCd},
+               #{busiCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{userId},
+               now(),
+               #{empNm}
+    </insert>
+
+    <delete id="deleteSiteImageList"  parameterType="hashMap">
+        DELETE
+        FROM tb_ims_site_image
+        WHERE `corpCd` = #{corpCd}
+        AND `busiCd` = #{busiCd}
+        AND `siteIndex` = #{siteIndex}
+        AND `index` = #{index}
+    </delete>
+
+    <delete id="deleteAllSiteImage"  parameterType="hashMap">
+        DELETE
+        FROM tb_ims_site_image
+        WHERE `corpCd` = #{corpCd}
+          AND `busiCd` = #{busiCd}
+          AND `siteIndex` = #{siteIndex}
+    </delete>
+
+    <select id="selectSiteMemoList" resultType="com.springboot.myapp.eds.ims.vo.site.siteMemoVO">
+        SELECT
+            `index`,
+            `siteIndex`,
+            `corpCd`,
+             `memo`,
+             `inpId`,
+            `inpDttm`,
+             `updId`,
+            `updDttm`
+        FROM tb_ims_site_memo
+        WHERE corpCd = #{corpCd}
+          AND siteIndex = #{siteIndex}
+        ORDER BY `index` DESC;
+    </select>
+
+<!--    <update id="updateSite" parameterType="hashMap">-->
+<!--        UPDATE tb_ims_site-->
+<!--        SET `index`           = #{index},-->
+<!--            `updDttm`         = now(),-->
+<!--            `corpCd`          = #{corpCd},-->
+<!--            `depaCd`          = #{depaCd},-->
+<!--            `depaNm`          = #{depaNm},-->
+<!--            `updId`           = #{updId},-->
+<!--            `ad`              = #{ad},-->
+<!--            `address`         = #{address},-->
+<!--            `siteNm`          = #{siteNm},-->
+<!--            `dualSt`          = #{dualSt},-->
+<!--            `installDt`       = #{installDt},-->
+<!--            `clasifyDivi`     = #{clasifyDivi},-->
+<!--            `modelDivi`       = #{modelDivi},-->
+<!--            `speakerSt`       = #{speakerSt},-->
+<!--            `installDivi`     = #{installDivi},-->
+<!--            `speakerDx`       = #{speakerDx},-->
+<!--            `satelliteDivi`   = #{satelliteDivi},-->
+<!--            `satelliteId`     = #{satelliteId},-->
+<!--            `commDivi`        = #{commDivi},-->
+<!--            `comm9k`          = #{comm9k},-->
+<!--            `commTD`          = #{commTD},-->
+<!--            `telNo`           = #{telNo},-->
+<!--            `ipAdr`           = #{ipAdr},-->
+<!--            `mcuV`            = #{mcuV},-->
+<!--            `batteryDt`       = #{batteryDt},-->
+<!--            `latitude`        = #{latitude},-->
+<!--            `longitude`       = #{longitude},-->
+<!--            `serviceDivi`     = #{serviceDivi},-->
+<!--            `checkCycle`      = #{checkCycle},-->
+<!--            `remark`          = #{remark},-->
+<!--            `examDt`          = #{examDt},-->
+<!--            `modelNm`         = #{modelNm},-->
+<!--            `maker`           = #{maker},-->
+<!--            `networkDivi`     = #{networkDivi},-->
+<!--            `chargeDivi`      = #{chargeDivi},-->
+<!--            `sensor`          = #{sensor},-->
+<!--            `districtDivi`    =#{districtDivi},-->
+<!--            `measureUnit`     = #{measureUnit},-->
+<!--            `sensorInstallDt` = #{sensorInstallDt},-->
+<!--            `sensorExamNo`    = #{sensorExamNo}-->
+<!--        WHERE `corpCd` = #{corpCd}-->
+<!--          AND `index` = #{index}-->
+<!--    </update>-->
+
+    <update id="updateSite" parameterType="hashMap">
+        UPDATE tb_ims_site T1
+            LEFT JOIN tb_ims_inspection T2 ON T1.`index` = T2.siteIndex
+        SET T1.`index`           = #{index},
+            T1.`updDttm`         = now(),
+            T1.`corpCd`          = #{corpCd},
+            T1.`depaCd`          = #{depaCd},
+            T1.`depaNm`          = #{depaNm},
+            T1.`updId`           = #{userId},
+            T1.`ad`              = #{ad},
+            T2.`ad`              = #{ad},
+            T1.`address`         = #{address},
+            T1.`siteNm`          = #{siteNm},
+            T2.`siteNm`          = #{siteNm},
+            T1.`dualSt`          = #{dualSt},
+            T1.`installDt`       = #{installDt},
+            T1.`clasifyDivi`     = #{clasifyDivi},
+            T1.`modelDivi`       = #{modelDivi},
+            T1.`speakerSt`       = #{speakerSt},
+            T1.`installDivi`     = #{installDivi},
+            T1.`speakerDx`       = #{speakerDx},
+            T1.`satelliteDivi`   = #{satelliteDivi},
+            T1.`satelliteId`     = #{satelliteId},
+            T1.`commDivi`        = #{commDivi},
+            T1.`comm9k`          = #{comm9k},
+            T1.`commTD`          = #{commTD},
+            T1.`telNo`           = #{telNo},
+            T1.`ipAdr`           = #{ipAdr},
+            T1.`mcuV`            = #{mcuV},
+            T1.`batteryDt`       = #{batteryDt},
+            T1.`latitude`        = #{latitude},
+            T1.`longitude`       = #{longitude},
+            T1.`serviceDivi`     = #{serviceDivi},
+            T1.`checkCycle`      = #{checkCycle},
+            T1.`remark`          = #{remark},
+            T1.`examDt`          = #{examDt},
+            T1.`modelNm`         = #{modelNm},
+            T1.`maker`           = #{maker},
+            T1.`networkDivi`     = #{networkDivi},
+            T1.`chargeDivi`      = #{chargeDivi},
+            T1.`sensor`          = #{sensor},
+            T1.`districtDivi`    =#{districtDivi},
+            T1.`measureUnit`     = #{measureUnit},
+            T1.`sensorInstallDt` = #{sensorInstallDt},
+            T1.`sensorExamNo`    = #{sensorExamNo},
+            T1.`projNm`          = #{projNm},
+            T2.`projNm`          = #{projNm},
+            T1.`projCd`          = #{projCd},
+            T2.`projCd`          = #{projCd}
+        WHERE T1.`corpCd` = #{corpCd}
+          AND T1.`index` = #{index}
+    </update>
+
+    <update id="insertCarryOverDivi" parameterType="hashMap">
+        UPDATE tb_ims_site
+        SET carryOverDivi = #{carryOverDivi}
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+    </update>
+
+    <update id="updateCarryOverDivi" parameterType="hashMap">
+        UPDATE tb_ims_site
+        SET carryOverDivi = #{carryOverDivi}
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{carryOverIndex}
+    </update>
+
+    <delete id="deleteSite" parameterType="hashMap">
+        DELETE
+        FROM tb_ims_site
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+    </delete>
+
+    <select id="selectSiteFileList" resultType="com.springboot.myapp.eds.ims.vo.site.siteFileVO">
+        SELECT
+        `index`,
+        `siteIndex`,
+        `corpCd`,
+        `saveNm`,
+        `origNm`,
+        CAST(AES_DECRYPT(UNHEX(`saveRoot`), #{secretKey}) AS CHAR) AS saveRoot,
+        `ext`,
+        `size`,
+        `remark`,
+        `inpId`,
+        `inpDttm`,
+        `updId`,
+        `updDttm`,
+        `empNm`,
+        `updNm`
+
+        FROM tb_ims_site_file
+        WHERE `corpCd` = #{corpCd}
+        AND `siteIndex` = #{siteIndex}
+
+        ORDER BY `index` DESC
+    </select>
+
+    <select id="selectSiteFileListForDelete" resultType="com.springboot.myapp.eds.ims.vo.site.siteFileVO">
+        SELECT
+            `index`,
+            `siteIndex`,
+            `corpCd`,
+            `saveNm`,
+            `origNm`,
+            CAST(AES_DECRYPT(UNHEX(`saveRoot`), #{secretKey}) AS CHAR) AS saveRoot,
+            `ext`,
+            `size`,
+            `remark`,
+            `inpId`,
+            `inpDttm`,
+            `updId`,
+            `updDttm`,
+            `empNm`,
+            `updNm`
+
+        FROM tb_ims_site_file
+        WHERE `corpCd` = #{corpCd}
+          AND `siteIndex` = #{siteIndex}
+          AND `index` = #{index}
+        ORDER BY `index` DESC
+    </select>
+
+    <select id="selectSiteFileListForDeleteALL" resultType="com.springboot.myapp.eds.ims.vo.site.siteFileVO">
+        SELECT
+            `index`,
+            `siteIndex`,
+            `corpCd`,
+            `saveNm`,
+            `origNm`,
+            CAST(AES_DECRYPT(UNHEX(`saveRoot`), #{secretKey}) AS CHAR) AS saveRoot,
+            `ext`,
+            `size`,
+            `remark`,
+            `inpId`,
+            `inpDttm`,
+            `updId`,
+            `updDttm`,
+            `empNm`,
+            `updNm`
+
+        FROM tb_ims_site_file
+        WHERE `corpCd` = #{corpCd}
+          AND `siteIndex` = #{siteIndex}
+    </select>
+
+    <insert id="insertSiteFileList" parameterType="hashMap">
+        INSERT INTO tb_ims_site_file(`index`,
+                                                 `siteIndex`,
+                                                 `corpCd`,
+                                                 `saveNm`,
+                                                 `origNm`,
+                                                 `saveRoot`,
+                                                 `ext`,
+                                                 `size`,
+                                                 `remark`,
+                                                 `inpId`,
+                                                 `inpDttm`,
+                                                 `empNm`)
+        SELECT #{index},
+               #{siteIndex},
+               #{corpCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{remark},
+               #{userId},
+               now(),
+               #{empNm}
+    </insert>
+
+    <update id="updateSiteFileList" parameterType="hashMap">
+        UPDATE
+            tb_ims_site_file
+        SET `remark`  = #{remark},
+            `updId`   = #{userId},
+            `updNm`   = #{updNm},
+            `updDttm` = now()
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+          AND `siteIndex` = #{siteIndex}
+    </update>
+
+    <delete id="deleteSiteFileList"  parameterType="hashMap">
+        DELETE
+        FROM tb_ims_site_file
+        WHERE `corpCd` = #{corpCd}
+        AND `index` = #{index}
+    </delete>
+
+    <insert id="insertSiteMemoList" parameterType="hashMap">
+        INSERT INTO tb_ims_site_memo(`index`,
+                                                 `siteIndex`,
+                                                 `corpCd`,
+                                                 `inpId`,
+                                                 `inpDttm`,
+                                                 `memo`)
+        SELECT #{index}
+             , #{siteIndex}
+             , #{corpCd}
+             , #{inpId}
+             , now()
+             , #{memo}
+    </insert>
+
+    <update id="updateSiteMemoList" parameterType="hashMap">
+        UPDATE
+            tb_ims_site_memo
+        SET `memo`  = #{memo},
+            `updId` = #{updId},
+            `updDttm` = now()
+        WHERE `corpCd` = #{corpCd}
+          AND `siteIndex` = #{siteIndex}
+          AND `index` = #{index}
+    </update>
+
+    <delete id="deleteSiteMemoList" parameterType="hashMap">
+        DELETE
+        FROM tb_ims_site_memo
+        WHERE corpCd = #{corpCd}
+        AND `index` = #{index}
+    </delete>
+
+    <select id="selectProjMgtListInIms" resultType="com.springboot.myapp.eds.erp.vo.project.projectProjListVO">
+        SELECT
+        T1.corpCd
+        ,T1.busiCd
+        ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+        ,T1.estCd
+        ,T1.projCd
+        ,T1.projDivi
+        ,T1.deadDivi
+        ,T1.sccDivi
+        ,T1.projNm
+        ,T1.estDt
+        ,T1.validDt
+        ,T1.cntDt
+        ,T1.initiateDt
+        ,T1.dueDt
+        ,T1.endDt
+        ,T1.custCd
+        ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+        ,T1.manCd
+        ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+        ,T1.depaCd
+        ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm
+        ,(SELECT CONCAT(I2.empNm,' 외 ',COUNT(I2.empNm)-1,'명') AS worker_nm
+        FROM TB_PROJECT_PART_LIST I1
+        INNER JOIN TB_BASE_USER_LIST I2
+        ON I1.corpCd = I2.corpCd
+        AND I1.partCd = I2.empCd
+        WHERE I1.corpCd= #{corpCd}
+        AND I1.projCd= T1.projCd
+        ORDER BY I1.seq*1 ASC) AS partPopup
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt) END AS supAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt) END AS vatAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt) END AS totAmt
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt2
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt3 ELSE SUM(T2.supAmt3) END AS supAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt3 ELSE SUM(T2.vatAmt3) END AS vatAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS totAmt3
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt4) END AS supAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt4) END AS vatAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt4) END AS totAmt4
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.supAmt3 ELSE SUM(T2.supAmt5) END AS supAmt5
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.vatAmt3 ELSE SUM(T2.vatAmt5) END AS vatAmt5
+        ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt5) END AS totAmt5
+        ,T1.clas
+        ,T1.item
+        ,T1.payTm
+        ,T1.note
+        ,T1.note1
+        ,T1.note2
+        ,T1.submitCd
+        ,T1.manager
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+        ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+        ON T1.corpCd = T2.corpCd
+        AND T1.projCd = T2.projCd
+        WHERE T1.corpCd = #{corpCd}
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND T1.busiCd = #{busiCd}
+        </if>
+        <if test="projNm != null and !projNm.equals('')">
+            AND T1.projNm like '%' #{projNm} '%'
+        </if>
+        <if test="depaCd != null and !depaCd.equals('') and depaCd.equals('1008')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="depaCd != null and !depaCd.equals('') and depaCd.equals('1009')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="depaCd != null and !depaCd.equals('') and depaCd.equals('1012')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="projDivi != null and !projDivi.equals('') and projDivi.equals('02')">
+            AND (T1.projDivi = '02' or T1.projDivi = '04')
+        </if>
+        AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+        GROUP BY T1.corpCd, T1.busiCd, T1.projCd
+        ORDER BY T1.projCd*1 DESC
+    </select>
+
+</mapper>

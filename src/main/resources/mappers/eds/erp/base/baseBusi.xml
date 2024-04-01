@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseBusiMapper">
+
+    <select id="selectBusiList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseBusiListVO">
+        SELECT /* selectBusiList */
+            corpCd
+            ,(select T0.corpNm from TB_BASE_CORP_LIST T0 where T0.corpCd = T1.corpCd) as corpNm
+            ,busiCd
+            ,busiNm
+            ,CAST(AES_DECRYPT(UNHEX(corpNo), #{secretKey}) AS CHAR) AS corpNo
+            ,CAST(AES_DECRYPT(UNHEX(corpRegNo), #{secretKey}) AS CHAR) AS corpRegNo
+            ,ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(zipNo), #{secretKey}) AS CHAR) AS zipNo
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(addrDetail), #{secretKey}) AS CHAR) AS addrDetail
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(faxNo), #{secretKey}) AS CHAR) AS faxNo
+            ,busiType
+            ,busiItem
+            ,openDt
+            ,clupDt
+            ,useYn
+        FROM TB_BASE_BUSI_LIST T1
+        WHERE 1=1
+        <if test="corpCd != null and !corpCd.equals('')">
+            AND corpCd = #{corpCd}
+        </if>
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND busiCd = #{busiCd}
+        </if>
+        <if test="busiNm != null and !busiNm.equals('')">
+            AND busiNm like '%' #{busiNm} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+    </select>
+
+    <select id="selectBusiListPop"  resultType="com.springboot.myapp.eds.erp.vo.base.baseBusiListVO">
+        SELECT /* selectBusiListPop */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,busiCd
+            ,busiNm
+            ,CAST(AES_DECRYPT(UNHEX(corpNo), #{secretKey}) AS CHAR) AS corpNo
+            ,CAST(AES_DECRYPT(UNHEX(corpRegNo), #{secretKey}) AS CHAR) AS corpRegNo
+            ,ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(zipNo), #{secretKey}) AS CHAR) AS zipNo
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(addrDetail), #{secretKey}) AS CHAR) AS addrDetail
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(faxNo), #{secretKey}) AS CHAR) AS faxNo
+            ,busiType
+            ,busiItem
+            ,openDt
+            ,clupDt
+            ,useYn
+        FROM
+            TB_BASE_BUSI_LIST T1
+        WHERE 1=1
+        <if test="corpCd != null and !corpCd.equals('')">
+            AND (corpCd = #{corpCd} OR corpNm LIKE '%' #{corpCd} '%')
+        </if>
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND (busiCd = #{busiCd} OR busiNm like '%' #{busiCd} '%')
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+    </select>
+
+    <insert id="insertBusiList" parameterType="hashMap">
+        INSERT INTO /* insertBusiList */
+        TB_BASE_BUSI_LIST(
+             corpCd
+            ,busiCd
+            ,busiNm
+            ,corpNo
+            ,corpRegNo
+            ,ownerNm
+            ,zipNo
+            ,addr
+            ,addrDetail
+            ,telNo
+            ,faxNo
+            ,busiType
+            ,busiItem
+            ,openDt
+            ,clupDt
+            ,useYn
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,(SELECT IFNULL(MAX(CAST(busiCd as signed)),1000)+1 FROM TB_BASE_BUSI_LIST WHERE corpCd = #{corpCd})
+            ,#{busiNm}
+            ,HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{corpRegNo}, #{secretKey}))
+            ,#{ownerNm}
+            ,HEX(AES_ENCRYPT(#{zipNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+            ,#{busiType}
+            ,#{busiItem}
+            ,#{openDt}
+            ,#{clupDt}
+            ,#{useYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateBusiList" parameterType="hashMap">
+        UPDATE /* updateBusiList */
+        TB_BASE_BUSI_LIST SET
+            busiNm = #{busiNm}
+            ,corpNo = HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+            ,corpRegNo = HEX(AES_ENCRYPT(#{corpRegNo}, #{secretKey}))
+            ,ownerNm = #{ownerNm}
+            ,zipNo = HEX(AES_ENCRYPT(#{zipNo}, #{secretKey}))
+            ,addr = HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+            ,addrDetail = HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+            ,telNo = HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+            ,faxNo = HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+            ,busiType = #{busiType}
+            ,busiItem = #{busiItem}
+            ,openDt = #{openDt}
+            ,clupDt = #{clupDt}
+            ,useYn = #{useYn}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND busiCd = #{busiCd}
+    </update>
+
+    <delete id="deleteBusiList"  parameterType="hashMap">
+        DELETE /* deleteBusiList */
+        FROM TB_BASE_BUSI_LIST
+        WHERE corpCd = #{corpCd}
+        AND busiCd = #{busiCd}
+    </delete>
+</mapper>

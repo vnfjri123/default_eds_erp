@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseDepaMapper">
+
+    <select id="selectDepaList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseDepaListVO">
+        SELECT /* selectDepaList */
+             corpCd
+            ,(select T0.corpNm from TB_BASE_CORP_LIST T0 where T0.corpCd = T1.corpCd) as corpNm
+            ,busiCd
+            ,(select T0.busiNm from TB_BASE_BUSI_LIST T0 where T0.busiCd = T1.busiCd) as busiNm
+            ,depaCd
+            ,depaNm
+            ,depaDivi
+            ,depaExp
+            ,depaColorCd
+            ,useYn
+        FROM
+            TB_BASE_DEPA_LIST T1
+        WHERE 1=1
+        <if test="corpCd != null and !corpCd.equals('')">
+            AND corpCd = #{corpCd}
+        </if>
+        <if test="busiCd != null and !busiCd.equals('')">
+            AND busiCd = #{busiCd}
+        </if>
+        <if test="depaNm != null and !depaNm.equals('')">
+            AND depaNm like '%' #{depaNm} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+    </select>
+
+    <select id="selectDepaPopList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseDepaListVO">
+        SELECT /* selectDepaPopList */
+            corpCd
+            ,(select T0.corpNm from TB_BASE_CORP_LIST T0 where T0.corpCd = #{corpCd}) as corpNm
+            ,busiCd
+            ,(select T0.busiNm from TB_BASE_BUSI_LIST T0 where T0.corpCd = #{corpCd} AND T0.busiCd = #{busiCd}) as busiNm
+            ,depaCd
+            ,depaNm
+            ,depaDivi
+            ,depaExp
+            ,depaColorCd
+            ,useYn
+        FROM TB_BASE_DEPA_LIST T1
+        WHERE corpCd = #{corpCd}
+       
+        <if test="depaNm != null and !depaNm.equals('')">
+            AND (depaCd = #{depaNm} or depaNm like '%' #{depaNm} '%')
+        </if>
+        AND useYn='01'
+    </select>
+
+    <insert id="insertDepaList" parameterType="hashMap">
+        INSERT INTO /* insertDepaList */
+        TB_BASE_DEPA_LIST(
+             corpCd
+            ,busiCd
+            ,depaCd
+            ,depaNm
+            ,depaDivi
+            ,depaExp
+            ,depaColorCd
+            ,useYn
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+        )
+        SELECT
+             #{corpCd}
+            ,#{busiCd}
+            ,(SELECT IFNULL(MAX(CAST(depaCd as signed)),1000)+1 FROM TB_BASE_DEPA_LIST WHERE corpCd = #{corpCd})
+            ,#{depaNm}
+            ,#{depaDivi}
+            ,#{depaExp}
+            ,#{depaColorCd}
+            ,#{useYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateDepaList" parameterType="hashMap">
+        UPDATE /* updateDepaList */
+        TB_BASE_DEPA_LIST SET
+             corpCd = #{corpCd}
+            ,busiCd = #{busiCd}
+            ,depaCd = #{depaCd}
+            ,depaNm = #{depaNm}
+            ,depaDivi = #{depaDivi}
+            ,depaExp = #{depaExp}
+            ,depaColorCd = #{depaColorCd}
+            ,useYn = #{useYn}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE
+            depaCd = #{depaCd}
+    </update>
+
+    <delete id="deleteDepaList"  parameterType="hashMap">
+        DELETE /* deleteDepaList */
+        FROM TB_BASE_DEPA_LIST
+        WHERE depaCd = #{depaCd}
+    </delete>
+</mapper>

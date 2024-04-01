@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.edms.edmsEstMapper">
+
+    <select id="selectEstList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsEstListVO">
+        SELECT /* selectEstList */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.submitCd
+            ,T1.deadDivi
+            ,T1.sccDivi
+            ,T1.projNm
+            ,T1.projPur
+            ,T1.projDivi
+            ,T1.estDt
+            ,T1.initiateDt
+            ,T1.custCd
+            ,T1.manCd as empCd
+            ,T1.depaCd
+            ,T1.stDt
+            ,T1.edDt
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,T1.manCd
+            ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.manCd) as manNm
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt ELSE SUM(T2.supAmt) END AS supAmt
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt ELSE SUM(T2.vatAmt) END AS vatAmt
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt ELSE SUM(T2.totAmt) END AS totAmt
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt2 ELSE SUM(T2.supAmt2) END AS supAmt2
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt2 ELSE SUM(T2.vatAmt2) END AS vatAmt2
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt2 ELSE SUM(T2.totAmt2) END AS totAmt2
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt3 ELSE SUM(T2.supAmt3) END AS supAmt3
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt3 ELSE SUM(T2.vatAmt3) END AS vatAmt3
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS totAmt3
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt4 ELSE SUM(T2.supAmt4) END AS supAmt4
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt4 ELSE SUM(T2.vatAmt4) END AS vatAmt4
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt4 ELSE SUM(T2.totAmt4) END AS totAmt4
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.supAmt5 ELSE SUM(T2.supAmt5) END AS supAmt5
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.vatAmt5 ELSE SUM(T2.vatAmt5) END AS vatAmt5
+            ,CASE WHEN COUNT(T2.itemCd) = 0 THEN T1.totAmt5 ELSE SUM(T2.totAmt5) END AS totAmt5
+            ,T1.clas
+            ,T1.item
+            ,T1.payTm
+            ,T1.note1
+            ,T1.note2
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,T1.margin
+            ,T1.profit
+            ,T1.margin2
+            ,T1.profit2
+            ,T1.margin3
+            ,T1.profit3
+            ,T1.manager
+            ,T1.cntDt
+            ,T1.keyCd
+          FROM TB_EDMS_EST_LIST T1 LEFT JOIN TB_EDMS_EST_ITEM_LIST T2
+            ON T1.corpCd = T2.corpCd
+            AND T1.submitCd = T2.submitCd
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.submitCd = #{submitCd}
+
+        GROUP BY T1.corpCd, T1.submitCd
+        ORDER BY T1.estDt*1 DESC, T1.submitCd*1 DESC
+    </select>
+
+    <select id="selectEstItemList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsEstItemListVO">
+        SELECT /* selectEstItemList */
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,seq
+            ,itemCd
+            ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.itemCd = T1.itemCd) as itemNm
+            ,vatDivi
+            ,taxDivi
+            ,qty
+            ,standard
+            ,unit
+            ,IFNULL(cost,'0') AS cost
+            ,IFNULL(supAmt,'0') AS supAmt
+            ,IFNULL(vatAmt,'0') AS vatAmt
+            ,IFNULL(totAmt,'0') AS totAmt
+            ,IFNULL(cost2,'0') AS cost2
+            ,IFNULL(supAmt2,'0') AS supAmt2
+            ,IFNULL(vatAmt2,'0') AS vatAmt2
+            ,IFNULL(totAmt2,'0') AS totAmt2
+            ,IFNULL(cost3,'0') AS cost3
+            ,IFNULL(supAmt3,'0') AS supAmt3
+            ,IFNULL(vatAmt3,'0') AS vatAmt3
+            ,IFNULL(totAmt3,'0') AS totAmt3
+            ,IFNULL(cost4,'0') AS cost4
+            ,IFNULL(supAmt4,'0') AS supAmt4
+            ,IFNULL(vatAmt4,'0') AS vatAmt4
+            ,IFNULL(totAmt4,'0') AS totAmt4
+            ,IFNULL(cost5,'0') AS cost5
+            ,IFNULL(supAmt5,'0') AS supAmt5
+            ,IFNULL(vatAmt5,'0') AS vatAmt5
+            ,IFNULL(totAmt5,'0') AS totAmt5
+            ,saleDivi
+            ,saleRate
+            ,note
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+          FROM TB_EDMS_EST_ITEM_LIST T1
+         WHERE corpCd = #{corpCd}
+           AND submitCd = #{submitCd}
+        ORDER BY seq*1 ASC
+    </select>
+    
+    <insert id="insertEstList" parameterType="hashMap">
+        INSERT INTO /* insertEstList */
+        TB_EDMS_EST_LIST(
+            corpCd
+            ,busiCd
+            ,submitCd
+            ,deadDivi
+            ,sccDivi
+            ,projNm
+            ,projPur            
+            ,estDt
+            ,stDt
+            ,edDt
+            ,initiateDt
+            ,custCd
+            ,manCd
+            ,depaCd
+            ,supAmt
+            ,vatAmt
+            ,totAmt
+            ,supAmt2
+            ,vatAmt2
+            ,totAmt2
+            ,supAmt3
+            ,vatAmt3
+            ,totAmt3
+            ,supAmt4
+            ,vatAmt4
+            ,totAmt4     
+            ,supAmt5
+            ,vatAmt5
+            ,totAmt5                  
+            ,clas
+            ,item
+            ,payTm
+            ,note1
+            ,note2
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+            ,margin
+            ,profit
+            ,margin2
+            ,profit2
+            ,margin3
+            ,profit3
+            ,manager
+            ,cntDt
+            ,keyCd
+            ,projDivi
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{submitCd}
+            ,#{deadDivi}
+            ,#{sccDivi}
+            ,#{projNm}
+            ,#{projPur}
+            ,#{estDt}
+            ,#{stDt}
+            ,#{edDt}
+            ,#{initiateDt}
+            ,#{custCd}
+            ,#{manCd}
+            ,#{depaCd}
+            ,#{supAmt}
+            ,#{vatAmt}
+            ,#{totAmt}
+            ,#{supAmt2}
+            ,#{vatAmt2}
+            ,#{totAmt2}
+            ,#{supAmt3}
+            ,#{vatAmt3}
+            ,#{totAmt3}
+            ,#{supAmt4}
+            ,#{vatAmt4}
+            ,#{totAmt4}
+            ,#{supAmt5}
+            ,#{vatAmt5}
+            ,#{totAmt5}
+            ,#{clas}
+            ,#{item}
+            ,#{payTm}
+            ,#{note1}
+            ,#{note2}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ,#{margin}
+            ,#{profit}
+            ,#{margin2}
+            ,#{profit2}
+            ,#{margin3}
+            ,#{profit3}
+            ,#{manager}
+            ,#{cntDt}
+            ,#{keyCd}
+            ,#{projDivi}
+            ON DUPLICATE KEY UPDATE 
+             deadDivi=#{deadDivi},
+             sccDivi=#{sccDivi},
+             projNm=#{projNm},
+             projPur=#{projPur},
+             estDt=#{estDt},
+             stDt=#{stDt},
+             initiateDt=#{initiateDt},
+             edDt=#{edDt},
+             custCd=#{custCd},
+             manCd=#{manCd},
+             depaCd=#{depaCd},
+             supAmt=#{supAmt},
+             vatAmt=#{vatAmt},
+             totAmt=#{totAmt},
+             supAmt2=#{supAmt2},
+             vatAmt2=#{vatAmt2},
+             totAmt2=#{totAmt2},
+             supAmt3=#{supAmt3},
+             vatAmt3=#{vatAmt3},
+             totAmt3=#{totAmt3},
+             supAmt4=#{supAmt4},
+             vatAmt4=#{vatAmt4},
+             totAmt4=#{totAmt4},
+             supAmt5=#{supAmt5},
+             vatAmt5=#{vatAmt5},
+             totAmt5=#{totAmt5},
+             clas=#{clas},
+             item=#{item},
+             payTm=#{payTm},
+             note1=#{note1},
+             note2=#{note2},
+             margin=#{margin},
+             manager=#{manager},
+             profit=#{profit},
+             margin2=#{margin2},
+             profit2=#{profit2},
+             margin3=#{margin3},
+             profit3=#{profit3},
+             cntDt=#{cntDt},
+             updId=#{userId},
+             updDttm=now(),
+             projDivi=#{projDivi}
+</insert>
+
+    <insert id="insertEstItemList" parameterType="hashMap">
+        INSERT INTO /* insertEstItemList */
+            TB_EDMS_EST_ITEM_LIST(
+                                corpCd
+                                ,busiCd
+                                ,submitCd
+                                ,seq
+                                ,itemCd
+                                ,vatDivi
+                                ,taxDivi
+                                ,standard
+                                ,unit
+                                ,qty
+                                ,cost
+                                ,supAmt
+                                ,vatAmt
+                                ,totAmt
+                                ,cost2
+                                ,supAmt2
+                                ,vatAmt2
+                                ,totAmt2
+                                ,cost3
+                                ,supAmt3
+                                ,vatAmt3
+                                ,totAmt3
+                                ,cost4
+                                ,supAmt4
+                                ,vatAmt4
+                                ,totAmt4
+                                ,cost5
+                                ,supAmt5
+                                ,vatAmt5
+                                ,totAmt5
+                                ,saleDivi
+                                ,saleRate
+                                ,note
+                                ,inpId
+                                ,inpDttm
+                                ,updId
+                                ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{submitCd}
+            <choose>
+            <when test = "seq != null and !seq.equals('')">
+            ,#{seq}
+            </when>
+            <otherwise>            
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM TB_EDMS_EST_ITEM_LIST
+              WHERE corpCd = #{corpCd}
+                AND submitCd = #{submitCd})          </otherwise>
+            </choose>
+            ,#{itemCd}
+            ,#{vatDivi}
+            ,#{taxDivi}
+            ,#{standard}
+            ,#{unit}
+            ,#{qty}
+            ,#{cost}
+            ,#{supAmt}
+            ,#{vatAmt}
+            ,#{totAmt}
+            ,#{cost2}
+            ,#{supAmt2}
+            ,#{vatAmt2}
+            ,#{totAmt2}
+            ,#{cost3}
+            ,#{supAmt3}
+            ,#{vatAmt3}
+            ,#{totAmt3}
+            ,#{cost4}
+            ,#{supAmt4}
+            ,#{vatAmt4}
+            ,#{totAmt4}
+            ,#{cost5}
+            ,#{supAmt5}
+            ,#{vatAmt5}
+            ,#{totAmt5}
+            ,#{saleDivi}
+            ,#{saleRate}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ON DUPLICATE KEY UPDATE 
+            itemCd=#{itemCd},
+            vatDivi=#{vatDivi},
+            taxDivi=#{taxDivi},
+            qty=#{qty},
+            cost=#{cost},
+            supAmt=#{supAmt},
+            vatAmt=#{vatAmt},
+            totAmt=#{totAmt},
+            cost2=#{cost2},
+            supAmt2=#{supAmt2},
+            vatAmt2=#{vatAmt2},
+            totAmt2=#{totAmt2},
+            cost3=#{cost3},
+            supAmt3=#{supAmt3},
+            vatAmt3=#{vatAmt3},
+            totAmt3=#{totAmt3},
+            cost4=#{cost4},
+            supAmt4=#{supAmt4},
+            vatAmt4=#{vatAmt4},
+            totAmt4=#{totAmt4},
+            cost5=#{cost5},
+            supAmt5=#{supAmt5},
+            vatAmt5=#{vatAmt5},
+            totAmt5=#{totAmt5},
+            saleDivi=#{saleDivi},
+            saleRate=#{saleRate},
+            note=#{note},
+            updId=#{userId},
+            updDttm=now()
+    </insert>
+
+    <update id="updateEstList" parameterType="hashMap">
+        UPDATE /* updateEstList */
+        TB_EDMS_EST_LIST SET
+            deadDivi = #{deadDivi}
+            ,sccDivi = #{sccDivi}
+            ,projNm = #{projNm}
+            ,estDt = #{estDt}
+            ,initiateDt=#{initiateDt}
+            ,custCd = #{custCd}
+            ,manCd = #{manCd}
+            ,supAmt = #{supAmt}
+            ,vatAmt = #{vatAmt}
+            ,totAmt = #{totAmt}
+            ,supAmt2 = #{supAmt2}
+            ,vatAmt2 = #{vatAmt2}
+            ,totAmt2 = #{totAmt2}
+            ,clas = #{clas}
+            ,item = #{item}
+            ,payTm = #{payTm}
+            ,note1 = #{note1}
+            ,note2 = #{note2}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </update>
+
+    <update id="updateEstItemList" parameterType="hashMap">
+        UPDATE /* updateEstItemList */
+        TB_EDMS_EST_ITEM_LIST SET
+            itemCd = #{itemCd}
+            ,unit = #{unit}
+            ,standard = #{standard}
+            ,vatDivi = #{vatDivi}
+            ,taxDivi = #{taxDivi}
+            ,qty = #{qty}
+            ,cost = #{cost}
+            ,supAmt = #{supAmt}
+            ,vatAmt = #{vatAmt}
+            ,totAmt = #{totAmt}
+            ,cost2 = #{cost2}
+            ,supAmt2 = #{supAmt2}
+            ,vatAmt2 = #{vatAmt2}
+            ,totAmt2 = #{totAmt2}
+            ,cost3 = #{cost3}
+            ,supAmt3 = #{supAmt3}
+            ,vatAmt3 = #{vatAmt3}
+            ,totAmt3 = #{totAmt3}
+            ,saleDivi = #{saleDivi}
+            ,saleRate = #{saleRate}
+            ,note = #{note}
+            ,updId = #{userId}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+          AND seq = #{seq}
+    </update>
+
+    <delete id="deleteEstList"  parameterType="hashMap">
+        DELETE /* deleteEstList */
+        FROM TB_EDMS_EST_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+
+    <delete id="deleteEstItemList"  parameterType="hashMap">
+        DELETE /* deleteEstItemList */
+        FROM TB_EDMS_EST_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+
+    <delete id="deleteEstEmailList"  parameterType="hashMap">
+        DELETE /*deleteEstEmailList*/
+        FROM tb_edms_est_email_list
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+        <if test="seq != null and !seq.equals('')">
+          AND seq = #{seq}
+        </if>
+    </delete>
+</mapper>

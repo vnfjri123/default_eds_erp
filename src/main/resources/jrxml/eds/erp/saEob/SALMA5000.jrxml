@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A5" pageWidth="595" pageHeight="842" orientation="Landscape" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="60" bottomMargin="0" isSummaryNewPage="true" uuid="38b2fb23-8d1f-4ee0-bb44-825bcf179050">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eds"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="saleCloseNo" class="java.lang.String"/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+            T1.corpCd
+ 	    ,CAST(AES_DECRYPT(UNHEX(T3.corpNo),  'edsinc.co.kr!@#') AS CHAR) AS corpNo
+	    ,T3.busiNm AS corpNm
+	    ,T3.ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(T3.zipNo),  'edsinc.co.kr!@#') AS CHAR) AS zipNo
+	    ,CAST(AES_DECRYPT(UNHEX(T3.addr),  'edsinc.co.kr!@#') AS CHAR) AS addr
+	    ,CAST(AES_DECRYPT(UNHEX(T3.addrDetail),  'edsinc.co.kr!@#') AS CHAR) AS addrDetail
+	    ,CAST(AES_DECRYPT(UNHEX(T3.telNo),  'edsinc.co.kr!@#') AS CHAR) AS telNo
+	    ,CAST(AES_DECRYPT(UNHEX(T3.faxNo),  'edsinc.co.kr!@#') AS CHAR) AS faxNo
+            ,CAST(AES_DECRYPT(UNHEX(T4.corpNo),  'edsinc.co.kr!@#') AS CHAR) AS corpNo2
+	    ,T3.busiType
+            ,T3.busiItem
+	    ,CAST(AES_DECRYPT(UNHEX(T4.corpNo),  'edsinc.co.kr!@#') AS CHAR) AS corpNo2
+	    ,T4.custNm
+            ,T4.ownerNm AS ownerNm2
+            ,CAST(AES_DECRYPT(UNHEX(T4.zipNo),  'edsinc.co.kr!@#') AS CHAR) AS zipNo2
+	    ,CAST(AES_DECRYPT(UNHEX(T4.addr),  'edsinc.co.kr!@#') AS CHAR) AS addr2
+	    ,CAST(AES_DECRYPT(UNHEX(T4.addrDetail),  'edsinc.co.kr!@#') AS CHAR) AS addrDetail2
+	    ,CAST(AES_DECRYPT(UNHEX(T4.telNo),  'edsinc.co.kr!@#') AS CHAR) AS telNo2
+	    ,CAST(AES_DECRYPT(UNHEX(T4.faxNo),  'edsinc.co.kr!@#') AS CHAR) AS faxNo2
+            ,T4.busiType AS busiType2
+            ,T4.busiItem AS busiItem2
+	    ,T1.busiCd
+            ,T1.sale_close_no
+            ,T1.sale_close_dt
+            ,T1.tax_divi
+            ,T1.sale_close_divi
+            ,T1.custCd
+	    ,DATE_FORMAT(T1.sale_close_dt, '%m') AS month2
+	    ,DATE_FORMAT(T1.sale_close_dt, '%d') AS day2
+	    ,(select cast(sum(T0.supAmt + T0.tax)AS int) from t_messalma12 T0 WHERE T0.corpCd = T1.corpCd AND T1.sale_close_no = T0.sale_close_no) AS totalAmount
+	    ,(select cast(sum(T0.tax)AS int) from t_messalma12 T0 WHERE T0.corpCd = T1.corpCd AND T1.sale_close_no = T0.sale_close_no) AS totalTax
+            ,T1.pic_cd
+            ,(SELECT T0.empNm FROM TB_BASE_USER_LIST T0 WHERE T0.empCd = T1.pic_cd) as picNm
+            ,T1.depaCd
+            ,(SELECT T0.depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=$P{corpCd} AND T0.depaCd=T1.depaCd) as depaNm
+            ,T1.empCd
+            ,(SELECT T0.empNm FROM TB_BASE_USER_LIST T0 WHERE T0.empCd = T1.empCd) as empNm
+            ,T1.remark
+            ,T1.close_yn
+	    ,T2.itemCd
+            ,(SELECT T0.itemNm FROM TB_BASE_ITEM_LIST T0 WHERE T0.corpCd=$P{corpCd} AND T0.itemCd = T2.itemCd) as itemNm
+	    ,(SELECT T0.stan FROM TB_BASE_ITEM_LIST T0 WHERE T0.corpCd=$P{corpCd} AND T0.itemCd = T2.itemCd) as stan
+	    ,T2.qty
+            ,T2.upr
+            ,T2.supAmt
+            ,T2.tax
+            ,T2.totAmt
+        FROM
+            t_messalma11 T1 INNER JOIN t_messalma12 T2 ON T1.corpCd = T2.corpCd AND T1.sale_close_no = T2.sale_close_no
+            INNER JOIN TB_BASE_BUSI_LIST T3 ON T1.corpCd = T3.corpCd AND T1.busiCd = T3.busiCd
+	    INNER JOIN TB_BASE_CUST_LIST T4 ON T1.custCd = T4.custCd
+	WHERE 1=1
+        AND T1.corpCd = $P{corpCd}
+        AND T1.busiCd = $P{busiCd}
+	AND T1.sale_close_no = $P{saleCloseNo}
+	ORDER BY T1.sale_close_no DESC]]>
+	</queryString>
+	<field name="corpCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[회사 코드]]></fieldDescription>
+	</field>
+	<field name="corpNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNo"/>
+	</field>
+	<field name="corpNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+	</field>
+	<field name="ownerNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[대표자 명]]></fieldDescription>
+	</field>
+	<field name="zipNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="zipNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="zipNo"/>
+	</field>
+	<field name="addr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addr"/>
+		<property name="com.jaspersoft.studio.field.label" value="addr"/>
+	</field>
+	<field name="addrDetail" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addrDetail"/>
+		<property name="com.jaspersoft.studio.field.label" value="addrDetail"/>
+	</field>
+	<field name="telNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="telNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="telNo"/>
+	</field>
+	<field name="faxNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="faxNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="faxNo"/>
+	</field>
+	<field name="corpNo2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpNo2"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNo2"/>
+	</field>
+	<field name="busiType" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[업태]]></fieldDescription>
+	</field>
+	<field name="busiItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[종목]]></fieldDescription>
+	</field>
+	<field name="COLUMN_13" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpNo2"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNo2"/>
+	</field>
+	<field name="custNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="custNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="custNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_CUST_LIST"/>
+		<fieldDescription><![CDATA[거래처 명]]></fieldDescription>
+	</field>
+	<field name="ownerNm2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="ownerNm2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_CUST_LIST"/>
+	</field>
+	<field name="zipNo2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="zipNo2"/>
+		<property name="com.jaspersoft.studio.field.label" value="zipNo2"/>
+	</field>
+	<field name="addr2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addr2"/>
+		<property name="com.jaspersoft.studio.field.label" value="addr2"/>
+	</field>
+	<field name="addrDetail2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addrDetail2"/>
+		<property name="com.jaspersoft.studio.field.label" value="addrDetail2"/>
+	</field>
+	<field name="telNo2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="telNo2"/>
+		<property name="com.jaspersoft.studio.field.label" value="telNo2"/>
+	</field>
+	<field name="faxNo2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="faxNo2"/>
+		<property name="com.jaspersoft.studio.field.label" value="faxNo2"/>
+	</field>
+	<field name="busiType2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiType2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_CUST_LIST"/>
+	</field>
+	<field name="busiItem2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiItem2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_CUST_LIST"/>
+	</field>
+	<field name="busiCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[사업장 코드]]></fieldDescription>
+	</field>
+	<field name="sale_close_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="sale_close_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="sale_close_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[매출 마감 번호]]></fieldDescription>
+	</field>
+	<field name="sale_close_dt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="sale_close_dt"/>
+		<property name="com.jaspersoft.studio.field.label" value="sale_close_dt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[매출 마감 일자]]></fieldDescription>
+	</field>
+	<field name="tax_divi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tax_divi"/>
+		<property name="com.jaspersoft.studio.field.label" value="tax_divi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[세금 구분]]></fieldDescription>
+	</field>
+	<field name="sale_close_divi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="sale_close_divi"/>
+		<property name="com.jaspersoft.studio.field.label" value="sale_close_divi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[매출 마감 구분]]></fieldDescription>
+	</field>
+	<field name="custCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="custCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="custCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[거래처 코드]]></fieldDescription>
+	</field>
+	<field name="month2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="month2"/>
+		<property name="com.jaspersoft.studio.field.label" value="month2"/>
+	</field>
+	<field name="day2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="day2"/>
+		<property name="com.jaspersoft.studio.field.label" value="day2"/>
+	</field>
+	<field name="totalAmount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="totalAmount"/>
+		<property name="com.jaspersoft.studio.field.label" value="totalAmount"/>
+	</field>
+	<field name="totalTax" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="totalTax"/>
+		<property name="com.jaspersoft.studio.field.label" value="totalTax"/>
+	</field>
+	<field name="pic_cd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="pic_cd"/>
+		<property name="com.jaspersoft.studio.field.label" value="pic_cd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[담당자 코드]]></fieldDescription>
+	</field>
+	<field name="picNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="picNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="picNm"/>
+	</field>
+	<field name="depaCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="depaCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="depaCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[부서 코드]]></fieldDescription>
+	</field>
+	<field name="depaNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="depaNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="depaNm"/>
+	</field>
+	<field name="empCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="empCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="empCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[사원 번호]]></fieldDescription>
+	</field>
+	<field name="empNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="empNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="empNm"/>
+	</field>
+	<field name="remark" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="remark"/>
+		<property name="com.jaspersoft.studio.field.label" value="remark"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[비고]]></fieldDescription>
+	</field>
+	<field name="close_yn" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="close_yn"/>
+		<property name="com.jaspersoft.studio.field.label" value="close_yn"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma11"/>
+		<fieldDescription><![CDATA[마감여부]]></fieldDescription>
+	</field>
+	<field name="itemCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="itemCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[품목 코드]]></fieldDescription>
+	</field>
+	<field name="itemNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="itemNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemNm"/>
+	</field>
+	<field name="stan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="stan"/>
+		<property name="com.jaspersoft.studio.field.label" value="stan"/>
+	</field>
+	<field name="qty" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="qty"/>
+		<property name="com.jaspersoft.studio.field.label" value="qty"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[수량]]></fieldDescription>
+	</field>
+	<field name="upr" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="upr"/>
+		<property name="com.jaspersoft.studio.field.label" value="upr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[단가]]></fieldDescription>
+	</field>
+	<field name="supAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[공급가 금액]]></fieldDescription>
+	</field>
+	<field name="tax" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="tax"/>
+		<property name="com.jaspersoft.studio.field.label" value="tax"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[세금]]></fieldDescription>
+	</field>
+	<field name="totAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="totAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="totAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma12"/>
+		<fieldDescription><![CDATA[합계 금액]]></fieldDescription>
+	</field>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="420" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<printWhenExpression><![CDATA[$V{REPORT_COUNT}.intValue()==1]]></printWhenExpression>
+			<subreport>
+				<reportElement isPrintRepeatedValues="false" x="-1" y="0" width="595" height="20" uuid="4be42a0a-f417-4a79-817f-5db6a9f10161">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="saleCloseNo">
+					<subreportParameterExpression><![CDATA[$F{sale_close_no}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$F{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$F{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"SALMA5001.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport overflowType="Stretch">
+				<reportElement isPrintRepeatedValues="false" x="0" y="400" width="595" height="20" uuid="ea499fcd-f2a1-44b9-9be0-a89a7be6e408">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<subreportParameter name="saleCloseNo">
+					<subreportParameterExpression><![CDATA[$F{sale_close_no}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$F{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$F{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"SALMA5002.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+</jasperReport>

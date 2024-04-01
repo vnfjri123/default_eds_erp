@@ -1,0 +1,3260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SALMA3000_1" pageWidth="375" pageHeight="595" orientation="Landscape" columnWidth="375" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="238344f6-e441-48d8-aa13-f050722ca7e3">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value=" sinsungpack"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<parameter name="exNo" class="java.lang.String"/>
+	<parameter name="secretKey" class="java.lang.String"/>
+	<parameter name="num2han" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+CAST(AES_DECRYPT(UNHEX(T3.corpNo), $P{secretKey}) AS CHAR) AS corpNo
+,T3.busiNm
+,T3.ownerNm
+,CONCAT(
+	CAST(AES_DECRYPT(UNHEX(T3.zipNo), $P{secretKey}) AS CHAR)
+	,' '
+	,CAST(AES_DECRYPT(UNHEX(T3.addr), $P{secretKey}) AS CHAR)
+	,' '
+	,CAST(AES_DECRYPT(UNHEX(T3.addrDetail), $P{secretKey}) AS CHAR)
+) AS addr
+,busiType
+,busiItem
+,T2.itemCd
+,(SELECT I0.itemNm FROM TB_BASE_ITEM_LIST I0 WHERE I0.corpCd = T1.corpCd AND I0.itemCd = T2.itemCd) as itemNm
+,(SELECT I0.inveUnit FROM TB_BASE_ITEM_LIST I0 WHERE I0.corpCd = T1.corpCd AND I0.itemCd = T2.itemCd) as inveUnit
+,T2.bund_qty AS bund_qty
+,T2.qty AS qty
+,T2.upr2 as upr
+,T2.supAmt2 AS supAmt
+,T2.tax2 AS tax
+,T2.dc_ec_rate
+,T2.remark
+FROM t_messalma07 T1
+LEFT JOIN t_messalma08_1 T2 ON T1.corpCd = T2.corpCd AND T1.ex_no = T2.ex_no
+LEFT JOIN TB_BASE_BUSI_LIST T3 ON T1.corpCd = T3.corpCd AND T1.busiCd = T3.busiCd
+WHERE T1.corpCd = $P{corpCd}
+AND T1.busiCd = $P{busiCd}
+AND T1.ex_no = $P{exNo}
+        order by seq*1 ASC]]>
+	</queryString>
+	<field name="corpNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNo"/>
+	</field>
+	<field name="busiNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[사업장 명]]></fieldDescription>
+	</field>
+	<field name="ownerNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[대표자 명]]></fieldDescription>
+	</field>
+	<field name="addr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addr"/>
+		<property name="com.jaspersoft.studio.field.label" value="addr"/>
+	</field>
+	<field name="busiType" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[업태]]></fieldDescription>
+	</field>
+	<field name="busiItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TB_BASE_BUSI_LIST"/>
+		<fieldDescription><![CDATA[종목]]></fieldDescription>
+	</field>
+	<field name="itemCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="itemCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[품목 코드]]></fieldDescription>
+	</field>
+	<field name="itemNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="itemNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemNm"/>
+	</field>
+	<field name="inveUnit" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="inveUnit"/>
+		<property name="com.jaspersoft.studio.field.label" value="inveUnit"/>
+	</field>
+	<field name="bund_qty" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="bund_qty"/>
+		<property name="com.jaspersoft.studio.field.label" value="bund_qty"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[묶음량]]></fieldDescription>
+	</field>
+	<field name="qty" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="qty"/>
+		<property name="com.jaspersoft.studio.field.label" value="qty"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[수량]]></fieldDescription>
+	</field>
+	<field name="upr" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="upr2"/>
+		<property name="com.jaspersoft.studio.field.label" value="upr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[단가]]></fieldDescription>
+	</field>
+	<field name="supAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="supAmt2"/>
+		<property name="com.jaspersoft.studio.field.label" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+	</field>
+	<field name="tax" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="tax2"/>
+		<property name="com.jaspersoft.studio.field.label" value="tax"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+	</field>
+	<field name="dc_ec_rate" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="dc_ec_rate"/>
+		<property name="com.jaspersoft.studio.field.label" value="dc_ec_rate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[할인 할증 율]]></fieldDescription>
+	</field>
+	<field name="remark" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="remark"/>
+		<property name="com.jaspersoft.studio.field.label" value="remark"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_messalma08_1"/>
+		<fieldDescription><![CDATA[비고]]></fieldDescription>
+	</field>
+	<variable name="supAmt" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{supAmt}]]></variableExpression>
+	</variable>
+	<variable name="tax" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{tax}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{corpNo}]]></groupExpression>
+		<groupFooter>
+			<band height="15">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 1]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" printWhenGroupChanges="Group1" forecolor="#000000" uuid="b886f65d-cb2b-46e6-832d-642c356b4f97">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="3b19f8cf-ba27-4d35-ae48-7e295925e70c"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="82ddb306-45e4-4f42-81ac-50a8b57782d1"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="2ce7f267-dbd0-4004-a605-616fd7eec162"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="8e629917-8443-4fe6-8f08-4ce400d3589b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="b1b6c1d4-8462-46bd-aeec-90e25c7b46c8"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="ce5ce6e9-7d1a-4942-9cd1-aec63515dbf6"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="8ec1b884-09e8-4dab-8978-76ff166e8421"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="96e12f38-b0e2-46a9-aee2-a8a18bca3b41"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="4fc732dc-6900-4179-a1cd-44093b2519ca"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="3eaad9d5-95ec-4512-b9ef-423086fa1f15">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 2]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="7fb3ab24-4385-4baa-bf38-fb04438cc655">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="ed9691ae-c6e6-4827-a964-56d757be6ddc"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="1f807712-e009-4238-8ead-17832a0e5eb6"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="cca43dce-73ae-4b34-861c-5f530bba531e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="1a16cf1c-7267-449b-b454-1b7d042caefc"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="42cceeef-feed-4f51-a008-e1157afd27c0"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="cf6871af-94f2-49eb-b187-1ca3f38e484d"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="605febac-a4bc-4076-92d9-be52840aabe0">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="02dd35d4-92da-4012-9df8-bdc219503504"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="4ee04b11-420f-4e05-935e-0ff5634bd0ee"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="dc888cc4-f3b8-4c6b-9b55-a619bfa43aae">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 3]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="4aead07f-cdb6-4386-8fe1-d38298ecf265">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="f72ae17f-875c-4dca-a310-a5eb02fa4913"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="1bc2d6e1-247c-48eb-895f-34e7f6d49c42"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="f17e16cc-15bf-4e13-9744-0ab4a74ad3d7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="32bc8c80-346d-4039-8eaa-1f54e3e2fd27"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="47e22382-bb21-4e10-87e3-e04055691fc7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="282332b0-71d6-4349-8315-a82c14d0f14e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="25b09b15-05bd-4125-948a-b9864f7b9724"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="cb442b55-eeb3-4bf5-8916-57b66eaed3bc"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="4d9649c8-6a86-4cd1-baf2-0a64cd9e1519"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="76c66513-a1c7-422e-ada6-531417f2fd0d">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 4]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="d2cf8669-40a2-4bfe-b96a-221a934a9b67">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="44af3c65-c28a-4dfe-be46-ed7dafe8c2b5"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="0f415206-529e-4f24-8b5a-874f779c5e8e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="adef25ec-3663-41e1-94c4-064b51831337"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="c5d1657c-0d9b-496a-ac81-8e059298cf90"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="dd53cf49-c883-44d7-abe1-f70091f367ae"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="e0970e00-c6b2-43fd-8703-fd8dfd61eebe"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="3d67b65c-8ad5-493a-91d9-9f5a239db753"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="b63719e3-84e3-44d7-91e5-452e143a7825"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="f3e93816-999e-43c7-a7b5-c960ac042992"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="85de5f01-bbcb-4be7-978e-4b4aa3c65a38">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 5]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="b18d4705-a611-40a7-8253-daf5f6c2dce5">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="6a7e61e2-8bb3-4801-95c5-754ac28efb41"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="b35273fb-992c-4457-8bbe-740cfc7ad692"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="56952f1e-3339-4576-bd46-4c349d96561c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="49767a00-c9b6-4cf6-b5f2-945df5cf4021"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="75081cde-42bb-474f-9c5a-db1c090ccdf3"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="aa6a0038-74ea-446d-a77f-d120d42ea779"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="66c4ff11-25ee-4fa7-ab2a-58aeff3055bf"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="a8d35878-3935-4b67-bee3-24fa7735b670"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="1773e9e1-89e8-4d27-8a13-4b048d86ede4"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="6d47a9b0-8280-44f4-801c-00011c8bf41e">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 6]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="c1991189-5e35-4db6-80ef-b08993a0ddd3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="13ca41d4-12b9-448b-83a8-62031116a367"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="23db4146-6ce6-4e38-b96e-fd2d0a0c7c0d"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="ebed5353-8b1b-4efc-9723-f4a8cf655f05"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="adc9f152-2cdb-486a-80b1-6f4b6e8e40a0"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="7025ad98-bf7e-4ebf-a1e7-25f8d0794d5b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="4c2198e9-36e0-412f-8fb1-d7196b7ddf1a"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="61020b8c-863a-4cfc-b029-0afb52731c3e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="8dedbb31-c6d1-40fe-9f34-90fe9554805b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="46344286-8c87-4110-b615-79cdb55a7e14"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="29bae67c-aadb-419d-bad5-20db59658111">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 7]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="17983cdf-5f13-483c-8979-7e585b49f9c9">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="4de571ed-5f6d-4796-8737-bc50ef6dfc74"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="6f97433f-5815-4ea3-9df3-e3a37310c166"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="a3f19df7-bf2f-452a-9ad2-941ffb13aa82"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="ff6f0c4c-1046-457f-ad65-ca2b2fd85597"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="39debb7c-d82c-4f9e-8db3-b570596257c3"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="aae48f74-07cc-43a0-8e4e-cf5860e473f3"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="693bbe27-acdf-488f-920f-6bddfc340f21"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="4d3241e3-989a-45c8-b204-cb6dd87eaa42"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="61e33948-49fa-465e-9f88-f46519eae22b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="44f6c4b6-157c-4546-b117-3b572e089b4c">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 8]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="a77b9443-c2ce-4419-9c3d-1da8156f846d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="795c0f26-4360-4b15-835b-4f733552e9df"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="79915a5a-8b22-452f-899c-c7b664af69cd"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="85ac48af-31bc-422f-acc6-f1108229171e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="faea6092-0cf1-40e9-9d01-e7713ee49525"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="7cafec5a-47ab-4be3-88ff-1b9a1a253049"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="e8106279-79e6-4375-9b11-b08b3f4415ff"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="05704ac0-d8b6-4e69-afa7-80845939be90"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="8bd22fa7-227d-472b-a6f7-c8a792aa175c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="2e522b87-e463-40c9-b8d2-525756e8e8f5"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="a678d6df-8e56-44bf-a4cb-d6fae92e5911">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 9]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="6dacdb95-9997-460c-8d47-0cb8b56209d9">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="bbeacf51-fdd5-409b-9d83-63b4241321fb"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="dcfd37b8-d0d7-41d2-93c3-596ae7e74d2a"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="54ddf40d-61e3-4a2a-bbd0-5cf8e77d0289"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="dd6d33ab-365c-4c77-91dd-64601931c778"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="72bab430-b9fe-41bb-b605-c85b6558f223"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="6c06ef06-70fd-4e87-ae2e-40d367b6d2a0"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="fb17265e-1bdc-425d-9f4d-8ddcc779179c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="75395994-9ed6-4745-93f2-7e13d1bd82bc"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="89fcb3be-4e20-4aa9-9803-4be0403b3d2a"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="9f1ac6ed-7fb9-49c6-97bf-f431272a92dd">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 10]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="1a81f5d5-10ed-43ed-9e70-df26a6842a1a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="d20da064-1306-4f39-8bcf-bbda589a35f3"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="e1399fc7-21ca-414b-970d-2a6ed4bd26c7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="da9804fe-0e17-4836-afe5-f47a2bb97e70"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="7ea2212f-34d8-44f0-9cb4-5e6b5bb27b07"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="3d55955a-7a61-40e5-ae2a-0d0ab0853096"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="857b1e7e-d27b-4e54-bb92-ab923c685582"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="8131defe-7436-4be9-9173-d25010d55dd7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="b21abc0b-378f-4405-8f0f-9d358e163b8e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="c4f20df0-4671-48e1-a621-f52bec9aac74"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="681b8dbb-ae3e-40f3-9514-8fdddc359d99">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 11]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="8bd9e80d-e864-4a4b-9e41-0547f6496a6e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="9a17eae3-81c7-40dd-8232-171b7a4a4f5b"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="2e657006-c2aa-4110-8687-7bbd9a27c63e"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="cc267b14-a9b8-4d96-8613-a10ef2c9bd50"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="973c8d67-f86a-474a-8f14-079ce3751c03"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="83b8af48-c505-440b-bed3-65021547df7f"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="917eb22f-9f26-40ec-a49a-ebbd44f7606a"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="485225c7-374b-4f17-bdc8-17d59aeffd1f"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="3c621785-9568-4f0d-8647-144ccf0d5015"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="8c0c8bee-af27-4583-9957-b74f20fdbb00"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="1307b472-fd98-4fa7-8c99-2fa6ffa946b8">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 12]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="48f0c925-9638-481e-8637-b1a91fa3850c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="f9c3ba77-0feb-4a2b-b468-140d48ca41cc"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="7cdf8f10-5624-44ce-b7cf-8aa740fc57d2"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="81a96d4d-cd93-49e6-8ae2-5b88bb566906"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="db468257-a35a-4755-a042-cbcde7e75c6b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="70463526-f288-4fdd-b29c-2d1395b34ed0"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="c06ed413-98f4-4e08-9b82-c9ebf588184b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="fc831722-5b93-4011-873c-4714d7001c41"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="0357e455-dfcb-481f-872f-037e9c7c2ed4"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="dde097b1-e98b-405f-b09e-6df37dd6b933"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="8edd3df4-06e7-4c7a-9292-dcee43704b84">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 13]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="3b7a8875-42d6-4029-a308-f4cc90ea8541">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="abf9632c-02c3-4520-85d0-f10b81796004"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="c7aaff72-8a6d-4e6b-b00f-2978f63c2cd2"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="2da29447-593e-45d5-b907-e6067340a452"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="0fb6456b-ace6-4633-a6fa-d54dbddf74bb"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="69296a33-39f7-491e-b3e8-17fe2a2e6d8b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="afabd3ed-09a7-4aab-a397-42d40361bd9b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="68d98026-b6e8-4bd3-9c44-75c7c4baa9cb"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="63493c2b-e079-4e3f-b17c-b98b85f9a79b"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="75496520-8ab9-49e1-b57a-303675d3b6e2"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="eda13084-5ef6-48a4-9937-2da5ea9a4b2e">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 14]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="910e303c-15e7-4f58-81eb-40eebcce3a3c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="aac34905-e3b5-4b48-9da0-eb39e84d1cd8"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="73093d33-41c9-438a-8ffb-2ced3a00e4be"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="59839c13-3f92-425d-b16f-2435ff11bd17"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="6a73e6e8-7f77-4647-8f61-25a6b2481e15"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="798501a7-b2a2-4667-b7e1-c8820caf9f01"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="ac588f6a-11e4-4892-9648-786dbbb5ff2d"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="2c5de424-21e0-4a38-b184-1b670161f798"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="eb4bf22f-a7b2-4e6f-9665-d6f67edc6d2d"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="9c862b58-cf13-46b5-a71e-7acaf93b5897"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="55bfb742-6d65-400a-8592-5a70d36a809a">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 15]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="2f8314d5-4f5d-402d-a847-d6383e58f0c1">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="b0e42700-c265-4ef9-be6c-f082bd9e7cf6"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="88047d28-2cc0-4e0c-8b6f-96346d3063e2"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="f5f33229-11f3-4e58-90a1-addf6a0e7743"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="7d547bca-9ba8-4715-983b-dab39485d7f9"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="dc816174-14ea-450e-b6f0-98709fd17757"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="086b7fce-ab8c-4eaa-96e5-30e9d37c7333"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="6f3376b7-e2c9-42b2-9e18-921c15adcee5"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="2e678e7a-ffd6-44a4-99da-13bdbf7421b4"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="45afa9c1-2aa1-42c4-bdc4-8fccf6063608"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="cd0c0054-341c-4a14-b9d8-292c042a14d1">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 16]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="de25f4df-9f4e-4a5a-85d3-23fb712659ce">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="2ce63cf6-611e-4a67-ba6d-d1ad005abe05"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="385c6824-cbc4-4f2b-aede-f1790bf94d07"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="761bade0-635e-498e-9c8c-695c2c3f940c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="d0707c16-dbfa-4f3f-abb5-43d4e6828ee7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="9f1a07b9-8e33-4714-bb0e-1c3e03df0a41"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="048ddce6-a2a6-404d-a8c9-3ab2e74d1dee"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="b8c2606d-455f-4d33-b455-670370e4dc43"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="2679733a-61b2-4a97-85cf-73585f5bfd2d"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="838b600f-822d-43c2-85ae-13bbb4b3522c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="e577a09e-44a7-4840-a0ba-360b1f4de6d5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 17]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="bcced1c0-9917-4a68-8f7f-0bf1c62bfa76">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="5b15840e-52f8-4f0e-8e25-3c1c0d475601"/>
+					<box>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="f15b0873-efd1-453d-931a-b492dc5f5f02"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="cd8c2fce-44a6-473e-8d91-3650c588e126"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="e67e597a-a3dc-4895-94c3-0155a02ec0d1"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="12192c81-7081-4659-9f32-11aec9b06064"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="246460eb-d879-4cba-8419-a1a342cdfda7"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="099a5342-fab4-46cd-a85c-58dd8a3e2f59"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="22a28794-0e14-401c-abc8-390378eeac52"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="a511bdd0-9bc1-4af1-ac85-14607e7417ae"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="4e8ba390-b1a1-4531-afaf-7c5ec2d1beb3">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+			<band height="15">
+				<printWhenExpression><![CDATA[$V{COLUMN_COUNT} < 18]]></printWhenExpression>
+				<frame>
+					<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="acc6b378-9974-4bd2-b3d5-4b11553b426b">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.5" lineColor="#719FD1"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+						<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+					</box>
+				</frame>
+				<staticText>
+					<reportElement x="1" y="0" width="18" height="15" uuid="2ef39ab8-a5de-4cb0-8248-70ce9d33c8be"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="19" y="0" width="81" height="15" uuid="f7df6257-3f8a-4a7f-a2f0-5f3c3be38ce2"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="15" uuid="f64a9726-f14e-4fb7-b24a-e70d949ef34c"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="0" width="30" height="15" uuid="72383e5b-0cc1-4630-8aeb-b89fe6027ee3"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="190" y="0" width="30" height="15" uuid="8fabeb0e-4a23-4900-9ae7-a127e096d627"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="0" width="45" height="15" uuid="7544f4fb-9692-42b1-92ca-24b4e5c6e453"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="265" y="0" width="40" height="15" uuid="bb0c6f57-276c-466c-b410-4f7195e937d0"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="0" width="33" height="15" uuid="27f7524a-230e-48ea-98ca-a04c7e11d356"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="0" width="30" height="15" uuid="082eb0de-196e-404a-9f41-dc7de295c203"/>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="305" y="0" width="35" height="15" uuid="9495e246-161c-47b9-8484-4cc34c4deaa2">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+						<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+					</box>
+					<textElement>
+						<font fontName="맑은 고딕"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="259" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="42" width="373" height="5" uuid="69da3361-1e8e-45b7-9a8f-1d2d7fc3ef14">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="맑은 고딕"/>
+				</textElement>
+				<text><![CDATA[Static Text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="0" width="373" height="5" uuid="cc1db3e0-5f50-4ad1-b2f6-b4b08f1fac1b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="맑은 고딕"/>
+				</textElement>
+				<text><![CDATA[Static Text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="69" y="0" width="237" height="44" forecolor="#EB1D36" uuid="422a85b6-e8c7-4237-967f-ffed61c903da"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="25" isBold="true"/>
+				</textElement>
+				<text><![CDATA[거 래 명 세 서]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="69" y="47" width="237" height="22" forecolor="#EB1D36" uuid="77d89ca3-5ce8-449a-b5f9-c0bd2268c43c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( 공급자 보관용 )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="173" y="100" width="20" height="100" forecolor="#EB1D36" uuid="21cd4d77-56f6-4026-be3b-fbf26eb79c15">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[공
+
+급
+
+자]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="100" width="40" height="25" forecolor="#EB1D36" uuid="33b7ed70-346e-4418-bfb2-f9821fb67cd8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[사업자번호]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="125" width="40" height="25" forecolor="#EB1D36" uuid="350bd294-d7a6-4134-a2f6-8ac25d61e291">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[상       호]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="150" width="40" height="25" forecolor="#EB1D36" uuid="b7c60a40-c468-4269-8e16-d03b6d947e95">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[주       소]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="175" width="40" height="25" forecolor="#EB1D36" uuid="1c0fe0c4-43f0-47da-a5d2-004d7f47f522">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[업       태]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="125" width="40" height="25" forecolor="#EB1D36" uuid="290dc2b2-88f7-41b5-95e4-9aa941576a29">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[성       명]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="175" width="40" height="25" forecolor="#EB1D36" uuid="0875453d-2cd1-4756-a36b-33da75437e8c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[업       종]]></text>
+			</staticText>
+			<textField pattern="###-##-#####">
+				<reportElement x="233" y="100" width="140" height="25" uuid="208163d8-b505-49d1-927c-dee34abd1cc7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{corpNo}!=null)?$F{corpNo}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="233" y="175" width="50" height="25" uuid="9dc2e3fb-3a0d-46b7-95b7-edad03f2d7f7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{busiType}!=null)?$F{busiType}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="323" y="175" width="50" height="25" uuid="3d5f14e7-0b7b-4c44-93f9-b01a3d35a4c7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{busiItem}!=null)?$F{busiItem}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="233" y="125" width="50" height="25" uuid="0bb339e8-7412-491d-827b-858db3061d92">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{busiNm}!=null)?$F{busiNm}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="323" y="125" width="50" height="25" uuid="c03c1165-46c1-409e-a113-eacb35c90af3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{ownerNm}!=null)?$F{ownerNm}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="233" y="150" width="140" height="25" uuid="639f2fb9-880e-4441-a845-5bdbf148593e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{addr}!=null)?$F{addr}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="200" width="372" height="18" forecolor="#EB1D36" uuid="e6bf84de-d3d7-4bdc-b87f-4a661527919b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[   아래와 같이 계산합니다.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="218" width="68" height="15" forecolor="#EB1D36" uuid="0f57cf78-7c68-488a-ab8f-084b5d990422">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[합 계 금 액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="229" width="68" height="15" forecolor="#EB1D36" uuid="84a34911-91e3-4a20-8442-bc9b31a3fe3c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(공급가액+세액)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="244" width="18" height="15" forecolor="#EB1D36" uuid="a28de35b-b337-42f5-8b0d-b64adf89efc2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="244" width="81" height="15" forecolor="#EB1D36" uuid="4e08d4d1-6dcd-454b-88cb-197949724219">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[품     명]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="244" width="30" height="15" forecolor="#EB1D36" uuid="0e54a714-206f-41ff-82ec-230635b37d7e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[단위]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="244" width="30" height="15" forecolor="#EB1D36" uuid="97298e52-9ff3-4674-9e93-53698dd16fa1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[수량]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="244" width="30" height="15" forecolor="#EB1D36" uuid="9328238a-93e0-43bb-b0e6-d5019d9146ee">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[단가]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="220" y="244" width="45" height="15" forecolor="#EB1D36" uuid="b2797090-e289-4bf1-b783-50d7b0786679">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[공급가액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="244" width="40" height="15" forecolor="#EB1D36" uuid="5077b754-6ecf-44f5-b264-7bd1c1664579">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[세액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="244" width="33" height="15" forecolor="#EB1D36" uuid="b172088c-69cc-407d-9eac-f0c925d1f6ff">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[비고]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="69" y="218" width="22" height="26" forecolor="#EB1D36" uuid="bcd47c24-e482-459e-883f-5e261031c8a7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="0.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[一金]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="91" y="218" width="282" height="26" uuid="494f0b71-1d81-46f9-b22b-ae9f33dd4a7c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($P{num2han}!=null)?$P{num2han}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="244" width="30" height="15" forecolor="#EB1D36" uuid="e77c701c-f618-4681-9034-69454a32b102">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[묶음]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="305" y="244" width="35" height="15" forecolor="#EB1D36" uuid="bb5af3ac-a314-491c-8c9d-74e847348d17">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[할인율]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="1" y="0" width="372" height="15" forecolor="#000000" uuid="62390389-5a67-4cde-99a6-01d982bd3a2b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2==1]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+			</frame>
+			<frame>
+				<reportElement mode="Opaque" x="1" y="0" width="372" height="15" backcolor="#FBEBEE" uuid="b4de3caf-bc50-4a2e-a546-90ddf311943f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT}%2==0]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+			</frame>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="160" y="0" width="30" height="15" forecolor="#000000" uuid="2734b8fc-0bac-455a-bf53-1880dbf15406">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{qty}!=null)?$F{qty}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="19" y="0" width="81" height="15" forecolor="#000000" uuid="2346c148-f34d-4bca-ac09-d46a598d300a">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph leftIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{itemNm}!=null)?$F{itemNm}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="1" y="0" width="18" height="15" forecolor="#000000" uuid="f2bf547b-e02c-45a7-b893-123c4b8d3479"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="100" y="0" width="30" height="15" forecolor="#000000" uuid="90893fe0-9af9-4a87-a806-663503ab561f">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph leftIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{inveUnit}!=null)?$F{inveUnit}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="190" y="0" width="30" height="15" forecolor="#000000" uuid="fca819a6-57fd-4054-aaa0-de50981cb0d5">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{upr}!=null)?$F{upr}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="220" y="0" width="45" height="15" forecolor="#000000" uuid="def60f46-0a37-4b7a-a53a-4dc543161ab1">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{supAmt}!=null)?$F{supAmt}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="265" y="0" width="40" height="15" forecolor="#000000" uuid="cd53fcd6-ca69-4a41-8f03-c16551e596bc">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{tax}!=null)?$F{tax}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="340" y="0" width="33" height="15" forecolor="#000000" uuid="b60d1b1a-7f4a-44c4-b328-9324574adcfa">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{remark}!=null)?$F{remark}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="130" y="0" width="30" height="15" forecolor="#000000" uuid="fb49abf1-925f-4631-816d-483bcdd64110">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{bund_qty}!=null)?$F{bund_qty}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" pattern="#,###">
+				<reportElement x="305" y="0" width="35" height="15" forecolor="#000000" uuid="4c28b2e5-305a-4cdf-b7a6-e01f34b4f242">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineColor="#719FD1"/>
+					<topPen lineWidth="0.0" lineColor="#719FD1"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="0.0" lineColor="#719FD1"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{dc_ec_rate}!=null)?$F{dc_ec_rate}:"")]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="219" height="15" forecolor="#EB1D36" uuid="299db964-6f4e-4f2f-bf73-452e3e18f721">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[합                         계]]></text>
+			</staticText>
+			<textField pattern="#,###">
+				<reportElement x="220" y="0" width="40" height="15" uuid="306ebcd7-0a7f-4a6a-934e-be98445b6a10">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{supAmt}!=null)?$V{supAmt}:"")]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="260" y="0" width="45" height="15" uuid="e8bb17fa-3ee7-40ec-9a52-018ee87dd6d4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{tax}!=null)?$V{tax}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="340" y="0" width="33" height="15" forecolor="#EB1D36" uuid="66d979c5-cda0-4c2c-91e1-bb70509c375d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.5" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="305" y="0" width="35" height="15" forecolor="#EB1D36" uuid="001a50e6-658d-4270-a881-f71053e3e483">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<leftPen lineWidth="1.0" lineColor="#EB1D36"/>
+					<bottomPen lineWidth="1.5" lineColor="#EB1D36"/>
+					<rightPen lineWidth="1.0" lineColor="#EB1D36"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

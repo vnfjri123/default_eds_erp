@@ -1,0 +1,77 @@
+plugins {
+	id 'org.springframework.boot' version '3.1.2'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'java'
+	id 'war'
+}
+group = 'com.springboot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+	implementation 'org.springframework:springloaded:1.2.8.RELEASE'
+
+
+	implementation group: 'org.glassfish.web', name: 'jakarta.servlet.jsp.jstl', version: '2.0.0'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+	annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+	compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+	implementation 'org.mariadb.jdbc:mariadb-java-client'
+	implementation group: 'org.webjars.bower', name: 'jquery', version: '3.5.1'
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'//object simple
+	// https://mvnrepository.com/artifact/commons-codec/commons-codec
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
+
+	/* html process*/
+	implementation 'org.jsoup:jsoup:1.14.1'
+
+	/* jasper */
+	implementation 'net.sf.jasperreports:jasperreports:6.20.5' // last ver 2023.08.24
+	implementation 'com.github.librepdf:openpdf:1.3.30' // apply for pdf with jasperreports
+	implementation 'net.sf.barcode4j:barcode4j:2.1' // apply for barcode image controller
+	implementation 'com.google.zxing:core:3.5.2' //
+	
+
+	/* file oi controller */
+	implementation 'org.apache.xmlgraphics:batik-bridge:1.14'
+	implementation 'commons-io:commons-io:2.13.0'
+
+
+	/* send email */
+	implementation 'org.eclipse.angus:angus-mail:2.0.2'
+
+	/* json controller for java*/
+	implementation 'org.json:json:20230618'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+			
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}

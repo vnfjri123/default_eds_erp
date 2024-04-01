@@ -1,0 +1,316 @@
+/*.dropdown-toggle{*/
+/*    background-color: beige;*/
+/*}*/
+
+/*div변경과 관련된 코드입니다.
+색 등의 디자인은 보이기 위해서 표시해놨으니
+스타일 추가 및 변경이 가능합니다.*/
+html{
+    white-space: nowrap;
+}
+
+body{
+    height: 100%;
+}
+
+label{
+    word-wrap: break-word;
+}
+
+.form-group{
+    padding: unset;
+}
+
+.form-row{
+    display: flex !important;
+}
+
+input[type=radio] {
+    display: none;
+}
+
+input[type=date] {
+    padding: unset;
+}
+
+#tab-1:checked ~ .tab label:nth-child(1),
+#tab-1-update:checked ~ .tab label:nth-child(1),
+#tab-2:checked ~ .tab label:nth-child(2),
+#tab-2-update:checked ~ .tab label:nth-child(2){
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: none;
+}
+
+.content > div {
+    display: none;
+}
+
+.content-dis{
+    padding: 0 1rem;
+}
+
+#tab-1:checked ~ .content div:nth-child(1):not(.tui-datepicker),
+#tab-1-update:checked ~ .content div:nth-child(1):not(.tui-datepicker),
+#tab-2:checked ~ .content div:nth-child(2):not(.tui-datepicker),
+#tab-2-update:checked ~ .content div:nth-child(2):not(.tui-datepicker){
+    display: block;
+}
+
+
+
+.tui-datepicker-input{
+    width: inherit;
+    height: 98%;
+    border: none;
+}
+
+#datepicker-input{
+    width: 100%;
+}
+
+.tui-datepicker{
+    z-index: 100;
+}
+
+.tab {
+    overflow: hidden;
+    background-color: #d4cebe;
+    padding: unset;
+}
+
+label[for="tab-1"],
+label[for="tab-2"],
+label[for="tab-1-update"],
+label[for="tab-2-update"]
+{
+    margin: unset !important;
+}
+
+.tab label {
+    font-size: 18px;
+    cursor: pointer;
+    float: left;
+    width: 25%;
+    text-align: center;
+    padding: 10px 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    user-select: none;
+    -webkit-user-select: none;
+    margin: unset;
+}
+
+.content {
+    min-height: 250px;
+}
+
+.content > div{
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+/*#insertPjBtn{*/
+/*    width: 8rem;*/
+/*    position: absolute;*/
+/*    right: 0;*/
+/*}*/
+
+.container{
+    padding: unset;
+}
+
+.btn.dropdown-toggle{
+    background-color: #d9d7cc;
+}
+
+input::placeholder{
+    color: rgba(0,0,0,0.6) !important;
+}
+
+input[type="search"]::placeholder{
+    color: rgba(0,0,0,0.5);
+}
+
+.bootstrap-select{
+    width: 8rem !important;
+}
+
+label[for="siteNm"],
+label[for="siteNmND"]{
+    /*background: khaki;*/
+    background-color: rgba(239,151,44,0.5);
+}
+
+input[id="siteNm"],
+input[id="siteNmND"]{
+    border: 2px solid;
+}
+
+.site-image-container div img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.image-input,
+.image-input-update{
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+}
+
+label[for="image-input"],
+label[for="image-input-update"]{
+    background-color: #8b705d;
+    cursor: pointer;
+    margin-left: 15px;
+    height: 30px;
+}
+
+.modal-body.padding-unset{
+    padding: unset;
+}
+
+.site-btn-update{
+    position: absolute;
+    right: 1.1rem;
+    transform: translateY(7.5px);
+}
+
+label[for="files"]{
+    margin:unset;
+}
+
+.tui-grid-cell.highlight-cell{
+    background-color: rgba(239,151,44,0.1);
+}
+
+.guidanceText{
+    color: rgba(239,151,44);
+}
+
+.show{
+    display: block;
+}
+
+.hide{
+    display: none;
+}
+
+.error{
+    display: block;
+    white-space: initial;
+}
+
+/*#ad-error,*/
+/*#adND-error{*/
+/*    white-space: initial;*/
+/*}*/
+
+#expandImage{
+    width: 100%;
+    height: 100%;
+    image-rendering:  -webkit-optimize-contrast !important;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.form-control:disabled{
+    background-color: #D7DBDD !important;
+}
+
+/*@media (max-width: 820px) {*/
+/*    form{*/
+/*        width: 100%;*/
+/*    }*/
+/*    .form-control{*/
+/*        width: 50%;*/
+/*    }*/
+/*}*/
+
+@media (max-width: 1600px) {
+    label{
+        font-size: 12px;
+    }
+}
+
+/*tui grid css 재정의 시작*/
+.tui-grid-summary-area .tui-grid-cell{
+    text-align: center !important;
+    letter-spacing: 1px !important;
+}
+
+tr:hover{
+    cursor: pointer;
+}
+
+.tui-grid-cell-disabled{
+    color: black;
+}
+
+#grid .tui-grid-body-area{
+    /*height: 87.25vh !important;*/
+    overflow: auto !important;
+}
+
+.tui-grid-table > tbody > tr > td{
+    border-style: hidden;
+    overflow: visible;
+}
+
+td[data-column-name="memo"] div {
+    text-overflow: ellipsis;
+}
+
+.tui-pagination.tui-grid-pagination{
+    margin-top: 1rem;
+}
+/*tui grid css 재정의 종료*/
+
+/*modal css 재정의 시작*/
+.modal-xl {
+    margin-top: unset;
+    max-width: 1500px;
+}
+/*modal css 재정의 종료*/
+
+/*adminLte css 재정의 시작*/
+.card-header.site{
+    font-weight: 700;
+}
+
+.card-body.card-body-site{
+    padding-top: 0.1rem;
+    padding-bottom: unset;
+}
+/*adminLte css 재정의 종료*/
+
+/*dropzone css 재정의 시작*/
+.dropzone-site:hover{
+    text-decoration: underline;
+    color: #0062cc;
+}
+#dropzone-update-preview > div:hover{
+    cursor: zoom-in;
+}
+/*dropzone css 재정의 종료*/
+
+.container-ad .select2-selection,
+.container-adND .select2-selection{
+    height: 38px;
+}
+.container-ad .select2-selection .select2-selection__rendered,
+.container-adND .select2-selection .select2-selection__rendered{
+    height: inherit;
+    align-items: center;
+    display: flex;
+}
+.container-ad .select2-selection .select2-selection__arrow,
+.container-adND .select2-selection .select2-selection__arrow{
+    height: inherit;
+}

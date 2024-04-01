@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+		 pageEncoding="UTF-8"%>
+
+<%-- TUI-CALENDAR CSS --%>
+<link type="text/css" rel="stylesheet" href="/tui/@toast-ui/calendar/dist/toastui-calendar.css">
+<link type="text/css" rel="stylesheet" href="/tui/tui-time-picker/dist/tui-time-picker.css">
+<link type="text/css" rel="stylesheet" href="/tui/tui-date-picker/dist/tui-date-picker.css">
+
+<%-- TUI-CALENDAR JS --%>
+<script src="/tui/@toast-ui/calendar/dist/moment.min.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/chance.min.js"></script>
+<script src="/tui/tui-time-picker/dist/tui-time-picker.js"></script>
+<script src="/tui/tui-date-picker/dist/tui-date-picker.js"></script>
+<script src="/tui/@toast-ui/calendar/dist/toastui-calendar.ie11.js"></script>
+
+<%-- TUI-CALENDAR SET --%>
+<script>
+
+	/* 생성자 생성 */
+	var Calendar = tui.Calendar;
+	var TimePicker = tui.TimePicker;
+	var DatePicker = tui.DatePicker;
+
+</script>

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.global.GLOBALMapper">
+
+	<select id="selectMENU" resultType="com.springboot.myapp.eds.erp.vo.global.MENUVO">
+		SELECT /* selectMENU */
+			T1.menuId
+			,(SELECT menuNm FROM TB_SYSTEM_MENU_LIST T0 WHERE T0.menuId=T1.menuId) AS menuNm
+			,(SELECT menuIcon FROM TB_SYSTEM_MENU_LIST T0 WHERE T0.menuId=T1.menuId) AS menuIcon
+			,(SELECT menuOrder FROM TB_SYSTEM_MENU_LIST T0 WHERE T0.menuId=T1.menuId) AS menuOrder
+		FROM TB_SYSTEM_GP_AUTH T1 LEFT JOIN TB_SYSTEM_MENU_DET T2 ON T1.menuId=T2.menuId AND T1.pgmId=T2.pgmId
+		WHERE T1.corpCd = #{corpCd}
+		AND T1.groupId = #{groupId}
+		AND T1.readAuth = '1'
+		AND (SELECT T0.useYn FROM TB_SYSTEM_MENU_LIST T0 WHERE T0.menuId=T1.menuId) = '01'
+		GROUP BY T1.menuId
+		ORDER By menuOrder
+	</select>
+     <select id="selectMENUList" resultType="com.springboot.myapp.eds.erp.vo.global.MENULISTVO">
+        SELECT /* 프로그램 명 및 url 조회 */
+            T7.menuId,
+            T7.pgmId,
+            T7.pgmOrder,
+            T8.pgmNm,
+            T8.pgmUrl,
+            T7.pgmIcon,
+            T7.parent,
+            T7.readAuth,
+            T7.addAuth,
+            T7.updAuth,
+            T7.delAuth,
+            T7.excelDownAuth,
+            T7.printAuth,
+            T7.finishAuth,
+            T7.cancelAuth,
+            T7.emailPopupAuth
+        FROM
+            (SELECT /* 프로그램 아이콘 조회 */
+                T6.menuId,
+                T6.pgmId,
+                T5.pgmOrder,
+                T5.pgmIcon,
+                T6.readAuth,
+                T6.addAuth,
+                T6.updAuth,
+                T6.delAuth,
+                T6.excelDownAuth,
+                T6.printAuth,
+                T6.finishAuth,
+                T6.cancelAuth,
+                T6.emailPopupAuth,
+                T5.parent
+            FROM TB_SYSTEM_MENU_DET T5 # 메뉴 목록 상세
+            INNER JOIN
+                (SELECT /* 메뉴, 프로그램 아이디 및 권한 조회 */
+                     T3.menuId,
+                     T3.pgmId,
+                     T3.readAuth,
+                     T3.addAuth,
+                     T3.updAuth,
+                     T3.delAuth,
+                     T3.excelDownAuth,
+                     T3.printAuth,
+                     T3.finishAuth,
+                     T3.cancelAuth,
+                     T3.emailPopupAuth
+                FROM TB_SYSTEM_GP_AUTH T3 # 프로그램 권한
+                INNER JOIN
+                    (SELECT /* 아이디 대비 그룹 아이디 조회 */
+                        T1.groupId
+                    FROM TB_SYSTEM_GP_LIST T1 # 그룹 목록
+                    INNER JOIN TB_SYSTEM_GP_USER T2 # 그룹별 사용자목록
+                        ON T1.groupId = T2.groupId
+                    WHERE T2.empCd = #{empCd}
+                        AND T1.useYn = '01'
+                    ) T4
+                    ON T3.groupId = T4.groupId
+                WHERE T3.readAuth = '1'
+                ) T6
+                ON T5.pgmId = T6.pgmId
+            WHERE T5.useYn = '01'
+            ) T7
+        INNER JOIN TB_SYSTEM_PGM_LIST T8 # 프로그램관리
+            ON T7.pgmId = T8.pgmId
+        WHERE T8.useYn = '01'
+        ORDER BY T7.menuId, T7.pgmOrder
+    </select>
+
+
+    <select id="selectMainSearch" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    SELECT /* selectMainSearch */
+              T1.corpCd
+			  ,T1.busiCd
+             ,T1.mon
+             ,SUM(T1.conTotAmt) AS conTotAmt
+             ,SUM(T1.salTotAmt) AS salTotAmt
+             ,SUM(T1.costTotAmt) AS costTotAmt
+             ,SUM(T1.colTotAmt) AS colTotAmt
+        FROM (
+                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+                      ,subStr(initiateDt,1,6) AS mon
+                      ,SUM(CASE WHEN t2.corpCd IS null THEN (T1.totAmt3) ELSE (T2.totAmt3) END) AS conTotAmt
+                      ,0 AS salTotAmt
+                      ,0 AS costTotAmt
+                      ,0 AS colTotAmt
+                 FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+                                                   ON T1.corpCd = T2.corpCd
+                                                       AND T1.projCd = T2.projCd
+                 WHERE T1.corpCd = #{corpCd}
+				<if test="busiCd != null and !busiCd.equals('')">
+                    AND T1.busiCd = #{busiCd}
+                </if>
+                 GROUP BY T1.corpCd, T1.busiCd,mon
+                 UNION ALL
+                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+							 ,subStr(T1.salDt,1,6) AS mon
+                      ,0 AS conTotAmt
+                      ,SUM(IFNULL(T1.totAmt3,0)) AS salTotAmt
+                      ,0 AS costTotAmt
+                      ,0 AS colTotAmt
+                 FROM tb_yeongeob_sal_list  T1                              
+                 WHERE T1.corpCd =  #{corpCd}
+				<if test="busiCd != null and !busiCd.equals('')">
+                    AND T1.busiCd = #{busiCd}
+                </if>
+                 GROUP BY T1.corpCd, T1.busiCd, mon
+                 UNION ALL
+                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+                      ,SUBSTR(t1.costDt,1,6) AS mon
+                      ,0 AS conTotAmt
+                      ,0 AS salTotAmt
+                      ,SUM(IFNULL(T1.totAmt,0)) AS costTotAmt
+                      ,0 AS colTotAmt
+                 FROM tb_project_cost_list  t1
+                 WHERE T1.corpCd =  #{corpCd}
+				<if test="busiCd != null and !busiCd.equals('')">
+                    AND t1.busiCd = #{busiCd}
+                </if>
+                 GROUP BY T1.corpCd, T1.busiCd, mon
+                 UNION ALL
+                 SELECT
+                     T1.corpCd
+                      ,T1.busiCd
+                      ,SUBSTR(t1.colDt,1,6) AS mon
+                      ,0 AS conTotAmt
+                      ,0 AS salTotAmt
+                      ,0 AS costTotAmt
+                      ,SUM(IFNULL(T1.totAmt3,0)) AS colTotAmt
+                 FROM tb_gumae_col_list t1
+                 WHERE T1.corpCd =  #{corpCd}
+				<if test="busiCd != null and !busiCd.equals('')">
+                    AND t1.busiCd = #{busiCd}
+                </if>
+                 GROUP BY T1.corpCd, T1.busiCd, mon              
+             ) T1
+        WHERE 1=1
+		<if test="stDt != null and !stDt.equals('')">
+            AND T1.mom BETWEEN #{stDt} AND #{edDt}
+        </if>
+        GROUP BY T1.corpCd,mon
+        ORDER BY NULL   
+
+    </select>
+
+    <select id="recentTaxInvoiceIssuanceStatus" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    SELECT /* recentTaxInvoiceIssuanceStatus */
+        T1.corpCd
+         ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+         ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.projCd like T1.projCd) AS projNm
+         ,T1.salDt AS dt
+         ,T1.note1 AS note
+         ,T1.totAmt3 AS amt
+         ,T1.totAmt3 AS amt
+    FROM TB_YEONGEOB_SAL_LIST T1
+    WHERE T1.corpCd = #{corpCd}
+      AND T1.salDt BETWEEN #{stDt} AND #{edDt}
+    ORDER BY T1.salDt DESC
+    </select>
+
+    <select id="recentProjectContractStatus" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    SELECT /* recentProjectContractStatus */
+        T1.corpCd
+         ,MAX(T1.cntDt) AS dt
+         ,T1.projNm
+         ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+         ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS amt
+    FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+                                      ON T1.corpCd = T2.corpCd
+                                          AND T1.projCd = T2.projCd
+    WHERE T1.corpCd = #{corpCd}
+      AND T1.cntDt BETWEEN #{stDt} AND #{edDt}
+    GROUP BY T1.corpCd, T1.projCd
+    ORDER BY T1.cntDt DESC
+    </select>
+
+    <select id="overdueDeliveryAndNonIssuanceOfTaxInvoice" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+        SELECT /* overdueDeliveryAndNonIssuanceOfTaxInvoice */
+            O1.corpCd
+            ,dt
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = O1.custCd) as custNm
+            ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.projCd like O1.projCd) AS projNm
+            ,IF(SUM(O1.amt2) > 0,SUM(O1.amt2),SUM(O1.amt)) AS amt
+            ,O1.note
+          FROM (
+                SELECT /* 오늘 기준 이전 모든 프로젝트 */
+                    T1.corpCd
+                     ,MAX(T1.dueDt) AS dt
+                     ,T1.projCd
+                     ,T1.custCd
+                     ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS amt /* 계약금액 */
+                     ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt5 ELSE SUM(T2.totAmt5) END AS amt2 /* 준공금액 */
+                     ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS q1 /* 계약금액 */
+                     ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt5 ELSE SUM(T2.totAmt5) END AS q2 /* 준공금액 */
+                     ,'' AS q11
+                     ,'' AS q21
+                     ,T1.note1 AS note
+                FROM tb_project_list T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+                                                  ON T1.corpCd = T2.corpCd
+                                                      AND T1.projCd = T2.projCd
+                 WHERE T1.corpCd = #{corpCd}
+                   AND T1.dueDt <![CDATA[<]]> DATE_FORMAT(NOW(), '%Y%m%d')
+                GROUP BY T1.corpCd, T1.projCd
+                 UNION ALL
+                SELECT /* 모든 매출데이터(세금계산서) */
+                    T1.corpCd
+                     ,''
+                     ,T1.projCd
+                     ,''
+                     ,SUM(-T1.totAmt3)
+                     ,SUM(-T1.totAmt3)
+                     ,''
+                     ,''
+                     ,SUM(T1.totAmt3)
+                     ,SUM(T1.totAmt3)
+                     ,''
+                  FROM tb_yeongeob_sal_list T1
+                 WHERE T1.corpCd = #{corpCd}
+                 GROUP BY T1.corpCd, T1.projCd
+                ) O1
+         GROUP BY O1.corpCd, O1.projCd /* 회사, 프로젝트 기준 계약금+(-세금계산서값) */
+        HAVING CHAR_LENGTH(O1.dt)  >  0 /* 그럴일은 없겠지만 프로젝트 코드가 없는 세금계산서 값 제외 */
+           AND SUM(O1.q1) > SUM(O1.q11) # 계약금액 대비 매출금액이 작은 경우
+           AND (	SUM(O1.q2) > SUM(O1.q21) # 준공금액 대비 매출금액이 작은 경우
+            OR SUM(O1.q2) = 0 # 준공처리 안된 경우
+            )
+         ORDER BY O1.dt
+    </select>
+
+    <select id="deliveryTermProjectStatus" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    SELECT /* deliveryTermProjectStatus */
+        T1.corpCd
+         ,T1.dueDt AS dt
+         ,T1.projNm
+         ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+         ,CASE WHEN COUNT(T2.corpCd) = 0 THEN T1.totAmt3 ELSE SUM(T2.totAmt3) END AS amt
+    FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
+                                      ON T1.corpCd = T2.corpCd
+                                          AND T1.projCd = T2.projCd
+    WHERE T1.corpCd = #{corpCd}
+      AND T1.dueDt BETWEEN #{stDt} AND #{edDt}
+    GROUP BY T1.corpCd, T1.projCd
+    ORDER BY T1.dueDt DESC
+    </select>
+
+    <select id="collectionProjectStatus" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    /* collectionProjectStatus */
+    </select>
+
+    <select id="longTermAttemptedBondStatus" resultType="com.springboot.myapp.eds.erp.vo.global.MAINCONTENTVO">
+    SELECT /* longTermAttemptedBondStatus */
+        T1.corpCd
+        ,T1.salCd
+         ,dt
+         ,T1.projCd
+         ,(SELECT I1.projNm FROM TB_PROJECT_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.projCd like T1.projCd) AS projNm
+         ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+         ,SUM(T1.totAmt3) AS amt
+         ,note
+    FROM (
+             SELECT
+                 T1.corpCd
+                 ,T1.salCd
+                  ,(T1.salDt) AS dt
+                  ,T1.projCd
+                  ,T1.custCd
+                  ,SUM(T1.totAmt3) AS totAmt3
+                  ,(T1.note1) AS note
+             FROM tb_yeongeob_sal_list T1
+             WHERE T1.corpCd = #{corpCd}
+             GROUP BY T1.corpCd,T1.salCd
+             UNION ALL
+             SELECT
+                 T1.corpCd
+                 ,T1.salCd
+                  ,''
+                  ,T1.projCd
+                  ,T1.custCd
+                  ,-SUM(T1.totAmt3)
+                  ,T1.note1
+             FROM tb_gumae_col_list T1
+             WHERE T1.corpCd = #{corpCd}
+             GROUP BY T1.corpCd,T1.salCd) T1
+             WHERE ((SELECT sum(IFNULL(a1.totAmt3,0)) FROM tb_yeongeob_sal_list a1 WHERE a1.projCd=t1.projCd and a1.corpCd = #{corpCd}) - (SELECT ifnull(sum(IFNULL(a1.totAmt3,0)),0) FROM tb_gumae_col_list a1 WHERE a1.projCd=t1.projCd and a1.corpCd = #{corpCd}))  > 0
+            GROUP BY T1.corpCd,T1.salCd
+            HAVING SUM(T1.totAmt3)  >  0
+            ORDER BY T1.dt ASC
+              <!-- SELECT/* longTermAttemptedBondStatus */
+             T1.corpCd
+             ,T1.salCd
+              ,T1.salDt AS dt
+              ,T1.projCd
+              ,T1.custCd
+              ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+              ,T1.note1 AS note
+              ,(T1.totAmt3) AS amt
+              ,(T2.totAmt3) AS coltotmAmt
+              ,(T2.totAmt3-T1.totAmt3)
+         FROM tb_yeongeob_sal_list T1 LEFT JOIN tb_gumae_col_list t2 ON T1.corpCd=t2.corpCd and t1.salCd = t2.salCd 
+         WHERE T1.corpCd = #{corpCd}
+         AND (SELECT SUM(IFNULL(a1.totAmt3,0)-ifnull(a2.totAmt3,0)) FROM tb_yeongeob_sal_list a1 LEFT JOIN tb_gumae_col_list a2 ON a1.corpCd=a2.corpCd and a1.projCd = a2.projCd AND a1.salCd = a2.salCd WHERE a1.projCd=T1.projCd and a1.corpCd = #{corpCd}) > 0
+         and ((T2.totAmt3-T1.totAmt3) <![CDATA[<]]> 0 OR t2.salCd is null)
+	    	 ORDER BY T1.salDt ASC -->
+    </select>
+
+
+</mapper>

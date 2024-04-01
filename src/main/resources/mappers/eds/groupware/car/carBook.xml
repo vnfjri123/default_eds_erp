@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.car.carBookMapper">
+
+    <select id="selectCarBookList"  resultType="com.springboot.myapp.eds.groupware.vo.car.carBookListVO">
+        SELECT /* selectCarBookList */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,carBookCd
+            ,carBookCd AS id
+            ,carCd
+            ,carCd AS calendarId
+            ,(SELECT concat(carNo,' - ',carNm) FROM TB_BASE_CAR_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.carCd=T1.carCd) AS carNm
+            ,STR_TO_DATE(stDt, '%Y%m%d%H%i') AS stDt
+            ,STR_TO_DATE(stDt, '%Y%m%d%H%i') AS start
+            ,STR_TO_DATE(edDt, '%Y%m%d%H%i') AS edDt
+            ,STR_TO_DATE(edDt, '%Y%m%d%H%i') AS end
+            ,useTime
+            ,empCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empCd) AS empNm
+            ,depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm
+            ,(SELECT depaColorCd FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS backgroundColor
+            ,purpCd
+            ,note
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_CAR_BOOK_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+          AND (stDt LIKE #{date} OR edDt LIKE #{date})
+        <if test="carBookCd != null and !carBookCd.equals('')">
+            AND carBookCd = #{carBookCd}
+        </if>
+        <if test="carCd != null and !carCd.equals('')">
+            AND carCd = #{carCd}
+        </if>
+        <if test="empCd != null and !empCd.equals('')">
+            AND empCd = #{empCd}
+        </if>
+        order by carCd
+    </select>
+
+    <insert id="insertCarBookList" parameterType="hashMap">
+        INSERT INTO /* insertCarBookList */
+        TB_CAR_BOOK_LIST(
+             corpCd
+            ,busiCd
+            ,carBookCd
+            ,carCd
+            ,stDt
+            ,edDt
+            ,useTime
+            ,empCd
+            ,depaCd
+            ,purpCd
+            ,note
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,(SELECT IFNULL(MAX(CAST(carBookCd as signed)),0)+1
+              FROM TB_CAR_BOOK_LIST
+              WHERE corpCd = #{corpCd})
+            ,#{carCd}
+            ,DATE_FORMAT(#{stDt}, '%Y%m%d%H%i')
+            ,DATE_FORMAT(#{edDt}, '%Y%m%d%H%i')
+            ,#{useTime}
+            ,#{empCd}
+            ,#{depaCd}
+            ,#{purpCd}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateCarBookList" parameterType="hashMap">
+        UPDATE /* updateCarBookList */
+            TB_CAR_BOOK_LIST
+        SET carCd = #{carCd}
+           ,stDt = DATE_FORMAT(#{stDt}, '%Y%m%d%H%i')
+           ,edDt = DATE_FORMAT(#{edDt}, '%Y%m%d%H%i')
+           ,useTime = #{useTime}
+           ,empCd = #{empCd}
+           ,depaCd = #{depaCd}
+           ,purpCd = #{purpCd}
+           ,note = #{note}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND carBookCd = #{carBookCd}
+    </update>
+
+    <delete id="deleteCarBookList"  parameterType="hashMap">
+        DELETE /* deleteCarBookList */
+        FROM TB_CAR_BOOK_LIST
+        WHERE corpCd = #{corpCd}
+          AND carBookCd = #{carBookCd}
+    </delete>
+</mapper>

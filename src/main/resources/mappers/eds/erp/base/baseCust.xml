@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseCustMapper">
+
+    <select id="selectCustList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCustListVO">
+        SELECT /* selectCustList */
+            corpCd
+            ,custCd
+            ,custNm
+            ,ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(corpNo), #{secretKey}) AS CHAR) AS corpNo
+            ,busiType
+            ,busiItem
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(addrDetail), #{secretKey}) AS CHAR) AS addrDetail
+            ,manNm AS manNm
+            ,CAST(AES_DECRYPT(UNHEX(email), #{secretKey}) AS CHAR) AS email
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(faxNo), #{secretKey}) AS CHAR) AS faxNo
+            ,bankCd
+            ,accoNo
+            ,remark
+            ,issue
+            ,useYn
+        FROM TB_BASE_CUST_LIST
+        WHERE corpCd = #{corpCd}
+        <if test="custNm != null and !custNm.equals('')">
+            AND custNm like '%' #{custNm} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+    </select>
+
+    <select id="selectCustPopList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseCustListVO">
+        SELECT /* selectCustPopList */
+            corpCd
+            ,custCd
+            ,custNm
+            ,ownerNm
+            ,CAST(AES_DECRYPT(UNHEX(corpNo), #{secretKey}) AS CHAR) AS corpNo
+            ,busiType
+            ,busiItem
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(addrDetail), #{secretKey}) AS CHAR) AS addrDetail
+            ,manNm AS manNm
+            ,CAST(AES_DECRYPT(UNHEX(email), #{secretKey}) AS CHAR) AS email
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(faxNo), #{secretKey}) AS CHAR) AS faxNo
+            ,bankCd
+            ,accoNo
+            ,remark
+            ,issue
+            ,useYn
+        FROM TB_BASE_CUST_LIST
+        WHERE corpCd = #{corpCd}
+        <if test="custCd != null and !custCd.equals('')">
+            AND (custCd like #{custCd} OR custNm like '%' #{custCd} '%')
+        </if>
+    </select>
+
+    <insert id="insertCustList" parameterType="hashMap">
+        INSERT INTO /* insertCustList */
+            TB_BASE_CUST_LIST(
+                          corpCd
+                        , custCd
+                        , custNm
+                        , ownerNm
+                        , corpNo
+                        , busiType
+                        , busiItem
+                        , addr
+                        , addrDetail
+                        , manNm
+                        , email
+                        , telNo
+                        , faxNo
+                        , bankCd
+                        , accoNo
+                        , remark
+                        , issue
+                        , useYn
+                        , inpId
+                        , inpDttm                                   
+                        , updId
+                        , updDttm)
+        SELECT 
+               #{corpCd}
+             , (SELECT CONCAT('cust',(substring(ifnull(MAX(custCd),'cust10000'),5,5)+1)) AS CORP FROM TB_BASE_CUST_LIST WHERE corpCd = #{corpCd} AND custCd LIKE 'cust%')
+             , #{custNm}
+             , #{ownerNm}
+             , HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+             , #{busiType}
+             , #{busiItem}
+             , HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+             , #{manNm}
+             , HEX(AES_ENCRYPT(#{email}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+             , HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+             , #{bankCd}
+             , #{accoNo}
+             , #{remark}
+             , #{issue}
+             , #{useYn}
+             , #{userId}
+             , now()
+             , #{userId}
+             , now()
+    </insert>
+
+    <update id="updateCustList" parameterType="hashMap">
+        UPDATE /* updateCustList */
+            TB_BASE_CUST_LIST
+        SET custCd     = #{custCd}
+          , custNm     = #{custNm}
+          , ownerNm    = #{ownerNm}
+          , corpNo     = HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+          , busiType   = #{busiType}
+          , busiItem   = #{busiItem}
+          , addr        = HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+          , addrDetail = HEX(AES_ENCRYPT(#{addrDetail}, #{secretKey}))
+          , manNm      = #{manNm}
+          , email       = HEX(AES_ENCRYPT(#{email}, #{secretKey}))
+          , telNo      = HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+          , faxNo      = HEX(AES_ENCRYPT(#{faxNo}, #{secretKey}))
+          , bankCd     = #{bankCd}
+          , accoNo     = #{accoNo}
+          , remark      = #{remark}
+          , issue      = #{issue}
+          , useYn      = #{useYn}
+          , updId      = #{userId}
+          , updDttm    = now()
+        WHERE corpCd = #{corpCd}
+          AND custCd = #{custCd}
+    </update>
+
+    <delete id="deleteCustList"  parameterType="hashMap">
+        DELETE /* deleteCustList */
+        FROM TB_BASE_CUST_LIST
+        WHERE corpCd = #{corpCd}
+          AND custCd = #{custCd}
+    </delete>
+    <!-- 사업자등록번호 중복체크-->
+    <select id="selectCorpNoCheck" resultType="string" parameterType="hashMap">
+        SELECT /* selectCorpNoCheck */
+            count(corpNo)
+        FROM TB_BASE_CUST_LIST
+        WHERE corpCd = #{corpCd}
+          AND corpNo = HEX(AES_ENCRYPT(#{corpNo}, #{secretKey}))
+    </select>
+</mapper>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="0" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8dc061c2-1b21-4546-935e-41e147a90df4">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eds"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<parameter name="busiNm" class="java.lang.String"/>
+	<parameter name="inspNo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT /* selectQUACO5000 */
+        corpCd
+        ,busiCd
+        ,insp_no
+		,DATE_FORMAT(STR_TO_DATE(insp_dt, '%Y%m%d'), '%Y-%m-%d') AS insp_dt
+        ,(SELECT commCdNm
+		FROM TB_SYSTEM_SHA_LIST T3 INNER JOIN TB_SYSTEM_SHA_DET T4 ON T3.groupNo = T4.groupNo
+		WHERE T3.groupCd='COM015'
+			AND T4.commCd = T1.insp_divi
+	  	) AS insp_divi
+        ,pic_cd
+        ,(SELECT T0.empNm FROM TB_BASE_USER_LIST T0 WHERE T0.empCd = T1.pic_cd) as picNm
+        ,depaCd
+        ,(SELECT T0.depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=$P{corpCd} AND T0.depaCd=T1.depaCd) as depaNm
+        ,empCd
+        ,(SELECT T0.empNm FROM TB_BASE_USER_LIST T0 WHERE T0.empCd = T1.empCd) as empNm
+        ,remark
+        FROM
+        t_mesquaco08 T1
+        WHERE 1=1
+        AND corpCd = $P{corpCd}
+        AND busiCd = $P{busiCd}
+        AND T1.insp_no = $P{inspNo}
+        ORDER BY insp_no DESC]]>
+	</queryString>
+	<field name="corpCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[회사 코드]]></fieldDescription>
+	</field>
+	<field name="busiCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[사업장 코드]]></fieldDescription>
+	</field>
+	<field name="insp_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="insp_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="insp_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[검사 번호]]></fieldDescription>
+	</field>
+	<field name="insp_dt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="insp_dt"/>
+		<property name="com.jaspersoft.studio.field.label" value="insp_dt"/>
+	</field>
+	<field name="insp_divi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="insp_divi"/>
+		<property name="com.jaspersoft.studio.field.label" value="insp_divi"/>
+	</field>
+	<field name="pic_cd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="pic_cd"/>
+		<property name="com.jaspersoft.studio.field.label" value="pic_cd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[담당자 코드]]></fieldDescription>
+	</field>
+	<field name="picNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="picNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="picNm"/>
+	</field>
+	<field name="depaCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="depaCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="depaCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[부서 코드]]></fieldDescription>
+	</field>
+	<field name="depaNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="depaNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="depaNm"/>
+	</field>
+	<field name="empCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="empCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="empCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[사원 번호]]></fieldDescription>
+	</field>
+	<field name="empNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="empNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="empNm"/>
+	</field>
+	<field name="remark" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="remark"/>
+		<property name="com.jaspersoft.studio.field.label" value="remark"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="t_mesquaco08"/>
+		<fieldDescription><![CDATA[비고]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<textField pattern="yyyy-MM-dd">
+				<reportElement x="650" y="50" width="171" height="40" uuid="210ff85b-272b-48d7-8670-956f454b793f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="539" y="50" width="100" height="40" uuid="b08619b9-bd58-4e4a-9ca9-b8635d418e6a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[인쇄일자 :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="0" width="800" height="50" uuid="53b927b6-fdca-48ef-b537-993b19e4d733">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[검사현황]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="130" y="50" width="130" height="40" uuid="be48c2cb-4482-4767-b1c9-d0d5304316e0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($P{busiNm}!=null)?$P{busiNm}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="50" width="140" height="40" uuid="d9fc40b0-6547-41a7-a653-3589dcbf2f19">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[사업장 :]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="1" y="0" width="800" height="20" uuid="ef43bcdc-b4c1-4bca-b88f-9ce319157e37">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$P{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$P{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inspNo">
+					<subreportParameterExpression><![CDATA[$P{inspNo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "QUACO5001.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="20">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="1" y="0" width="800" height="20" uuid="cf2ac99a-f1a7-4396-af39-a21a5dbc75ac">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="corpCd">
+					<subreportParameterExpression><![CDATA[$P{corpCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="busiCd">
+					<subreportParameterExpression><![CDATA[$P{busiCd}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inspNo">
+					<subreportParameterExpression><![CDATA[$P{inspNo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "QUACO5002.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

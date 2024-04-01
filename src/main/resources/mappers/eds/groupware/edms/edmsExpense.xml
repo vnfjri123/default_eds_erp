@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.edms.edmsExpenseMapper">
+
+    <select id="selectExpenseList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsExpenseListVO">
+        SELECT /* selectExpenseList */
+            T1.corpCd
+            ,T1.busiCd
+            ,T1.submitCd
+            ,CASE WHEN COUNT(T2.accountCd) = 0 THEN T1.supAmt ELSE SUM(T2.supAmt) END AS supAmt
+            ,CASE WHEN COUNT(T2.accountCd) = 0 THEN T1.vatAmt ELSE SUM(T2.vatAmt) END AS vatAmt
+            ,CASE WHEN COUNT(T2.accountCd) = 0 THEN T1.totAmt ELSE SUM(T2.totAmt) END AS totAmt
+            ,T1.clas
+            ,T1.note1
+            ,T1.note2
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,T1.keyCd
+          FROM TB_EDMS_Expense_LIST T1 LEFT JOIN TB_EDMS_Expense_ITEM_LIST T2
+            ON T1.corpCd = T2.corpCd
+            AND T1.submitCd = T2.submitCd
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.submitCd = #{submitCd}
+        GROUP BY T1.corpCd, T1.submitCd
+        ORDER BY null
+    </select>
+
+    <select id="selectExpenseItemList" resultType="com.springboot.myapp.eds.groupware.vo.edms.edmsExpenseItemListVO">
+        SELECT /* selectExpenseItemList */
+             corpCd
+            ,busiCd
+            ,submitCd
+            ,seq
+            ,projCd
+            ,payDivi
+            ,(SELECT I1.projnm FROM tb_project_list I1 WHERE I1.corpCd = #{corpCd} AND I1.projCd = T1.projCd) as projNm
+            ,accountCd
+            ,(SELECT I1.accountNm FROM tb_base_account_list I1 WHERE I1.corpCd = #{corpCd} AND I1.accountCd = T1.accountCd) as accountNm
+            ,supAmt
+            ,vatAmt
+            ,totAmt
+            ,costDt
+            ,custCd
+            ,(SELECT I1.custNm FROM tb_base_cust_list I1 WHERE I1.corpCd = #{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,depaCd
+            ,(SELECT I1.depaNm FROM tb_base_depa_list I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) as depaNm
+            ,credCd
+            ,expeDivi
+            ,note
+            ,costPur
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+          FROM TB_EDMS_Expense_ITEM_LIST T1
+         WHERE corpCd = #{corpCd}
+           AND submitCd = #{submitCd}
+        ORDER BY costDt*1 ASC
+    </select>
+    
+    <insert id="insertExpenseList" parameterType="hashMap">
+        INSERT INTO /* insertExpenseList */
+        TB_EDMS_Expense_LIST(
+             corpCd
+            ,busiCd
+            ,submitCd
+            ,supAmt
+            ,vatAmt
+            ,totAmt
+            ,clas
+            ,note1
+            ,note2
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm
+            ,keyCd
+        )
+        SELECT
+             #{corpCd}
+            ,#{busiCd}
+            ,#{submitCd}
+            ,#{supAmt}
+            ,#{vatAmt}
+            ,#{totAmt}
+            ,#{clas}
+            ,#{note1}
+            ,#{note2}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ,#{keyCd}
+            ON DUPLICATE KEY UPDATE 
+            supAmt=#{supAmt},
+            vatAmt=#{vatAmt},
+            totAmt=#{totAmt},
+            clas=#{clas},
+            note1=#{note1},
+            note2=#{note2},
+            updId=#{userId},
+            updDttm=now()
+            
+    </insert>
+    <insert id="insertExpenseItemList" parameterType="hashMap">
+        INSERT INTO /* insertExpenseItemList */
+            TB_EDMS_Expense_ITEM_LIST(
+                  corpCd
+                  ,busiCd
+                  ,submitCd
+                  ,seq
+                  ,projCd
+                  ,accountCd
+                  ,supAmt
+                  ,vatAmt
+                  ,totAmt
+                  ,costDt
+                  ,custCd
+                  ,depaCd
+                  ,credCd
+                  ,expeDivi
+                  ,note
+                  ,costPur
+                  ,payDivi
+                   ,inpId
+                   ,inpDttm
+                   ,updId
+                   ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,#{submitCd}
+            <choose>
+            <when test = "seq != null and !seq.equals('')">
+            ,#{seq}
+            </when>
+            <otherwise>            
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM TB_EDMS_Expense_ITEM_LIST
+              WHERE corpCd = #{corpCd}
+                AND submitCd = #{submitCd})          </otherwise>
+            </choose>
+            ,#{projCd}
+            ,#{accountCd}
+            ,#{supAmt}
+            ,#{vatAmt}
+            ,#{totAmt}
+            ,#{costDt}
+            ,#{custCd}
+            ,#{depaCd}
+            ,#{credCd}
+            ,#{expeDivi}
+            ,#{note}
+            ,#{costPur}
+            ,#{payDivi}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+            ON DUPLICATE KEY UPDATE 
+            projCd=#{projCd}
+            ,accountCd=#{accountCd}
+            ,supAmt=#{supAmt}
+            ,vatAmt=#{vatAmt}
+            ,totAmt=#{totAmt}
+            ,costDt=#{costDt}
+            ,custCd=#{custCd}
+            ,depaCd=#{depaCd}
+            ,credCd=#{credCd}
+            ,payDivi=#{payDivi}
+            ,expeDivi=#{expeDivi}
+            ,note=#{note}
+            ,costPur=#{costPur}
+          
+    </insert>
+
+    <delete id="deleteExpenseList"  parameterType="hashMap">
+        DELETE /* deleteExpenseList */
+        FROM TB_EDMS_Expense_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+
+    <delete id="deleteExpenseItemList"  parameterType="hashMap">
+        DELETE /* deleteExpenseItemList */
+        FROM TB_EDMS_Expense_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+          AND submitCd = #{submitCd}
+    </delete>
+
+</mapper>

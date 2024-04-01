@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SALMA0001" pageWidth="220" pageHeight="40" columnWidth="220" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1a82950b-792e-46e2-ac20-68d10c605ed4">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eds"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<parameter name="estiCd" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+	IFNULL(SUM(T3.upr),0) AS sum_upr
+	,IFNULL(SUM(T3.supAmt),0) AS sum_supAmt
+	,IFNULL(SUM(T3.tax),0) AS sum_tax
+	,IFNULL(SUM(T3.upr2),0) AS sum_upr2
+	,IFNULL(SUM(T3.supAmt2),0) AS sum_supAmt2
+	,IFNULL(SUM(T3.tax2),0) AS sum_tax2
+	FROM TB_BASE_BUSI_LIST T1
+	INNER JOIN TB_YEONGEOB_EST_LIST T2 ON T2.corpCd = T1.corpCd AND  T2.busiCd = T1.busiCd
+	inner JOIN t_messalma02 T3 ON T3.corpCd = T2.corpCd AND T3.estiCd = T2.estiCd
+	WHERE 1=1
+	AND T1.corpCd = $P{corpCd}
+	AND T1.busiCd = $P{busiCd}
+	AND T2.estiCd = $P{estiCd}]]>
+	</queryString>
+	<field name="sum_upr" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_upr"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_upr"/>
+	</field>
+	<field name="sum_supAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_supAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_supAmt"/>
+	</field>
+	<field name="sum_tax" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_tax"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_tax"/>
+	</field>
+	<field name="sum_upr2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_upr2"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_upr2"/>
+	</field>
+	<field name="sum_supAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_supAmt2"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_supAmt2"/>
+	</field>
+	<field name="sum_tax2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="sum_tax2"/>
+		<property name="com.jaspersoft.studio.field.label" value="sum_tax2"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,###">
+				<reportElement x="0" y="0" width="65" height="40" uuid="a7ef71f0-583e-4116-9bbf-9cb76fa03a2f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_upr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="145" y="0" width="75" height="40" uuid="3f073503-7de6-43e0-ae0d-b373e9b880d5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_tax}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="65" y="0" width="80" height="40" uuid="2464b444-e077-48ab-80cf-25986c1094d9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕"/>
+					<paragraph rightIndent="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_supAmt}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

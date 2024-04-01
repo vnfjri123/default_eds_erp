@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseItemMapper">
+
+    <select id="selectItemList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseItemListVO">
+        SELECT
+            U1.corpCd,
+            U1.itemCd,
+            U1.pareItemCd,
+            U1.pareSeq,
+            U1.depth,
+            U1.itemNm,
+            U1.mateClas,
+            U1.unit,
+            U1.standard,
+            U1.useYn,
+            U1.note1,
+            U1.note2
+        FROM tb_base_item_list U1
+        WHERE U1.corpCd=#{corpCd}
+
+        <if test="itemNm != null and !itemNm.equals('')">
+            AND (U1.itemNm like '%' #{itemNm} '%' or U1.itemCd like '%' #{itemNm} '%')
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND U1.useYn = #{useYn}
+        </if>
+    </select>
+
+    <select id="selectItemListPop"  resultType="com.springboot.myapp.eds.erp.vo.base.baseItemListVO">
+        SELECT /* selectItemListPop */
+            T1.corpCd
+            ,T1.itemCd
+            ,T1.itemNm
+            ,T1.mateClas
+            ,T1.pareItemCd
+            ,T1.standard
+            ,T1.note1
+            ,T1.note2
+            ,T1.useYn
+        FROM TB_BASE_ITEM_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+        <if test="itemNm != null and !itemNm.equals('')">
+            AND (T1.itemNm like '%' #{itemNm} '%' or T1.itemCd like '%' #{itemNm} '%')
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND T1.useYn = #{useYn}
+        </if>
+        ORDER BY T1.itemCd*1 ASC
+    </select>
+
+    <insert id="insertItemList" parameterType="hashMap">
+        INSERT INTO /* insertItemList */
+            TB_BASE_ITEM_LIST(
+                         corpCd
+                        ,itemCd
+                        ,itemNm
+                        ,mateClas
+                        ,pareItemCd
+                        ,standard
+                        ,unit
+                        ,note1
+                        ,note2
+                        ,useYn
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+            #{corpCd}
+             ,#{itemCd}
+             ,#{itemNm}
+             ,#{mateClas}
+             ,#{pareItemCd}
+             ,#{standard}
+             ,#{unit}
+             ,#{note1}
+             ,#{note2}
+             ,#{useYn}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <update id="updateItemList" parameterType="hashMap">
+        UPDATE TB_BASE_ITEM_LIST /* updateItemList */
+        SET itemNm = #{itemNm}
+            ,mateClas = #{mateClas}
+            ,pareItemCd = #{pareItemCd}
+            ,standard = #{standard}
+            ,unit = #{unit}
+            ,note1 = #{note1}
+            ,note2 = #{note2}
+            ,updId = #{userId}
+            ,useYn = #{useYn}
+            ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND itemCd = #{itemCd}
+    </update>
+
+
+    <delete id="deleteItemList"  parameterType="hashMap">
+        DELETE /* deleteItemList */
+        FROM TB_BASE_ITEM_LIST
+        WHERE corpCd = #{corpCd}
+          AND itemCd = #{itemCd}
+    </delete>
+</mapper>

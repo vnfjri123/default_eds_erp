@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.erpNotice.erpNoticeMapper">
+
+    <select id="selectERPNotice" resultType="com.springboot.myapp.eds.erp.vo.erpNotice.erpNoticeVO">
+        SELECT `index`,
+        `corpCd`,
+        `depaCd`,
+        `depaNm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        `inpDttm`,
+        `updDttm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        `title`,
+        `content`,
+        `hit`
+        FROM tb_erp_notice T1
+        WHERE corpCd = #{corpCd}
+        <if test="stDt != null and !stDt.equals('')">
+            AND DATE(inpDttm) BETWEEN #{stDt} AND #{edDt}
+        </if>
+        <if test="title != null and !title.equals('')">
+            AND title like '%' #{title} '%'
+        </if>
+        ORDER BY `index` DESC;
+    </select>
+
+    <select id="selectERPNoticeImageList" resultType="com.springboot.myapp.eds.erp.vo.erpNotice.erpNoticeImageVO">
+        SELECT
+        T1.`index`,
+        T1.`noticeIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`,
+        T1.`inpId`,
+        T1.`inpDttm`,
+        T1.`empNm`
+        FROM tb_erp_notice_image T1
+        LEFT JOIN tb_erp_notice T2 ON T1.noticeIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="noticeIndex != null and !noticeIndex.equals('')">
+            AND T1.`noticeIndex` = #{noticeIndex}
+        </if>
+    </select>
+
+    <select id="selectERPNoticeFiles" resultType="com.springboot.myapp.eds.erp.vo.erpNotice.erpNoticeFileVO">
+        SELECT
+        T1.`index`,
+        T1.`noticeIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`,
+        T1.`inpId`,
+        T1.`inpDttm`,
+        T1.`empNm`
+        #         T2.`year`
+        FROM tb_erp_notice_file T1
+        LEFT JOIN tb_erp_notice T2 ON T1.noticeIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="noticeIndex != null and !noticeIndex.equals('')">
+            AND T1.`noticeIndex` = #{noticeIndex}
+        </if>
+        <!--        <if test="year != null and !year.equals('')">-->
+        <!--            AND T2.`year` = #{year}-->
+        <!--        </if>-->
+        ORDER BY `index`;
+    </select>
+
+    <select id="selectERPNoticeByIndex" resultType="com.springboot.myapp.eds.erp.vo.erpNotice.erpNoticeVO">
+        SELECT T1.`index`,
+        T1.`corpCd`,
+        T1.`depaCd`,
+        T1.`inpDttm`,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        T1.`updDttm`,
+        T1.`title`,
+        T1.`content`,
+        T1.`endDt`
+        FROM tb_erp_notice T1
+        WHERE T1.corpCd = #{corpCd}
+        <if test="index != null and !index.equals('')">
+            AND T1.`index` = #{index}
+        </if>
+        <if test="date != null and !date.equals('')">
+            AND DATE_FORMAT(#{date}, '%Y-%m-%d') <![CDATA[<=]]> T1.endDt
+        </if>
+        # AND T1.`index` = #{index}
+        ORDER BY `index` DESC;
+    </select>
+
+    <insert id="insertERPNotice" parameterType="hashMap">
+        <selectKey keyProperty="noticeIndex" resultType="int" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO tb_erp_notice
+        (corpCd,
+        depaCd,
+        depaNm,
+        inpId,
+        inpDttm,
+        title,
+        content,
+        endDt)
+        SELECT #{corpCd},
+        #{depaCd},
+        #{depaNm},
+        #{userId},
+        now(),
+        #{title},
+        #{content},
+        #{endDt}
+    </insert>
+
+    <insert id="insertERPNoticeImage" parameterType="hashMap">
+        INSERT INTO tb_erp_notice_image
+        (`noticeIndex`,
+         `corpCd`,
+         `busiCd`,
+         `saveNm`,
+         `origNm`,
+         `saveRoot`,
+         `ext`,
+         `size`,
+         `inpId`,
+         `inpDttm`,
+         `empNm`)
+        SELECT #{noticeIndex},
+               #{corpCd},
+               #{busiCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{userId},
+               now(),
+               #{empNm}
+    </insert>
+
+    <insert id="insertERPNoticeFile" parameterType="hashMap">
+        INSERT INTO tb_erp_notice_file
+        (`noticeIndex`,
+         `corpCd`,
+         `busiCd`,
+         `saveNm`,
+         `origNm`,
+         `saveRoot`,
+         `ext`,
+         `size`,
+         `inpId`,
+         `inpDttm`,
+         `empNm`)
+        SELECT #{noticeIndex},
+               #{corpCd},
+               #{busiCd},
+               #{saveNm},
+               #{origNm},
+               HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+               #{ext},
+               #{size},
+               #{userId},
+               now(),
+               #{empNm}
+    </insert>
+
+    <update id="readERPNotice" parameterType="hashMap">
+        UPDATE tb_erp_notice T1
+        SET T1.hit = T1.hit + 1
+        WHERE T1.`corpCd` = #{corpCd}
+          AND T1.`index` = #{index}
+    </update>
+
+    <update id="updateERPNotice" parameterType="hashMap">
+        UPDATE tb_erp_notice T1
+        SET T1.title     = #{title},
+            T1.content   = #{content},
+            T1.endDt     = #{endDt},
+            T1.`updDttm` = now(),
+            T1.`updId`   = #{userId}
+        WHERE T1.`corpCd` = #{corpCd}
+          AND T1.`index` = #{noticeIndex}
+    </update>
+
+    <delete id="deleteERPNotice" parameterType="hashMap">
+        DELETE
+        FROM tb_erp_notice
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{noticeIndex}
+    </delete>
+
+    <delete id="deleteERPNoticeImageList" parameterType="hashMap">
+        DELETE
+        FROM tb_erp_notice_image
+        WHERE `corpCd` = #{corpCd}
+          AND `busiCd` = #{busiCd}
+          AND `noticeIndex` = #{noticeIndex}
+          AND `saveNm` = #{saveNm}
+    </delete>
+
+    <delete id="deleteERPNoticeFile"  parameterType="hashMap">
+        DELETE
+        FROM tb_erp_notice_file
+        WHERE `corpCd` = #{corpCd}
+          AND `busiCd` = #{busiCd}
+          AND `noticeIndex` = #{noticeIndex}
+          AND `index` = #{index}
+    </delete>
+
+    <delete id="deleteERPNoticeFilesAll"  parameterType="hashMap">
+        DELETE
+        FROM tb_erp_notice_file
+        WHERE `corpCd` = #{corpCd}
+          AND `busiCd` = #{busiCd}
+          AND `noticeIndex` = #{noticeIndex}
+    </delete>
+</mapper>

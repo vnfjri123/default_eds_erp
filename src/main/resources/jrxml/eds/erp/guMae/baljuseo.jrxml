@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="gyeonjeogseo" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fc97a963-c0b6-4c19-a348-7e2773e092a3">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="143"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="851"/>
+	<parameter name="ordCd" class="java.lang.String"/>
+	<parameter name="corpCd" class="java.lang.String"/>
+	<parameter name="busiCd" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="num2han" class="java.lang.String"/>
+	<parameter name="num" class="java.lang.String"/>
+	<parameter name="secretKey" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="stamp" class="java.lang.String"/>
+	<parameter name="param1" class="java.lang.String"/>
+	<parameter name="param2" class="java.lang.String"/>
+	<parameter name="param3" class="java.lang.String"/>
+	<parameter name="param4" class="java.lang.String"/>
+	<parameter name="param5" class="java.lang.String"/>
+	<parameter name="param6" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT /* selectEstMgtList */
+			hex(AES_ENCRYPT(
+				CONCAT(
+            			T1.corpCd,
+            			T1.busiCd,
+            			(SELECT I1.corpNo FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd}),
+            			T1.ordCd
+            	)
+				, $P{secretKey}
+			)) as qrCode
+            ,T1.corpCd
+            ,T1.busiCd
+            ,CAST(AES_DECRYPT(UNHEX((SELECT I1.corpNo FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd})), 'edsinc.co.kr!@#') AS CHAR) as corpNo
+            ,(SELECT I1.busiNm FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd}) as busiNm
+            ,(SELECT I1.ownerNm FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd}) as ownerNm
+            ,CAST(AES_DECRYPT(UNHEX((SELECT I1.addr FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd})), 'edsinc.co.kr!@#') AS CHAR) as addr
+            ,CAST(AES_DECRYPT(UNHEX((SELECT I1.telNo FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd})), 'edsinc.co.kr!@#') AS CHAR) as telNo
+            ,CAST(AES_DECRYPT(UNHEX((SELECT I1.faxNo FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd})), 'edsinc.co.kr!@#') AS CHAR) as faxNo
+            ,(SELECT I1.busiType FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd}) as busiType
+            ,(SELECT I1.busiItem FROM tb_base_busi_list I1 WHERE I1.corpCd = $P{corpCd} AND I1.busiCd = $P{busiCd}) as busiItem
+            ,T1.ordCd
+            ,T1.deadDivi
+            ,T1.sccDivi
+            ,date_format(T1.estDt, '%Y-%m-%d') as estDt
+            ,date_format(T1.ordDt, '%Y-%m-%d') as ordDt
+            ,date_format(T1.ordDueDt, '%Y-%m-%d') as ordDueDt
+            ,date_format(T1.validDt, '%Y-%m-%d') as validDt
+            ,T1.custCd
+            ,(SELECT I1.custNm FROM TB_BASE_CUST_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.custCd = T1.custCd) as custNm
+            ,T1.manCd
+            ,T1.manNote
+            ,(SELECT I1.empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.empCd = T1.manCd) as manNm
+            ,T2.supAmt AS supAmt
+            ,T2.vatAmt AS vatAmt
+            ,T2.totAmt AS totAmt
+            ,T2.supAmt2 AS supAmt2
+            ,T2.vatAmt2 AS vatAmt2
+            ,T2.totAmt2 AS totAmt2
+            ,T1.clas
+            ,T1.item
+            ,T1.payTm
+            ,T1.note1
+            ,T1.note2 as projNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,(SELECT I1.itemNm FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.itemCd = T2.itemCd) as itemNm
+            ,(SELECT I1.unit FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.itemCd = T2.itemCd) as unit
+            ,CASE
+                 WHEN ISNULL(CHAR_LENGTH(standard)) = 1 || CHAR_LENGTH(standard) = 0 THEN (SELECT I1.standard FROM TB_BASE_ITEM_LIST I1 WHERE I1.corpCd = $P{corpCd} AND I1.itemCd = T2.itemCd)
+                ELSE standard
+             END AS standard
+            ,T2.qty
+            ,T2.cost AS cost2
+            ,T2.supAmt AS itemSupAmt2
+            ,T2.vatAmt AS itemVatAmt2
+            ,T2.totAmt AS itemtotAmt2
+            ,T2.note
+          FROM TB_GUMAE_ORD_LIST T1 LEFT JOIN TB_GUMAE_ORD_ITEM_LIST T2
+            ON T1.corpCd = T2.corpCd
+            AND T1.ordCd = T2.ordCd
+         WHERE T1.corpCd = $P{corpCd}
+           AND T1.ordCd = $P{ordCd}
+        ORDER BY T2.seq*1 ASC]]>
+	</queryString>
+	<field name="qrCode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="qrCode"/>
+		<property name="com.jaspersoft.studio.field.label" value="qrCode"/>
+	</field>
+	<field name="corpCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[회사 코드]]></fieldDescription>
+	</field>
+	<field name="busiCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[사업자 코드]]></fieldDescription>
+	</field>
+	<field name="corpNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="corpNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="corpNo"/>
+	</field>
+	<field name="busiNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiNm"/>
+	</field>
+	<field name="ownerNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ownerNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="ownerNm"/>
+	</field>
+	<field name="addr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="addr"/>
+		<property name="com.jaspersoft.studio.field.label" value="addr"/>
+	</field>
+	<field name="telNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="telNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="telNo"/>
+	</field>
+	<field name="faxNo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="faxNo"/>
+		<property name="com.jaspersoft.studio.field.label" value="faxNo"/>
+	</field>
+	<field name="busiType" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiType"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiType"/>
+	</field>
+	<field name="busiItem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="busiItem"/>
+		<property name="com.jaspersoft.studio.field.label" value="busiItem"/>
+	</field>
+	<field name="ordCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ordCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="ordCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[발주 코드]]></fieldDescription>
+	</field>
+	<field name="deadDivi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="deadDivi"/>
+		<property name="com.jaspersoft.studio.field.label" value="deadDivi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[마감 구분]]></fieldDescription>
+	</field>
+	<field name="sccDivi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="sccDivi"/>
+		<property name="com.jaspersoft.studio.field.label" value="sccDivi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[성공 구분]]></fieldDescription>
+	</field>
+	<field name="estDt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="estDt"/>
+		<property name="com.jaspersoft.studio.field.label" value="estDt"/>
+	</field>
+	<field name="ordDt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ordDt"/>
+		<property name="com.jaspersoft.studio.field.label" value="ordDt"/>
+	</field>
+	<field name="ordDueDt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ordDueDt"/>
+		<property name="com.jaspersoft.studio.field.label" value="ordDueDt"/>
+	</field>
+	<field name="validDt" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="validDt"/>
+		<property name="com.jaspersoft.studio.field.label" value="validDt"/>
+	</field>
+	<field name="custCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="custCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="custCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[거래처 코드]]></fieldDescription>
+	</field>
+	<field name="custNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="custNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="custNm"/>
+	</field>
+	<field name="manCd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="manCd"/>
+		<property name="com.jaspersoft.studio.field.label" value="manCd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[담당자 코드]]></fieldDescription>
+	</field>
+	<field name="manNote" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="manNote"/>
+		<property name="com.jaspersoft.studio.field.label" value="manNote"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[담당 비고]]></fieldDescription>
+	</field>
+	<field name="manNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="manNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="manNm"/>
+	</field>
+	<field name="supAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[공급가액]]></fieldDescription>
+	</field>
+	<field name="vatAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="vatAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="vatAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[부가세액]]></fieldDescription>
+	</field>
+	<field name="totAmt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="totAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="totAmt"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[합계금액]]></fieldDescription>
+	</field>
+	<field name="supAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="supAmt2"/>
+		<property name="com.jaspersoft.studio.field.label" value="supAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[공급가액2]]></fieldDescription>
+	</field>
+	<field name="vatAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="vatAmt2"/>
+		<property name="com.jaspersoft.studio.field.label" value="vatAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[부가세액2]]></fieldDescription>
+	</field>
+	<field name="totAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="totAmt2"/>
+		<property name="com.jaspersoft.studio.field.label" value="totAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[합계금액2]]></fieldDescription>
+	</field>
+	<field name="clas" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="clas"/>
+		<property name="com.jaspersoft.studio.field.label" value="clas"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[분류(비고성)]]></fieldDescription>
+	</field>
+	<field name="item" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="item"/>
+		<property name="com.jaspersoft.studio.field.label" value="item"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[품목(비고성)]]></fieldDescription>
+	</field>
+	<field name="payTm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="payTm"/>
+		<property name="com.jaspersoft.studio.field.label" value="payTm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[결제 조건(비고성)]]></fieldDescription>
+	</field>
+	<field name="note1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="note1"/>
+		<property name="com.jaspersoft.studio.field.label" value="note1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[(비고성)]]></fieldDescription>
+	</field>
+	<field name="projNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="note2"/>
+		<property name="com.jaspersoft.studio.field.label" value="projNm"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_list"/>
+		<fieldDescription><![CDATA[비고]]></fieldDescription>
+	</field>
+	<field name="inpNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="inpNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="inpNm"/>
+	</field>
+	<field name="updNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="updNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="updNm"/>
+	</field>
+	<field name="itemNm" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="itemNm"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemNm"/>
+	</field>
+	<field name="unit" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="unit"/>
+		<property name="com.jaspersoft.studio.field.label" value="unit"/>
+	</field>
+	<field name="standard" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="standard"/>
+		<property name="com.jaspersoft.studio.field.label" value="standard"/>
+	</field>
+	<field name="qty" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="qty"/>
+		<property name="com.jaspersoft.studio.field.label" value="qty"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[수량]]></fieldDescription>
+	</field>
+	<field name="cost2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="cost"/>
+		<property name="com.jaspersoft.studio.field.label" value="cost2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[단가2]]></fieldDescription>
+	</field>
+	<field name="itemSupAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="supAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemSupAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+	</field>
+	<field name="itemVatAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="vatAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemVatAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+	</field>
+	<field name="itemtotAmt2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="totAmt"/>
+		<property name="com.jaspersoft.studio.field.label" value="itemtotAmt2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+	</field>
+	<field name="note" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="note"/>
+		<property name="com.jaspersoft.studio.field.label" value="note"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="tb_gumae_ord_item_list"/>
+		<fieldDescription><![CDATA[비고]]></fieldDescription>
+	</field>
+	<variable name="totSupAmt" class="java.lang.Double" resetType="Master" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemSupAmt2}]]></variableExpression>
+	</variable>
+	<variable name="totVatAmt" class="java.lang.Double" resetType="Master" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemVatAmt2}]]></variableExpression>
+	</variable>
+	<variable name="totTotAmt" class="java.lang.Double" resetType="Master" calculation="Sum">
+		<variableExpression><![CDATA[$F{itemtotAmt2}]]></variableExpression>
+	</variable>
+	<group name="Group2">
+		<groupExpression><![CDATA[$F{inpNm}]]></groupExpression>
+	</group>
+	<title>
+		<band height="252" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image>
+				<reportElement x="353" y="94" width="120" height="35" uuid="a87a32ee-8734-4e74-9bb3-085e00e9c489">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement mode="Opaque" x="500" y="237" width="64" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="600e2665-f6be-49bf-b073-d473e0aa202e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["비  고"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="203" width="291" height="15" uuid="5d488e4b-b34e-42bb-817a-3d94b227fd46">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["담         당 : " +(($F{manNote}!=null)?$F{manNote}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="350" y="237" width="30" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="0cda9e6a-a3d0-4e1a-82ab-b38d8a3d92b9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["단  위"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="508" y="126" width="50" height="50" uuid="da843f85-c9c8-4632-a774-ebee47aca68c"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$P{stamp}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="355" y="203" width="219" height="15" uuid="71a6862b-df81-468a-ad24-20fed2e898c5">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param6}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="-10" y="15" width="47" height="47" uuid="68906b91-8c44-40f5-a629-0b82e6bd2143">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA[$F{qrCode}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField>
+				<reportElement x="355" y="128" width="219" height="15" uuid="f762391a-3adb-4de4-af06-2197725f04c3">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="80" width="230" height="15" uuid="2bff9171-571a-48b6-a2ab-026c89240943">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{custNm}!=null)?$F{custNm}:"") + " 貴下"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="221" width="340" height="15" uuid="864593b9-6b60-41c0-9476-d4a8277324e8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["금액 : 금 " + $P{num} + "원 (금 " + $P{num2han} +"만원 VAT포함)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="143" width="219" height="15" uuid="0c820e04-d42f-438c-abe0-2cee125aded2">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="380" y="237" width="50" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="e73670b8-2536-4d0d-97e4-351e457f379c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["단  가"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="60" uuid="6e420f4c-2f1e-41cb-8362-3f24a529fec0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[발  주  서]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="355" y="188" width="219" height="15" uuid="f74b4780-93b5-47ba-9c7a-42a465c806f9">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="320" y="237" width="30" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="57a11ab2-7507-48b4-a090-281008dbb1cc">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["수  량"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="100" y="237" width="220" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="58d1bbef-674c-477b-8d97-11af53b8e08b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["규  격"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="430" y="237" width="70" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="4ef18578-3465-479e-97e4-84b8fce43736"/>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["합  계"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="128" width="230" height="15" uuid="3e23f801-379e-495f-a0ce-dc22f6672e7e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["문 서 번 호 : " +(($F{ordCd}!=null)?$F{ordCd}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="158" width="230" height="15" uuid="1a8fcc4a-f4d7-40f3-9875-7121a348bf75">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["납 품 일 자 : " +(($F{ordDueDt}!=null)?$F{ordDueDt}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="173" width="219" height="15" uuid="28b4a273-0ab6-487e-9d5e-2c83410707d4">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-10" y="237" width="110" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="8dbd22e5-f0d9-416c-ab6d-3ec9911a4f06">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["품  목"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="158" width="219" height="15" uuid="d3196571-45fa-424d-a1d5-b8accd2f7662">
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" spacingBefore="0" spacingAfter="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{param3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="93" width="230" height="15" uuid="401c7dbb-1ddf-4a13-989d-058215dfcf7f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["아래와 같이 발주합니다."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="188" width="230" height="15" uuid="b102969a-508b-4865-a83a-38b9fcba1e3f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["결 제 조 건 : " +(($F{payTm}!=null)?$F{payTm}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="173" width="230" height="15" uuid="2892cee8-9342-4bc9-a9b7-aa1af8772316">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["건         명 : " +(($F{projNm}!=null)?$F{projNm}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-10" y="143" width="230" height="15" uuid="32741cc2-9d0a-4f5e-a986-5d2cf44df7f3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["발 주 일 자 : " +(($F{ordDt}!=null)?$F{ordDt}:"")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="15" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="-10" y="0" width="110" height="15" printWhenGroupChanges="Group2" uuid="455b92c9-31f7-4dba-a68e-2a1002700a82">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{itemNm}!=null)?$F{itemNm}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="#,##0">
+				<reportElement stretchType="RelativeToTallestObject" x="320" y="0" width="30" height="15" uuid="373d4e11-a98a-43b6-bf41-7b11be8b3714">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{qty}!=null)?$F{qty}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToTallestObject" x="350" y="0" width="30" height="15" uuid="fe61b796-dfdb-438e-b0b3-44018fc1eea3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{unit}!=null)?$F{unit}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="#,##0">
+				<reportElement stretchType="RelativeToTallestObject" x="430" y="0" width="70" height="15" uuid="42fab8d0-78db-4438-9fbf-9d7a03bcfab9">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{itemSupAmt2}!=null)?$F{itemSupAmt2}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" pattern="#,##0">
+				<reportElement stretchType="RelativeToTallestObject" x="380" y="0" width="50" height="15" uuid="d294a1e2-40db-470d-a2a7-ba2f0f60e139">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{cost2}!=null)?$F{cost2}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToTallestObject" x="500" y="0" width="64" height="15" uuid="a59813b6-5682-4458-9fdc-4acc00353e2b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{note}!=null)?$F{note}:"")]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="100" y="0" width="220" height="15" uuid="48b97c0c-d2d4-4fca-82f3-143f7ee5d953">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="맑은 고딕" size="8" isBold="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{standard}!=null)?$F{standard}:"")]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="205">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="430" y="30" width="70" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="1d73fff2-1b62-49a9-91ef-085488398225">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{totTotAmt}!=null)?$V{totTotAmt}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-10" y="65" width="574" height="140" forecolor="#030303" backcolor="#FFFFFF" uuid="11a6e85c-ed0a-4426-ac0d-45ca9b8ef673">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="맑은 고딕" size="9" isBold="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{note1}!=null)?$F{note1}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-10" y="15" width="440" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="ab608531-9521-4348-a97b-dc58dba675ea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["부 가 세 액 10%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-10" y="0" width="440" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="938b2e34-f92c-42e1-b9a8-9f19581c6c8e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["공   급   가   액"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="430" y="15" width="70" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="6cf9b9fb-4333-419d-9a7b-37e6e8c81c7b">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{totVatAmt}!=null)?$V{totVatAmt}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="45" width="100" height="20" forecolor="#030303" backcolor="#FFFFFF" uuid="a7d2a44a-7c3d-41be-bd6b-202c01ad2260">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["[ 비      고 ]"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="430" y="0" width="70" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="622d9a00-3683-4495-be8d-97cfdd5dc9bb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+					<paragraph leftIndent="0" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{totSupAmt}!=null)?$V{totSupAmt}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="-10" y="30" width="440" height="15" forecolor="#000000" backcolor="#DDD9C3" uuid="279a1b76-ec7c-4971-b3d2-b9d9c6c37d4a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["합   계   금   액"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="500" y="0" width="64" height="45" forecolor="#000000" backcolor="#DDD9C3" uuid="3a940c66-df9e-4624-a67c-a811b0678b71">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="맑은 고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

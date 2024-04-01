@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.groupware.controller.commute.commuteLogMapper">
+
+    <select id="selectCommuteLogList"  resultType="com.springboot.myapp.eds.groupware.vo.commute.commuteLogListVO">
+        SELECT /* selectCommuteLogList */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,'allday' AS category
+            ,seq
+            ,seq AS id
+            ,stDt
+            ,stDt AS start
+            ,DATE_FORMAT(stDt, '%k:%i') AS startTime
+            ,edDt
+            ,edDt AS end
+            ,DATE_FORMAT(edDt, '%k:%i') AS endTime
+            ,depaCd
+            ,depaCd AS calendarId
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm
+            ,(SELECT depaColorCd FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS backgroundColor
+            ,empCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empCd) AS empNm
+            ,T1.note
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+        FROM TB_COMMUTE_LOG_LIST T1
+        WHERE T1.corpCd = #{corpCd}
+          AND (stDt LIKE #{date} OR edDt LIKE #{date})
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+        <if test="depaCd != null and !depaCd.equals('')">
+            AND depaCd = #{depaCd}
+        </if>
+        <if test="empCd != null and !empCd.equals('')">
+            AND empCd = #{empCd}
+        </if>
+        order by seq
+    </select>
+
+    <insert id="insertCommuteLogList" parameterType="hashMap">
+        INSERT INTO /* insertCommuteLogList */
+        TB_COMMUTE_LOG_LIST(
+             corpCd
+            ,busiCd
+            ,seq
+            ,stDt
+            ,edDt
+            ,depaCd
+            ,empCd
+            ,note
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT
+            #{corpCd}
+            ,#{busiCd}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1
+              FROM TB_COMMUTE_LOG_LIST
+              WHERE corpCd = #{corpCd})
+            ,#{stDt}
+            ,#{edDt}
+            ,#{depaCd}
+            ,#{empCd}
+            ,#{note}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateCommuteLogList" parameterType="hashMap">
+        UPDATE /* updateCommuteLogList */
+            TB_COMMUTE_LOG_LIST
+        SET stDt = #{stDt}
+           ,edDt = #{edDt}
+           ,depaCd = #{depaCd}
+           ,empCd = #{empCd}
+           ,note = #{note}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND seq = #{seq}
+    </update>
+
+    <update id="updateCommuteLogList2" parameterType="hashMap">
+        UPDATE /* updateCommuteLogList2 */
+            TB_COMMUTE_LOG_LIST
+        SET edDt = #{edDt}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND empCd = #{empCd}
+        AND stDt like #{date}
+    </update>
+
+    <delete id="deleteCommuteLogList"  parameterType="hashMap">
+        DELETE /* deleteCommuteLogList */
+        FROM TB_COMMUTE_LOG_LIST
+        WHERE corpCd = #{corpCd}
+          AND seq = #{seq}
+    </delete>
+</mapper>

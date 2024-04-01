@@ -1,0 +1,304 @@
+body {
+    margin: unset;
+    line-height: unset;
+}
+
+header {
+    padding: unset !important;
+}
+
+input[type="checkbox"] {
+    position: relative;
+    top: 2px;
+}
+
+aside {
+    height: 33%;
+}
+
+.toastui-calendar-template-time > strong {
+    display: none;
+}
+
+.toastui-calendar-ic-milestone {
+    display: unset !important;
+}
+
+.toastui-calendar-daygrid-cell{
+    padding: unset !important;
+}
+
+/* 달력 cell hover시 배경색 */
+.toastui-calendar-daygrid-cell:hover {
+    background-color: #D4E6F1 !important;
+    font-weight: 600;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+}
+
+table > tbody > tr > td:first-child {
+    font-weight: 600;
+}
+
+table > tbody > tr > td textarea {
+    min-height: 125px;
+}
+
+table > tbody > tr > td input, textarea {
+    width: 100%;
+}
+
+.tui-datepicker-input {
+    width: 48%;
+}
+
+.tui-datepicker-span {
+    padding: 0 0.95px 0 0.95px;
+}
+
+.toastui-calendar-weekday-event {
+    border: unset !important;
+}
+
+.toastui-calendar-see-more{
+    padding: unset;
+}
+
+.toastui-calendar-month-week-item{
+    /*height: 25% !important;*/
+}
+
+#calendar{
+    height: 125% !important;
+}
+
+.toastui-calendar-popup-button.toastui-calendar-popup-close{
+    background-color: inherit !important;
+}
+
+.toastui-calendar-weekday-event-block:hover {
+    text-decoration: underline;
+}
+
+.disabled {
+    pointer-events: none;
+    user-select: none;
+}
+
+.required-content, .required-content-update{
+    float: left;
+}
+
+.toastui-calendar-template-monthGridHeaderExceed{
+    color: black;
+}
+
+.toastui-calendar-template-monthMoreClose:hover,
+.toastui-calendar-template-monthGridHeaderExceed:hover{
+    text-decoration: underline;
+}
+
+html {
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+button {
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.header {
+    padding: 1rem;
+    /*border-bottom: 1px solid #bbb;*/
+}
+
+#calendar {
+    float: left;
+    width: 94%;
+    font-family: sans-serif, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.sidebar {
+    float: left;
+    /*width: 6.75%;*/
+    border-right: 1px solid #d5d5d5;
+    white-space: nowrap;
+}
+
+.sidebar-item {
+    margin-bottom: 0.3rem;
+}
+
+.sidebar-item:nth-child(2) {
+    margin-top: 0.4rem;
+}
+
+.sidebar-item.all {
+    height: 1.95rem;
+    line-height: 30px;
+    margin: unset;
+    /*border-top: 1px solid #d5d5d5;*/
+    font-size: 1.25rem;
+    border-bottom: 1px solid #d5d5d5;
+}
+
+.checkbox-all {
+    top: 2.5px !important;
+}
+
+.button.is-rounded {
+    border-radius: 9999px;
+    padding-left: calc(1em + 0.25em);
+    padding-right: calc(1em + 0.25em);
+}
+
+.button.is-rounded.today {
+    margin-right: 4.5rem;
+}
+
+.button {
+    background-color: #fff;
+    border-color: #dbdbdb;
+    border-style: solid;
+    border-width: 1px;
+    color: #363636;
+    cursor: pointer;
+    justify-content: center;
+    padding-bottom: calc(0.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(0.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.button:hover {
+    border-color: #b5b5b5;
+    color: #363636;
+}
+
+.navbar .navbar--range {
+    width: 115px;
+    text-align: center;
+    display: inline-block;
+    margin: 0 0.5rem 0 0.5rem;
+    font-size: 1.25rem;
+}
+
+.navbar {
+    margin-left: 6.5%;
+}
+
+.fa-solid.fa-chevron-right, .fa-solid.fa-chevron-left {
+    font-size: 1rem;
+}
+
+:root {
+    --checkbox-all: #4f5962;
+    --checkbox-1: #EC7063;
+    --checkbox-2: #F39C12;
+    --checkbox-3: #F7DC6F;
+    --checkbox-4: #58D68D;
+    --checkbox-5: #AED6F1;
+    --checkbox-6: #5499C7;
+    --checkbox-7: #BB8FCE;
+}
+
+.checkbox-all:checked {
+    background-color: var(--checkbox-all);
+}
+
+.checkbox-management:checked {
+    background-color: var(--checkbox-1);
+}
+
+.checkbox-planning:checked {
+    background-color: var(--checkbox-2);
+}
+
+.checkbox-development:checked {
+    background-color: var(--checkbox-3);
+}
+
+.checkbox-performance:checked {
+    background-color: var(--checkbox-4);
+}
+
+.checkbox-social:checked {
+    background-color: var(--checkbox-5);
+}
+
+.checkbox-natural1st:checked {
+    background-color: var(--checkbox-6);
+}
+
+.checkbox-natural2nd:checked {
+    background-color: var(--checkbox-7);
+}
+
+label {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 1px solid #999;
+    appearance: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    top: 4.5px;
+    position: relative;
+}
+
+
+
+/*.checkbox-calendar::before {*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    left: -1.5rem;*/
+/*    width: 1.25rem;*/
+/*    height: 1.25rem;*/
+/*    border-radius: 50%;*/
+/*    border: 1px solid #ddd;*/
+/*}*/
+
+/*input[type="checkbox"]:checked {*/
+/*    background: #32e732;*/
+/*    border: none;*/
+/*}*/
+
+/*부서 체크박스 반응형*/
+@media (max-width: 1000px) {
+    body {
+        margin: unset;
+    }
+
+    aside {
+        font-size: 3px;
+    }
+
+    .checkbox-all {
+        font-size: 3px;
+    }
+
+    input[type="checkbox"] {
+        width: 10px;
+        height: 10px;
+        margin: 1px 0 1px 0;
+    }
+
+    /*.sidebar{*/
+    /*    all: unset;*/
+    /*    font-size: 3px;*/
+    /*}*/
+    div {
+        padding: unset;
+        white-space: normal;
+    }
+
+}

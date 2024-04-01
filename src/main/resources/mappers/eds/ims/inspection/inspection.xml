@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.ims.controller.inspection.InspectionMapper">
+
+    <insert id="insertInspectionList" parameterType="hashMap">
+        INSERT INTO tb_ims_inspection
+        (`siteNm`,
+         `corpCd`,
+         `depaCd`,
+         `projNm`,
+         `projCd`,
+         `siteIndex`,
+         `month`,
+         `inspectDivi`,
+         `ad`)
+        SELECT #{siteNm},
+               #{corpCd},
+               #{depaCd},
+               #{projNm},
+               #{projCd},
+               #{siteIndex},
+               LPAD(#{month}, 2, 0),
+               'N',
+               #{ad}
+    </insert>
+
+    <select id="selectInspectionList" resultType="com.springboot.myapp.eds.ims.vo.inspection.inspectionVO">
+        SELECT T1.`index`,
+        T1.`siteIndex`,
+        T1.`corpCd`,
+        T1.`depaCd`,
+        (SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm,
+        T1.`month`,
+        T1.`inspectDt`,
+        T1.`siteNm`,
+        T1.`projNm`,
+        T1.`projCd`,
+        T1.`content`,
+        T1.inpId AS empCd,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        (SELECT ad FROM tb_ims_site I1 WHERE I1.corpCd = #{corpCd} AND I1.index = T1.siteIndex) AS ad,
+        T1.`inpDttm`,
+        T1.`updDttm`,
+        T1.`inspectDivi`,
+        T2.`year`,
+        T2.`clasifyDivi`,
+        T2.`checkCycle`
+        FROM tb_ims_inspection T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.corpCd = #{corpCd}
+        <if test="month != null and !month.equals('')">
+            AND (
+            <choose>
+                <when test="month &lt;= 3">
+                    (T1.`month` = #{month} OR T1.`month` = 41)
+                </when>
+                <when test="month &gt;= 4 and month &lt;= 6">
+                    (T1.`month` = #{month} OR T1.`month` = 42)
+                </when>
+                <when test="month &gt;= 7 and month &lt;= 9">
+                    (T1.`month` = #{month} OR T1.`month` = 43)
+                </when>
+                <when test="month &gt;= 10 and month &lt;= 12">
+                    (T1.`month` = #{month} OR T1.`month` = 44)
+                </when>
+            </choose>
+            )
+        </if>
+        <if test="year != null and !year.equals('')">
+            AND T2.`year` = #{year}
+        </if>
+        <if test="siteNm != null and !siteNm.equals('')">
+            AND T1.`siteNm` like '%' #{siteNm} '%'
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND T1.`ad` like '%' #{ad} '%'
+        </if>
+        <if test="depaCd != null and !depaCd.equals('')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="insStdt != null and !insStdt.equals('')">
+            AND T1.inspectDt BETWEEN #{insStdt} and #{insEddt}
+        </if>
+        ORDER BY T1.inspectDivi, T2.checkCycle DESC
+    </select>
+    <select id="selectInspectionUserList" resultType="com.springboot.myapp.eds.ims.vo.inspection.inspectionVO">
+        SELECT T1.`index`,
+        sum(1) as insCount,
+        T1.`siteIndex`,
+        T1.`corpCd`,
+        T1.`depaCd`,
+        (SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=#{corpCd} AND T0.depaCd=T1.depaCd) AS depaNm,
+        T1.`month`,
+        T1.`inspectDt`,
+        T1.`siteNm`,
+        T1.`projNm`,
+        T1.`projCd`,
+        T1.`content`,
+        T1.inpId AS empCd,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
+        (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+        (SELECT ad FROM tb_ims_site I1 WHERE I1.corpCd = #{corpCd} AND I1.index = T1.siteIndex) AS ad,
+        T1.`inpDttm`,
+        T1.`updDttm`,
+        T1.`inspectDivi`,
+        T2.`year`,
+        T2.`clasifyDivi`,
+        T2.`checkCycle`
+        FROM tb_ims_inspection T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.corpCd = #{corpCd}
+        <if test="month != null and !month.equals('')">
+            AND (
+            <choose>
+                <when test="month &lt;= 3">
+                    (T1.`month` = #{month} OR T1.`month` = 41)
+                </when>
+                <when test="month &gt;= 4 and month &lt;= 6">
+                    (T1.`month` = #{month} OR T1.`month` = 42)
+                </when>
+                <when test="month &gt;= 7 and month &lt;= 9">
+                    (T1.`month` = #{month} OR T1.`month` = 43)
+                </when>
+                <when test="month &gt;= 10 and month &lt;= 12">
+                    (T1.`month` = #{month} OR T1.`month` = 44)
+                </when>
+            </choose>
+            )
+        </if>
+        <if test="year != null and !year.equals('')">
+            AND T2.`year` = #{year}
+        </if>
+        <if test="siteNm != null and !siteNm.equals('')">
+            AND T1.`siteNm` like '%' #{siteNm} '%'
+        </if>
+        <if test="ad != null and !ad.equals('')">
+            AND T1.`ad` like '%' #{ad} '%'
+        </if>
+        <if test="depaCd != null and !depaCd.equals('')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        <if test="insStdt != null and !insStdt.equals('')">
+            AND T1.inspectDt BETWEEN #{insStdt} and #{insEddt}
+        </if>
+        GROUP BY t1.depaCd,t1.month,t1.inpId
+        ORDER BY T1.inspectDivi, T2.checkCycle DESC
+    </select>
+
+
+    <update id="updateInspectionList" parameterType="hashMap">
+        UPDATE tb_ims_inspection
+        <set>
+            `inspectDt` = #{inspectDt},
+            `content` = #{content},
+            `inspectDivi` = "Y",
+            <if test="inpId == null">
+                `inpId` = #{userId},
+            </if>
+            <if test="inpDttm == null">
+                `inpDttm` = now(),
+            </if>
+            <if test="inpId != null">
+                `updId` = #{userId},
+                `updDttm` = now()
+            </if>
+        </set>
+        WHERE `index` = #{index}
+        AND `month` = #{month}
+    </update>
+
+    <update id="deleteInspectionList" parameterType="hashMap">
+        UPDATE tb_ims_inspection
+        SET `inspectDt`   = NULL,
+            `content`     = NULL,
+            `inpId`       = NULL,
+            `inpDttm`     = NULL,
+            `updId`       = NULL,
+            `updDttm`     = NULL,
+            `inspectDivi` = 'N'
+        WHERE `corpCd` = #{corpCd}
+          AND `index` = #{index}
+    </update>
+
+    <select id="selectInspectionProgress" resultType="com.springboot.myapp.eds.ims.vo.inspection.inspectionVO">
+        SELECT T2.year,
+        T2.depaCd,
+        T1.month,
+        sum(case T1.month when T1.month then 1 else 0 end) as totNum,
+        sum(case T1.inspectDivi when 'Y' then 1 else 0 end) as completionNum,
+        sum(case T1.inspectDivi when 'N' then 1 else 0 end) as incompletionNum
+        FROM tb_ims_inspection T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="year != null and !year.equals('')">
+            AND T2.`year` = #{year}
+        </if>
+        GROUP BY T2.depaCd, month
+    </select>
+
+    <select id="selectThisMonthPercent" resultType="com.springboot.myapp.eds.ims.vo.inspection.inspectionVO">
+        SELECT T2.year,
+               T1.month,
+               sum(case T1.month when T1.month then 1 else 0 end)  as totNum,
+               sum(case T1.inspectDivi when 'Y' then 1 else 0 end) as completionNum,
+               sum(case T1.inspectDivi when 'N' then 1 else 0 end) as incompletionNum
+        FROM tb_ims_inspection T1
+                 LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.`month` = month(NOW())
+          AND t2.`year` = year(NOW())
+    </select>
+
+    <select id="selectInfo" resultType="com.springboot.myapp.eds.ims.vo.inspection.inspectionVO">
+        SELECT T1.ad,
+        COUNT(T1.index) AS totNum,
+        sum(case T1.inspectDivi when 'Y' then 1 else 0 end) as completionNum,
+        sum(case T1.inspectDivi when 'N' then 1 else 0 end) as incompletionNum,
+        ROUND(sum(case T1.inspectDivi when 'Y' then 1 else 0 end) / COUNT(T1.index) * 100) AS rate
+        FROM tb_ims_inspection T1
+        LEFT JOIN tb_ims_site T2 ON T1.siteIndex = T2.index
+        WHERE T1.corpCd = #{corpCd}
+        AND T2.`year` = #{year}
+        <if test="month != null and !month.equals('')">
+            AND (
+            <choose>
+                <when test="month &lt;= 3">
+                    (T1.`month` = #{month} OR T1.`month` = 41)
+                </when>
+                <when test="month &gt;= 4 and month &lt;= 6">
+                    (T1.`month` = #{month} OR T1.`month` = 42)
+                </when>
+                <when test="month &gt;= 7 and month &lt;= 9">
+                    (T1.`month` = #{month} OR T1.`month` = 43)
+                </when>
+                <when test="month &gt;= 10 and month &lt;= 12">
+                    (T1.`month` = #{month} OR T1.`month` = 44)
+                </when>
+            </choose>
+            )
+        </if>
+        <if test="depaCd != null and !depaCd.equals('')">
+            AND T1.depaCd = #{depaCd}
+        </if>
+        GROUP BY T2.ad
+        ORDER BY T2.ad
+    </select>
+
+        <delete id="resetInspectionList">
+            DELETE
+            FROM tb_ims_inspection
+            WHERE `corpCd` = #{corpCd}
+              AND `siteIndex` = #{siteIndex}
+        </delete>
+</mapper>

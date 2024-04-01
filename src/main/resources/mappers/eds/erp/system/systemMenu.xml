@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.system.systemMenuMapper">
+
+    <select id="selectManuMgtList"  resultType="com.springboot.myapp.eds.erp.vo.system.systemMenuListVO">
+        SELECT /* selectManuMgtList */
+            corpCd
+            ,menuId
+            ,menuNm
+            ,menuOrder
+            ,menuIcon
+            ,useYn
+        FROM TB_SYSTEM_MENU_LIST
+        WHERE corpCd = #{corpCd}
+        <if test="menuNm != null and !menuNm.equals('')">
+            AND menuNm like '%' #{menuNm} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+        ORDER BY menuOrder
+    </select>
+
+    <select id="selectManuMgtDet"  resultType="com.springboot.myapp.eds.erp.vo.system.systemMenuDetVO">
+        SELECT /* selectManuMgtDet */
+            corpCd
+            ,menuId
+            ,pgmId
+            ,pgmId AS pgmIdDb
+            ,(SELECT T0.pgmNm FROM TB_SYSTEM_PGM_LIST T0 WHERE T0.pgmId = T1.pgmId AND T0.corpCd = #{corpCd}) as pgmNm
+            ,seq
+            ,pgmOrder
+            ,pgmIcon
+            ,useYn
+            ,parent
+        FROM TB_SYSTEM_MENU_DET T1
+        WHERE T1.corpCd = #{corpCd}
+            AND T1.menuId = #{menuId}
+        ORDER BY T1.pgmOrder
+    </select>
+
+    <insert id="insertManuMgtList" parameterType="hashMap">
+        INSERT INTO /* insertManuMgtList */
+            TB_SYSTEM_MENU_LIST(
+                         corpCd
+                        ,menuId
+                        ,menuNm
+                        ,menuOrder
+                        ,menuIcon
+                        ,useYn
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+             #{corpCd}
+             ,(SELECT IFNULL(MAX(CAST(menuId as signed)),0)+1 FROM TB_SYSTEM_MENU_LIST WHERE corpCd = #{corpCd})
+             ,#{menuNm}
+             ,#{menuOrder}
+             ,#{menuIcon}
+             ,#{useYn}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertManuMgtDet" parameterType="hashMap">
+        INSERT INTO /* insertManuMgtDet */
+            TB_SYSTEM_MENU_DET(
+                         corpCd
+                        ,menuId
+                        ,pgmId
+                        ,parent
+                        ,seq
+                        ,pgmOrder
+                        ,pgmIcon
+                        ,useYn
+                        ,inpId
+                        ,inpDttm
+                        ,updId
+                        ,updDttm
+        )
+        SELECT
+            #{corpCd}
+            ,#{menuId}
+            ,#{pgmId}
+            ,#{parent}
+            ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM TB_SYSTEM_MENU_DET WHERE corpCd = #{corpCd} AND menuId = #{menuId})
+            ,#{pgmOrder}
+            ,#{pgmIcon}
+            ,#{useYn}
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateManuMgtList" parameterType="hashMap">
+        UPDATE /* updateManuMgtList */
+            TB_SYSTEM_MENU_LIST SET
+            menuNm = #{menuNm}
+                           ,menuOrder = #{menuOrder}
+                           ,menuIcon = #{menuIcon}
+                           ,useYn = #{useYn}
+                           ,updId = #{userId}
+                           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND menuId = #{menuId}
+    </update>
+
+    <update id="updateManuMgtDet" parameterType="hashMap">
+        UPDATE /* updateManuMgtDet */
+            TB_SYSTEM_MENU_DET SET
+            menuId = #{menuId}
+                           ,pgmId = #{pgmId}
+                           ,pgmOrder = #{pgmOrder}
+                           ,pgmIcon = #{pgmIcon}
+                           ,useYn = #{useYn}
+                           ,updId = #{userId}
+                           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND menuId = #{menuId}
+          AND pgmId = #{pgmIdDb}
+          AND seq = #{seq}
+    </update>
+
+    <delete id="deleteManuMgtList"  parameterType="hashMap">
+        DELETE /* deleteManuMgtList */
+        FROM TB_SYSTEM_MENU_LIST
+        WHERE corpCd = #{corpCd}
+          AND menuId = #{menuId}
+    </delete>
+
+    <delete id="deleteManuMgtDet"  parameterType="hashMap">
+        DELETE /* deleteManuMgtDet */
+        FROM TB_SYSTEM_MENU_DET
+        WHERE corpCd = #{corpCd}
+        AND menuId = #{menuId}
+        <if test="pgmId != null and !pgmId.equals('')">
+            AND pgmId = #{pgmIdDb}
+        </if>
+        <if test="seq != null and !seq.equals('')">
+            AND seq = #{seq}
+        </if>
+    </delete>
+
+    <delete id="deleteManuGpAuth"  parameterType="hashMap">
+        DELETE /* deleteManuGpAuth */
+        FROM TB_SYSTEM_GP_AUTH
+        WHERE corpCd = #{corpCd}
+          AND menuId = #{menuId}
+          AND pgmId = #{pgmIdDb}
+    </delete>
+</mapper>

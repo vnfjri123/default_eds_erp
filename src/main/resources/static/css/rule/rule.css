@@ -1,0 +1,87 @@
+table thead tr th{
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+.thead-dark th{
+    background-color: #6d6766 !important;
+    border-color: unset !important;
+}
+
+.table th{
+    white-space: nowrap;
+}
+
+.table td {
+    padding: 0.5rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.table th:first-child {
+    vertical-align: middle;
+}
+
+.table td:last-child {
+    padding: unset;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+tbody tr:hover{
+    cursor: pointer;
+    background-color: #D6EAF8 !important;
+}
+
+.dataName{
+    padding: 2px 0 2px 0;
+}
+
+.dataName:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/*페이징 시작*/
+.page-item.active .page-link {
+    border: 1px solid #4b96e6;
+    background-color: #4b96e6;
+}
+
+.page-item.active .page-link:hover {
+    cursor: default;
+}
+
+.page-link {
+    color: black;
+}
+
+.read{
+    background-color: rgb(229, 232, 232) !important;
+}
+.read td{
+    color: rgb(123, 125, 125);
+}
+/*페이징 끝*/
+
+.user-face {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
+    border-radius: 50%;
+    border-style: none;
+}
+
+.popover-body{
+    max-width: 235px !important;
+}
+
+@media (max-width: 580px) {
+    .search-form{
+        width: 100%;
+    }
+}

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.myapp.eds.erp.controller.base.baseUserMapper">
+
+    <select id="selectUserMgtList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseUserListVO">
+        SELECT /* selectUserMgtList */
+            corpCd
+            ,empCd
+            ,empNm
+            ,empId
+            ,CAST(AES_DECRYPT(UNHEX(resiNo), #{secretKey}) AS CHAR) AS resiNo
+            ,CAST(AES_DECRYPT(UNHEX(telNo), #{secretKey}) AS CHAR) AS telNo
+            ,CAST(AES_DECRYPT(UNHEX(phnNo), #{secretKey}) AS CHAR) AS phnNo
+            ,CAST(AES_DECRYPT(UNHEX(addr), #{secretKey}) AS CHAR) AS addr
+            ,CAST(AES_DECRYPT(UNHEX(email), #{secretKey}) AS CHAR) AS email
+            ,CAST(AES_DECRYPT(UNHEX(emailKakaowork), #{secretKey}) AS CHAR) AS emailKakaowork
+            ,CAST(AES_DECRYPT(UNHEX(bankCd), #{secretKey}) AS CHAR) AS bankCd
+            ,CAST(AES_DECRYPT(UNHEX(accoNo), #{secretKey}) AS CHAR) AS accoNo
+            ,CAST(AES_DECRYPT(UNHEX(accoNm), #{secretKey}) AS CHAR) AS accoNm
+            ,CAST(AES_DECRYPT(UNHEX(lastSchool), #{secretKey}) AS CHAR) AS lastSchool
+            ,CAST(AES_DECRYPT(UNHEX(major), #{secretKey}) AS CHAR) AS major
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.depaCd=T1.depaCd) AS depaNm
+            ,ecoDt
+            ,respDivi
+            ,(SELECT T0.commCdNm FROM TB_SYSTEM_SHA_LIST T INNER JOIN TB_SYSTEM_SHA_DET T0 ON T.groupNo=T0.groupNo WHERE T.groupCd='SYS003' AND T0.commCd=T1.respDivi) AS respDiviNm
+            ,posiDivi
+            ,(SELECT T0.commCdNm FROM TB_SYSTEM_SHA_LIST T INNER JOIN TB_SYSTEM_SHA_DET T0 ON T.groupNo=T0.groupNo WHERE T.groupCd='SYS004' AND T0.commCd=T1.posiDivi) AS posiDiviNm
+            ,rcoDt
+            ,rcoDet
+            ,remark
+            ,empState
+            ,accDivi
+            ,(SELECT authDivi FROM TB_SYSTEM_GP_USER T0 WHERE T0.corpCd=T1.corpCd AND T0.empCd=T1.empCd) AS authDivi
+            ,pwdUpdDt
+            ,saveNm
+            ,CAST(AES_DECRYPT(UNHEX(origNm), #{secretKey}) AS CHAR) AS origNm
+            ,CAST(AES_DECRYPT(UNHEX(ext), #{secretKey}) AS CHAR) AS ext
+            ,size
+            ,(SELECT groupId FROM TB_SYSTEM_GP_USER T0 WHERE T0.corpCd=T1.corpCd AND T0.empCd=T1.empCd) AS groupId
+        FROM
+            TB_BASE_USER_LIST T1
+        WHERE 1=1
+        <if test="corpCd != null and !corpCd.equals('')">
+            AND T1.corpCd = #{corpCd}
+        </if>
+        <if test="empState != null and !empState.equals('')">
+            AND T1.empState = #{empState}
+        </if>
+        <if test="empNm != null and !empNm.equals('')">
+            AND T1.empNm like '%' #{empNm} '%'
+        </if>
+        <if test="empCd != null and !empCd.equals('')">
+            AND T1.empCd like '%' #{empCd} '%'
+        </if>
+        <if test="useYn != null and !useYn.equals('')">
+            AND useYn = #{useYn}
+        </if>
+        order by T1.depaCd
+    </select>
+
+    <select id="selectUserEmailList"  resultType="com.springboot.myapp.eds.erp.vo.base.baseUserListVO">
+        SELECT /* selectUserEmailList */
+            *
+        FROM(
+            SELECT
+                T1.corpCd
+                ,T1.empCd
+                ,T1.empNm
+                ,CAST(AES_DECRYPT(UNHEX(T1.email), #{secretKey}) AS CHAR) AS email
+            FROM TB_BASE_USER_LIST T1
+            WHERE T1.corpCd = #{corpCd}
+              AND T1.useYn = '01'
+            <if test="empNm != null and !empNm.equals('')">
+                AND (T1.empCd like '%' #{empNm} '%' OR T1.empNm like '%' #{empNm} '%' OR CAST(AES_DECRYPT(UNHEX(T1.email), #{secretKey}) AS CHAR) like '%' #{empNm} '%')
+            </if>
+            UNION ALL
+            SELECT
+                T1.corpCd
+                ,T1.custCd
+                ,T1.custNm
+                ,CAST(AES_DECRYPT(UNHEX(T1.email), #{secretKey}) AS CHAR) AS email
+            FROM TB_BASE_CUST_LIST T1
+            WHERE T1.corpCd = #{corpCd}
+            AND T1.useYn = '01'
+            <if test="empNm != null and !empNm.equals('')">
+                AND (T1.custCd like '%' #{empNm} '%' OR custNm like '%' #{empNm} '%' OR CAST(AES_DECRYPT(UNHEX(T1.email), #{secretKey}) AS CHAR) like '%' #{empNm} '%')
+            </if>
+        ) U1
+    </select>
+
+    <insert id="insertUserMgtList" parameterType="hashMap">
+        INSERT INTO /* insertUserMgtList */
+        TB_BASE_USER_LIST(
+             corpCd
+            ,empCd
+            ,empNm
+            ,empId
+            ,resiNo
+            ,telNo
+            ,phnNo
+            ,addr
+            ,email
+            ,emailKakaowork
+            ,bankCd
+            ,accoNo
+            ,accoNm
+            ,lastSchool
+            ,major
+            ,busiCd
+            ,depaCd
+            ,ecoDt
+            ,respDivi
+            ,posiDivi
+            ,rcoDt
+            ,rcoDet
+            ,remark
+            ,empState
+            ,accDivi
+            ,saveNm
+            ,origNm
+            ,ext
+            ,size
+            ,pwd
+            ,inpId
+            ,inpDttm
+            ,updId
+            ,updDttm)
+        SELECT #{corpCd}
+            ,#{empCd}
+            ,#{empNm}
+            ,#{empId}
+            ,HEX(AES_ENCRYPT(#{resiNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{phnNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{email}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{emailKakaowork}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{bankCd}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{accoNo}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{accoNm}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{lastSchool}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{major}, #{secretKey}))
+            ,#{busiCd}
+            ,#{depaCd}
+            ,#{ecoDt}
+            ,#{respDivi}
+            ,#{posiDivi}
+            ,#{rcoDt}
+            ,#{rcoDet}
+            ,#{remark}
+            ,#{empState}
+            ,#{accDivi}
+            ,#{saveNm}
+            ,HEX(AES_ENCRYPT(#{origNm}, #{secretKey}))
+            ,HEX(AES_ENCRYPT(#{ext}, #{secretKey}))
+            ,#{size}
+            ,SHA2(#{pwd}, 256)
+            ,#{userId}
+            ,now()
+            ,#{userId}
+            ,now()
+    </insert>
+
+    <update id="updateUserMgtList" parameterType="hashMap">
+        UPDATE /* updateUserMgtList */
+            TB_BASE_USER_LIST
+        SET empCd = #{empCd}
+           ,empNm = #{empNm}
+           ,empId = #{empId}
+           ,resiNo = HEX(AES_ENCRYPT(#{resiNo}, #{secretKey}))
+           ,telNo = HEX(AES_ENCRYPT(#{telNo}, #{secretKey}))
+           ,phnNo = HEX(AES_ENCRYPT(#{phnNo}, #{secretKey}))
+           ,addr = HEX(AES_ENCRYPT(#{addr}, #{secretKey}))
+           ,email = HEX(AES_ENCRYPT(#{email}, #{secretKey}))
+           ,emailKakaowork = HEX(AES_ENCRYPT(#{emailKakaowork}, #{secretKey}))
+           ,bankCd = HEX(AES_ENCRYPT(#{bankCd}, #{secretKey}))
+           ,accoNo = HEX(AES_ENCRYPT(#{accoNo}, #{secretKey}))
+           ,accoNm = HEX(AES_ENCRYPT(#{accoNm}, #{secretKey}))
+           ,lastSchool = HEX(AES_ENCRYPT(#{lastSchool}, #{secretKey}))
+           ,major = HEX(AES_ENCRYPT(#{major}, #{secretKey}))
+           ,busiCd = #{busiCd}
+           ,depaCd = #{depaCd}
+           ,ecoDt = #{ecoDt}
+           ,respDivi = #{respDivi}
+           ,posiDivi = #{posiDivi}
+           ,rcoDt = #{rcoDt}
+           ,rcoDet = #{rcoDet}
+           ,remark = #{remark}
+           ,empState = #{empState}
+           ,accDivi = #{accDivi}
+           ,updId   = #{userId}
+           ,updDttm = now()
+        WHERE corpCd = #{corpCd}
+        AND empCd = #{empCd}
+    </update>
+
+    <delete id="deleteUserMgtList"  parameterType="hashMap">
+        DELETE /* deleteUserMgtList */
+        FROM TB_BASE_USER_LIST
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </delete>
+    
+    <select id="selectEmpCdCheck" resultType="string" parameterType="hashMap">
+        SELECT /* selectEmpCdCheck */
+            count(empCd)
+        FROM TB_BASE_USER_LIST
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </select>
+
+    <select id="selectEmpIdCheck" resultType="string" parameterType="hashMap">
+        SELECT /* selectEmpIdCheck */
+            count(empId)
+        FROM TB_BASE_USER_LIST
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </select>
+
+    <select id="userCheckByGroup"  resultType="com.springboot.myapp.eds.erp.vo.base.baseUserListVO">
+        SELECT /* userCheckByGroup */
+            T1.empCd
+             ,T3.empNm
+             ,T2.groupNm
+        FROM TB_SYSTEM_GP_USER T1 LEFT JOIN TB_SYSTEM_GP_LIST T2 ON T1.groupId = T2.groupId
+                             LEFT JOIN TB_BASE_USER_LIST T3 ON T1.empCd = T3.empCd
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.empCd = #{empCd}
+    </select>
+
+    <select id="duplicateUserCheck" resultType="string" parameterType="hashMap">
+        SELECT /* duplicateUserCheck */
+            count(empCd)
+        FROM TB_SYSTEM_GP_USER
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </select>
+
+    <select id="checkUserFaceImage" resultType="com.springboot.myapp.eds.erp.vo.base.baseUserListVO">
+        SELECT /* checkUserFaceImage */
+            saveNm
+        FROM TB_SYSTEM_GP_USER
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </select>
+
+    <update id="deleteUserFaceImage"  parameterType="hashMap">
+        UPDATE /* deleteUserFaceImage */
+            TB_BASE_USER_LIST
+        SET saveNm = null
+          , origNm = null
+          , ext = null
+          , size = null
+          , updId = #{empCd}
+          , updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </update>
+
+    <update id="uploadUserFaceImage" parameterType="hashMap">
+        UPDATE /* uploadUserFaceImage */
+            TB_BASE_USER_LIST
+        SET saveNm = #{saveNm}
+          , origNm = HEX(AES_ENCRYPT(#{origNm}, #{secretKey}))
+          , ext = HEX(AES_ENCRYPT(#{ext}, #{secretKey}))
+          , size = #{size}
+          , updId = #{empCd}
+          , updDttm = now()
+        WHERE corpCd = #{corpCd}
+          AND empCd = #{empCd}
+    </update>
+</mapper>
