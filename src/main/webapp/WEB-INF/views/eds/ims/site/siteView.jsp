@@ -56,7 +56,7 @@
               if ('${LoginInfo.depaNm}' === '사회재난팀') {
                   $('#createBtn').attr('id', 'btnSave');
                   $('#updateBtn').attr('id', 'btnSaveUpdate');
-              } else if ('${LoginInfo.depaNm}' === '자연재난1팀' || '${LoginInfo.depaNm}' === '자연재난2팀' || '${LoginInfo.empCd}' === '0007') {
+              } else if ('${LoginInfo.depaNm}' === '자연재난1팀' || '${LoginInfo.depaNm}' === '자연재난2팀' || '${LoginInfo.empCd}' === '0007' || '${LoginInfo.empCd}' === '0008') {
                   $('#createBtn').attr('id', 'btnSaveND');
                   $('#updateBtn').attr('id', 'btnSaveUpdateND');
               } else {
@@ -187,8 +187,10 @@
               param.corpCd = ${LoginInfo.corpCd};
               if ('${LoginInfo.empCd}' === '0007') {
                   param.depaCd = '1009';
+              } else if ('${LoginInfo.empCd}' === '0008') {
+                param.depaCd = '1008';
               } else {
-                  param.depaCd = '${LoginInfo.depaCd}';
+                param.depaCd = '${LoginInfo.depaCd}';
               }
               param.busiCd = "${LoginInfo.busiCd}"
               param.depaNm = "${LoginInfo.depaNm}";
@@ -216,7 +218,7 @@
                   minRowHeight: 30,
                   // rowHeaders: ['rowNum', 'checkbox'], // 체크박스 기능
                   // rowHeaders: ['checkbox'], // 체크박스 기능
-                  rowHeaders: ['rowNum'], //
+                  // rowHeaders: ['rowNum'], //
                   header: {
                       height: 35,
                       minRowHeight: 35
@@ -277,6 +279,12 @@
                       hidden: true
                   },
                   {
+                      header: '번호',
+                      name: 'index',
+                      width: 60,
+                      align: 'center',
+                  },
+                  {
                       header: '부서명',
                       name: 'depaNm',
                       width: 80,
@@ -289,7 +297,6 @@
                       name: 'ad',
                       width: 60,
                       align: 'center',
-                      filter: 'select',
                       editor: {type: 'select', options: {listItems: setCommCode("SYS010")}},
                       formatter: 'listItemText',
                   },
@@ -315,13 +322,9 @@
                   {
                       header: '사이트명',
                       name: 'siteNm',
-                      width: 150,
+                      minWidth: 80,
                       align: 'center',
-                      className: 'highlight-cell',
-                      filter: {
-                          type: 'text',
-                          showClearBtn: true
-                      }
+                      className: 'highlight-cell'
                   },
                   {
                       header: '이중화',
@@ -372,7 +375,7 @@
                   {
                       header: '모델명',
                       name: 'modelNm',
-                      width: 140,
+                      width: 100,
                       align: 'center',
                       filter: {
                           type: 'text',
@@ -627,7 +630,7 @@
                   language: 'ko'
               });
               //등록 > 셀렉트2 전체 옵션 삭제
-              $('#ad, #adND option[value=""]').remove();
+              $('#ad, #adND').find('option[value=""]').remove();
 
               // site file grid
               siteGridFile = new tui.Grid({
@@ -761,30 +764,13 @@
                ***********************************************************************/
 
               // '사이트 등록' 버튼 노출 부서 구분
-              if ('${LoginInfo.depaCd}'.includes('1008') || '${LoginInfo.depaCd}'.includes('1009') || '${LoginInfo.depaCd}'.includes('1012') || '${LoginInfo.empCd}' === '0007') {
+              if ('${LoginInfo.depaCd}'.includes('1008') || '${LoginInfo.depaCd}'.includes('1009') || '${LoginInfo.depaCd}'.includes('1012') || '${LoginInfo.empCd}' === '0007' || '${LoginInfo.empCd}' === '0008') {
                   $('#insertPjBtn').css('display', 'block');
               } else {
                   $('#insertPjBtn').css('display', 'none');
               }
 
-              // 등록 버튼 누를시 지자체 text 중 '전체' option text 삭제
               $('#insertPjBtn').on('click', (e) => {
-                  var dddddd = document.querySelector('#select2-ad-results');
-                  console.log('보자')
-                  console.log(dddddd)
-
-                  var dddddd2 = document.querySelector('#select2-ad-container');
-                  console.log('보자2')
-                  console.log(dddddd2)
-
-                  var dddddd3 = document.querySelector('.select2-dropdown');
-                  console.log('보자3')
-                  console.log(dddddd3)
-
-                  var dddddd4 = document.querySelector('#ad');
-                  console.log('보자4')
-                  console.log(dddddd4)
-
 
                   $('select[name = serviceDivi]').on('change', (e) => {
                       if (e.currentTarget.value === 'N') {
@@ -821,7 +807,7 @@
 
                       // $('#tab-1').attr("checked", true);
                       $('label[for="tab-1"]').css('display', 'inline-block');
-                  } else if ('${LoginInfo.depaNm}' === '자연재난1팀' || '${LoginInfo.depaNm}' === '자연재난2팀' || '${LoginInfo.empCd}' === '0007') {
+                  } else if ('${LoginInfo.depaNm}' === '자연재난1팀' || '${LoginInfo.depaNm}' === '자연재난2팀' || '${LoginInfo.empCd}' === '0007' || '${LoginInfo.empCd}' === '0008') {
                       $('#modalFormND').removeClass('hide').addClass('show');
                       $('.select-container').find('option').map(function () {
                           if ($(this).val() > num) {
@@ -932,9 +918,12 @@
                   if ('${LoginInfo.empCd}' === '0007') {
                       param.depaCd = '1009';
                       param.depaNm = "자연재난2팀";
-                  }else {
-                      param.depaCd = '${LoginInfo.depaCd}';
-                      param.depaNm = "${LoginInfo.depaNm}";
+                  } else if ('${LoginInfo.empCd}' === '0008') {
+                    param.depaCd = '1008';
+                    param.depaNm = "자연재난1팀";
+                  } else {
+                    param.depaCd = '${LoginInfo.depaCd}';
+                    param.depaNm = "${LoginInfo.depaNm}";
                   }
                   param.empNm = "${LoginInfo.empNm}";
                   param.latitude = getValueById('latitudeND');
@@ -1116,7 +1105,7 @@
                           $('#tab-2-update').prop("checked", true);
                           $('label[for="tab-2-update"]').css('display', 'inline-block');
 
-                          if ('${LoginInfo.depaCd}' === '1008' || '${LoginInfo.depaCd}' === '1009' || '${LoginInfo.empCd}' === '0007') {
+                          if ('${LoginInfo.depaCd}' === '1008' || '${LoginInfo.depaCd}' === '1009' || '${LoginInfo.empCd}' === '0007' || '${LoginInfo.empCd}' === '0008') {
                               $('.btnSaveUpdate').css('display', 'inline-block');
                               $('.btnDeleteUpdate').css('display', 'inline-block');
                           } else {
@@ -1244,9 +1233,12 @@
                   if ('${LoginInfo.empCd}' === '0007') {
                       param.depaCd = '1009';
                       param.depaNm = "자연재난2팀";
+                  } else if ('${LoginInfo.empCd}' === '0008') {
+                    param.depaCd = '1008';
+                    param.depaNm = "자연재난1팀";
                   } else {
-                      param.depaCd = '${LoginInfo.depaCd}';
-                      param.depaNm = "${LoginInfo.depaNm}";
+                    param.depaCd = '${LoginInfo.depaCd}';
+                    param.depaNm = "${LoginInfo.depaNm}";
                   }
                   param.updId = "${LoginInfo.empNm}";
                   param.latitude = getValueById('latitudeNDUpdate');
@@ -1411,8 +1403,10 @@
                           param.corpCd = '${LoginInfo.corpCd}';
                           if ('${LoginInfo.empCd}' === '0007') {
                               param.depaCd = '1009';
+                          } else if ('${LoginInfo.empCd}' === '0008') {
+                            param.depaCd = '1008';
                           } else {
-                              param.depaCd = '${LoginInfo.depaCd}';
+                            param.depaCd = '${LoginInfo.depaCd}';
                           }
                           console.log('1 param')
                           console.log(param)
@@ -1423,8 +1417,10 @@
                           param.corpCd = '${LoginInfo.corpCd}';
                           if ('${LoginInfo.empCd}' === '0007') {
                               param.depaCd = '1009';
+                          } else if ('${LoginInfo.empCd}' === '0008') {
+                            param.depaCd = '1008';
                           } else {
-                              param.depaCd = '${LoginInfo.depaCd}';
+                            param.depaCd = '${LoginInfo.depaCd}';
                           }
                           console.log('2 param')
                           console.log(param)
@@ -2463,9 +2459,10 @@
                     <input readonly type="text" class="form-control" id="projNmUpdate" name="projNm">
                     <input disabled type="text" hidden="hidden" name="projCd">
                   </div>
-                  <div class="col-md-1 mb-3">
+                  <div class="col-md-1 mb-3 container-ad">
                     <label for="adUpdate"><b>지자체</b></label>
-                    <select class="form-control modal-select adUpdate" id="adUpdate" name="ad"></select>
+<%--                    <select class="form-control modal-select adUpdate" id="adUpdate" name="ad"></select>--%>
+                    <select class="form-control modal-select selectpickerAd" id="adUpdate" name="ad"></select>
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="addressUpdate"><b>주소</b></label>
@@ -2651,9 +2648,10 @@
                     <input readonly type="text" class="form-control" id="projNmNDUpdate" name="projNm">
                     <input disabled type="text" hidden="hidden" name="projCd">
                   </div>
-                  <div class="col-md-1 mb-3">
+                  <div class="col-md-1 mb-3 container-adND">
                     <label for="adNDUpdate"><b>지자체</b></label>
-                    <select class="form-control modal-select adNDUpdate" id="adNDUpdate" name="ad"></select>
+<%--                    <select class="form-control modal-select adNDUpdate" id="adNDUpdate" name="ad"></select>--%>
+                    <select class="form-control modal-select selectpickerAdND" id="adNDUpdate" name="ad"></select>
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="addressNDUpdate"><b>주소</b></label>

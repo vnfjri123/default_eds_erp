@@ -88,16 +88,20 @@
                 $('#mainModal').modal('show');
 
                 $('#pills-tab').on('click', (e) => {
+                    var tabId;
 
                     if (e.target.localName === 'button') {
-                        var tabId = e.target.id;
-                        // ID에서 숫자만 가져옴
-                        var tabIndex = parseInt(tabId.replace('pills-home-tab', ''), 10);
-                        var noticeIndex = $('#noticeIndex' + tabIndex).text();
-
-                        document.getElementById('noticeIndex').value = noticeIndex;
-                        loadFilesForTab(noticeIndex);
+                        tabId = e.target.id;
+                    } else if (e.target.localName === 'img') {
+                        tabId = e.target.parentElement.id;
                     }
+
+                    // ID에서 숫자만 가져옴
+                    var tabIndex = parseInt(tabId.replace('pills-home-tab', ''), 10);
+                    var noticeIndex = $('#noticeIndex' + tabIndex).text();
+
+                    document.getElementById('noticeIndex').value = noticeIndex;
+                    loadFilesForTab(noticeIndex);
 
                 });
 
@@ -160,11 +164,11 @@
                     saveRoot: file.saveRoot
                 };
                 fileNameArr.push(file.origNm + "." + file.ext);
+
                 // Dropzone에 파일 추가
                 dropzone.displayExistingFile(mockFile, "/erpNoticeView/erpNoticeFilesLoad/" + params);
 
             }
-
             for (let i = 0; i < $('#dropzone-preview').children().length; i++){
                 $('#dropzone-preview').children()[i].title = fileNameArr[i];
             }
@@ -189,6 +193,7 @@
                     done();
                 },
                 init: function (e) {
+
                     this.on('downloadedFile', async function (file) {
                         if (document.getElementById('noticeIndex').value) {
                             if (file) {

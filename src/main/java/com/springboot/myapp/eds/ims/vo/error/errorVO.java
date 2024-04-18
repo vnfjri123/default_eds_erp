@@ -24,6 +24,7 @@ public class errorVO {
   private String progressDivi;
   private String handler;
 
+  private String userId;
   private String siteNm;
   private String ad;
   private String clasifyDivi;

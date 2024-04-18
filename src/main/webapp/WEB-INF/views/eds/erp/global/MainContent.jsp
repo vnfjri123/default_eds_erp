@@ -153,8 +153,12 @@
 						<div class="card-body">
 							<div class="d-flex">
 								<p class="d-flex flex-column">
-									<span class="text-bold text-lg" id ="allSales">0</span>
 									<span>총 계약금액</span>
+									<span class="text-bold text-lg" id ="allPlan">0</span>
+								</p>
+								<p class="d-flex flex-column pl-3">
+									<span>총 매출금액</span>
+									<span class="text-bold text-lg" id ="allSales">0</span>
 								</p>
 								<p class="ml-auto d-flex flex-column text-right">
 										<span id="increasSales">
@@ -820,6 +824,7 @@
 		let saldata={"01":"","02":"","03":"","04":"","05":"","06":"","07":"","08":"","09":"","10":"","11":"","12":""};
 		let costata={"01":"","02":"","03":"","04":"","05":"","06":"","07":"","08":"","09":"","10":"","11":"","12":""};
 		let coldata={"01":"","02":"","03":"","04":"","05":"","06":"","07":"","08":"","09":"","10":"","11":"","12":""};
+		let allPlan=0;
 		let allSales=0;
 		let dateYm=edsUtil.getToday('%Y-%m');
 		let nowdate=dateYm.substr(0,4)
@@ -834,13 +839,15 @@
 
 			if(year==nowdate)
 			{
-				allSales+=Number(row.conTotAmt);
+				allPlan+=Number(row.conTotAmt);
+				allSales+=Number(row.salTotAmt);
 				condata[month]=row.conTotAmt.slice(0, -3);
 				saldata[month]=row.salTotAmt.slice(0, -3);
 				costata[month]=row.costTotAmt.slice(0, -3);
 				coldata[month]=row.colTotAmt.slice(0, -3);
 			}
 		}
+		document.getElementById('allPlan').innerHTML=allPlan.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원";
 		document.getElementById('allSales').innerHTML=allSales.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원";
 		var areaChartData = {
 			labels  : ['1월', '2월', '3월', '4월','5월', '6월','7월', '8월','9월', '10월','11월', '12월'],

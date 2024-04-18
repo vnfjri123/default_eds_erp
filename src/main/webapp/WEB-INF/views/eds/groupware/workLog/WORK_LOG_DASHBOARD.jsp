@@ -270,7 +270,7 @@
 					<div class="col-8">
 						<div class="row">
 							<div class="col-12 col-md-3"><span style="font-size: 1.1rem">하위핵심결과지표</span></div>
-							<div class="col-12 col-md-9"><span style="font-size: 1.1rem">활동내역</span></div>
+							<div class="col-12 col-md-9"><span style="font-size: 1.1rem;cursor: pointer;">활동내역</span></div>
 						</div>
 					</div>
 				</div>
@@ -299,6 +299,8 @@
 	var rootPlanCd;
 	/** @type {*[]} 목표 클릭 전 전체 kr 코드 */
 	var detailKeyResultListPlanCdsAll = [];
+	/** @type {*[]} 목표 클릭 전 활동된 전체 kr 코드 */
+	var detailKeyResultListDisplayPlanCds = [];
 	/** @type {*[]} 목표 클릭 후 해당 kr 코드 */
 	var detailKeyResultListPlanCds = [];
 	$(document).ready(async function () {
@@ -931,10 +933,18 @@
 	 * @param {*[]} planCds - 첫번째 변수 나타낼 데이터 구분 값(main: 최상위 목표 세팅, sub: 하위 목표세팅, kr: 하위 목표세팅, active: 활동내역 세팅)
 	 */
 	async function displayDetailKeyResultsActivitys(planCds){
-		/** @type {*[]} 조회 값 */
+		/** @type {*[]} 활동 조회 값 */
 		let dbData = [];
-		/** @type {number} 조회 길이 값 */
+		/** @type {number} 활동 조회 길이 값 */
 		let dbDataLength = 0;
+		/** @type {*[]} 계획대비체크인 그래프 조회 값 */
+		let dbDataGraph = [];
+		/** @type {number} 계획대비체크인 그래프 조회 길이 값 */
+		let dbDataGraphLength = 0;
+		/** @type {*[]} 계획대비체크인 내역 조회 값 */
+		let dbDataNote = [];
+		/** @type {number} 계획대비체크인 내역 조회 길이 값 */
+		let dbDataNoteLength = 0;
 		/** @type {{parePlanCd: string, dateDiv: string, planCdArr: *[], stDt: string, edDt: string}} 조회 조건 값 */
 		let param = {};
 		/** @type {string} 기간 구분 */
@@ -982,7 +992,7 @@
 			}
 			//#endregion
 		}).then(value => {
-			//#region 3. 조회 값 세팅
+			//#region 3. 활동 값 세팅
 			dbData = edsUtil.getAjax("/WORK_LOG/getLowKeyResultsActivitys", param);
 			dbDataLength = dbData.length;
 			//#endregion
@@ -1006,10 +1016,10 @@
 			// grouped 객체의 값들만을 배열로 변환하여 세팅
 			groupedData = Object.values(grouped);
 			groupedDataLength = groupedData.length;
-			//#endregion 여기
+			//#endregion
 		}).then(value => {
-			console.log(groupedData)
-			//#region 5. KR 리스트 세팅
+			//#region 5. KR 디테일 리스트 세팅 및 detailKeyResultListDisplayPlanCds 초기화
+			detailKeyResultListDisplayPlanCds.length = 0;
 			for (let i = 0; i < groupedDataLength; i++) {
 				/** @type {HTMLElement} div */
 				let div01Tag = document.createElement('div');
@@ -1032,18 +1042,126 @@
 				//#region 5-1. KR명 세팅
 				/** @type {HTMLElement} div */
 				let div05Tag = document.createElement('div');
-				div05Tag.setAttribute('class','col-3 h4 mb-0 pb-2');
+				div05Tag.setAttribute('class','col-12 h4 mb-0 pb-2');
 				div05Tag.setAttribute('id','detailKeyObjectInfoPlanNm-'+groupedData[i][0].planCd);
-				div05Tag.setAttribute('style','font-size: 1.1rem');
+				div05Tag.setAttribute('style','font-size: 2rem; margin-bottom: 1rem !important;');
 				div05Tag.textContent = groupedData[i][0].planNm;
 				//#endregion
 
 				//#region 5-2. 활동내역 틀 세팅
 				/** @type {HTMLElement} div */
 				let div06Tag = document.createElement('div');
-				div06Tag.setAttribute('class','col-9 h4 mb-0 pb-2');
+				div06Tag.setAttribute('class','col-12 h4 mb-0 pb-2');
 				div06Tag.setAttribute('style','font-size: 1.0rem');
 				//#endregion
+
+				//#region 5-2-1-1. 계획대비체크인 그래프 섹션 세팅
+				/** @type {HTMLElement} section */
+				let section01Tag = document.createElement('section');
+				section01Tag.setAttribute('style','margin-bottom: 1rem;');
+				//#endregion
+
+				//#region 5-2-1-2. 계획대비체크인 그래프 캔버스 세팅
+				/** @type {HTMLElement} canvas */
+				let canvas01Tag = document.createElement('canvas');
+				canvas01Tag.setAttribute('id','detailKeyObjectInfoCheckInChart-'+groupedData[i][0].planCd);
+				//#endregion
+
+				//#region 5-2-1-3. 계획대비체크인 제목 세팅
+				/** @type {HTMLElement} div */
+				let div07Tag = document.createElement('div');
+				div07Tag.setAttribute('class','col-12 h4 mb-0 pb-2');
+				div07Tag.setAttribute('style','font-size: 1.5rem');
+				div07Tag.textContent = '1. 계획 대비 체크인 현황 그래프';
+				//#endregion
+
+				//#region 5-2-2-1. 계획대비체크인 내역 섹션 세팅
+				/** @type {HTMLElement} div */
+				let section02Tag = document.createElement('section');
+				section02Tag.setAttribute('style','margin-bottom: 1rem;');
+				//#endregion
+
+				//#region 5-2-2-2. 계획대비체크인 내역 테이블 세팅
+				/** @type {HTMLElement} table */
+				let table01Tag = document.createElement('table');
+				table01Tag.setAttribute('class','table table-hover table-sm');
+				//#endregion
+
+				//#region 5-2-2-3. 계획대비체크인 내역 테이블 헤더 세팅
+				/** @type {HTMLElement} thead */
+				let thead01Tag = document.createElement('thead');
+				thead01Tag.setAttribute('id','detailKeyObjectInfoThead-'+groupedData[i][0].planCd);
+				//#endregion
+
+				//#region 5-2-2-3. 계획대비체크인 내역 테이블 헤더 세팅
+				/** @type {HTMLElement} tbody */
+				let tbody01Tag = document.createElement('tbody');
+				tbody01Tag.setAttribute('id','detailKeyObjectInfoTbody-'+groupedData[i][0].planCd);
+				//#endregion
+
+				//#region 5-2-2-4. 계획대비체크인 내역 테이블 헤더 내용 세팅
+				/** @type {HTMLElement} tr */
+				let tr01Tag = document.createElement('tr');
+				/** @type {HTMLElement} th */
+				let th01Tag = document.createElement('th');
+				th01Tag.setAttribute('scope','col');
+				th01Tag.setAttribute('style','font-size: 1rem;text-align: center;');
+				th01Tag.innerText = '일자';
+				/** @type {HTMLElement} th */
+				let th02Tag = document.createElement('th');
+				th02Tag.setAttribute('scope','col');
+				th02Tag.setAttribute('style','font-size: 1rem;');
+				th02Tag.innerText = '계획내용';
+				/** @type {HTMLElement} th */
+				let th03Tag = document.createElement('th');
+				th03Tag.setAttribute('scope','col');
+				th03Tag.setAttribute('style','font-size: 1rem;text-align: center;');
+				th03Tag.innerText = '수치';
+				/** @type {HTMLElement} th */
+				let th04Tag = document.createElement('th');
+				th04Tag.setAttribute('scope','col');
+				th04Tag.setAttribute('style','font-size: 1rem;text-align: center;');
+				th04Tag.innerText = '일자';
+				/** @type {HTMLElement} th */
+				let th05Tag = document.createElement('th');
+				th05Tag.setAttribute('scope','col');
+				th05Tag.setAttribute('style','font-size: 1rem;');
+				th05Tag.innerText = '체크인내용';
+				/** @type {HTMLElement} th */
+				let th06Tag = document.createElement('th');
+				th06Tag.setAttribute('scope','col');
+				th06Tag.setAttribute('style','font-size: 1rem;text-align: center;');
+				th06Tag.innerText = '수치';
+				/** @type {HTMLElement} th */
+				let th07Tag = document.createElement('th');
+				th07Tag.setAttribute('scope','col');
+				th07Tag.setAttribute('style','font-size: 1rem;text-align: center;');
+				th07Tag.innerText = '상태';
+				//#endregion
+
+				//#region 5-2-2-5. 계획대비체크인 내역 제목 세팅
+				/** @type {HTMLElement} div */
+				let div08Tag = document.createElement('div');
+				div08Tag.setAttribute('class','col-12 h4 mb-0 pb-2');
+				div08Tag.setAttribute('style','font-size: 1.5rem');
+				div08Tag.textContent = '2. 계획 대비 체크인 현황 내역';
+				//#endregion
+
+				//#region 5-2-3-1. 활동내역 틀 세팅
+				/** @type {HTMLElement} div */
+				let section03Tag = document.createElement('section');
+				section03Tag.setAttribute('style','margin-bottom: 1rem;');
+				//#endregion
+
+				//#region 5-2-3-2. 활동 내역 제목 세팅
+				/** @type {HTMLElement} div */
+				let div09Tag = document.createElement('div');
+				div09Tag.setAttribute('class','col-12 h4 mb-0 pb-2');
+				div09Tag.setAttribute('style','font-size: 1.5rem');
+				div09Tag.textContent = '3. 활동 내역';
+				//#endregion
+
+				section03Tag.appendChild(div09Tag);
 
 				//#region 5-3. 활동내역 세팅
 				/** @type {HTMLElement} div */
@@ -1062,7 +1180,7 @@
 							'border-radius: 50%;' +
 							'border-style: none;' +
 							'');
-					div06Tag.appendChild(empImg);
+					section03Tag.appendChild(empImg);
 
 					// 새 텍스트 노드 생성 및 추가
 					/** @type {HTMLElement} div */
@@ -1070,33 +1188,50 @@
 					span.setAttribute("class", "mr-2");
 					span.setAttribute('style','font-size: 1.0rem');
 					span.innerText = groupedData[i][j].activityDt;
-					div06Tag.appendChild(span);
+					section03Tag.appendChild(span);
 
 					// 새 텍스트 노드 생성 및 추가
 					/** @type {HTMLElement} div */
 					let textNode02 = document.createTextNode(groupedData[i][j].content);
-					div06Tag.appendChild(textNode02);
+					section03Tag.appendChild(textNode02);
 
 					// 새 <br> 요소 생성 및 추가 (각 항목마다 새로운 <br> 태그를 만듭니다)
 					/** @type {HTMLElement} div */
 					let brTag = document.createElement('br');
-					div06Tag.appendChild(brTag);
+					section03Tag.appendChild(brTag);
 
 					// 추가적인 공백을 위한 <span> 요소 생성 및 추가
 					/** @type {HTMLElement} div */
 					let spaceSpan = document.createElement('span');
 					spaceSpan.innerHTML = ' '; // non-breaking space
-					div06Tag.appendChild(spaceSpan);
+					section03Tag.appendChild(spaceSpan);
 
 					// 두 번째 <br> 요소 생성 및 추가하여 항목마다 더 많은 공간을 제공
 					/** @type {HTMLElement} div */
 					let secondBrTag = document.createElement('br');
-					div06Tag.appendChild(secondBrTag);
+					section03Tag.appendChild(secondBrTag);
 				}
 				//#endregion
 
 				//#region 5-4. card 세팅
+				tr01Tag.appendChild(th01Tag);
+				tr01Tag.appendChild(th02Tag);
+				tr01Tag.appendChild(th03Tag);
+				tr01Tag.appendChild(th04Tag);
+				tr01Tag.appendChild(th05Tag);
+				tr01Tag.appendChild(th06Tag);
+				tr01Tag.appendChild(th07Tag);
+				thead01Tag.appendChild(tr01Tag);
+				table01Tag.appendChild(thead01Tag);
+				table01Tag.appendChild(tbody01Tag);
+				section02Tag.appendChild(div08Tag);
+				section02Tag.appendChild(table01Tag);
+				section01Tag.appendChild(div07Tag);
+				section01Tag.appendChild(canvas01Tag);
 				div04Tag.appendChild(div05Tag);
+				div06Tag.appendChild(section01Tag);
+				div06Tag.appendChild(section02Tag);
+				div06Tag.appendChild(section03Tag);
 				div04Tag.appendChild(div06Tag);
 				div03Tag.appendChild(div04Tag);
 				div02Tag.appendChild(div03Tag);
@@ -1106,10 +1241,381 @@
 				//#region 5-4. card 삽입 세팅
 				detailKeyObjectInfo.appendChild(div01Tag);
 				//#endregion
+
+				//#region 5-5. detailKeyResultListDisplayPlanCds 세팅
+				detailKeyResultListDisplayPlanCds.push(groupedData[i][0].planCd);
+				//#endregion
 			}
 			//#endregion
 		}).then((value) => {
-			// detailKeyObjectInfoPlanCdsAll = planCds;
+			//#region 그래프 세팅
+			for (let i = 0, length = detailKeyResultListDisplayPlanCds.length; i < length; i++) {
+				var chartStatus = Chart.getChart('detailKeyObjectInfoCheckInChart-'+detailKeyResultListDisplayPlanCds[i]);
+				if (chartStatus !== undefined) {
+					chartStatus.destroy();
+				}
+				var param = { //조회조건
+					planCd : detailKeyResultListDisplayPlanCds[i],
+				};
+				var data = edsUtil.getAjax("/WORK_LOG/getWorkLogCheckInKeyResultChart", param);
+
+				// dt와 amt 값을 분리하여 저장할 배열을 초기화합니다.
+				var dtValues = [];
+				var planningAmtValues = [];
+				var ckeckInamtValues = [];
+				var edAmtValues = [];
+
+				// 데이터 배열을 순회하면서 각 객체의 dt와 amt 값을 추출하여 배열에 저장합니다.
+				data.forEach(item => {
+					dtValues.push(item.dt);
+					planningAmtValues.push(item.planningAmt);
+					ckeckInamtValues.push(item.ckeckInamt);
+					edAmtValues.push(item.edAmt);
+				});
+
+				var ctx = document.getElementById('detailKeyObjectInfoCheckInChart-'+detailKeyResultListDisplayPlanCds[i]);
+				new Chart(ctx, {
+					type: 'line',
+					data: {
+						labels: dtValues,
+						datasets: [
+							{
+								label: '계획',
+								fill: true,
+								data: planningAmtValues,
+								borderColor: `#fd6283`,
+								backgroundColor: `rgba(255, 255, 255, 0)`,
+								tension: 0.4,
+							},
+							{
+								label: '달성',
+								fill: true,
+								data: ckeckInamtValues,
+								borderColor: `#36a1e9`,
+								backgroundColor: `rgba(153, 206, 243, 0.4)`,
+								tension: 0.4,
+							},
+							{
+								label: '목표',
+								fill: true,
+								data: edAmtValues,
+								borderColor: `#333333`,
+								backgroundColor: `rgba(255, 255, 255, 0)`,
+								tension: 0.4,
+							},
+						]
+					},
+					options: {
+						responsive: true,
+						interaction: {
+							intersect: false,
+							mode: 'index'
+						},
+						scales: {
+							x: {
+								beginAtZero: true
+							},
+							y: {
+								beginAtZero: true
+							}
+						},
+						plugins: {
+							tooltip: {
+								callbacks: {
+									footer: (tooltipItems) => {
+										let plan = tooltipItems[0].parsed.y;
+										let checkIn = tooltipItems[1].parsed.y;
+										let target = tooltipItems[2].parsed.y;
+										let planRate = 0;
+										let CheckInRate = 0;
+										let targetDiv = '';
+										let rst = [];
+
+										// 진행예정율
+										planRate = Math.round(plan*100/target);
+
+										// 진행율
+										CheckInRate = Math.round(checkIn*10000/target)/100;
+
+										if(planRate < CheckInRate){
+											targetDiv = '⬆️';
+										}else if(planRate === CheckInRate){
+											targetDiv = '➡️';
+										}else if(planRate > CheckInRate){
+											targetDiv = '⬇️';
+										}
+
+										// 제목
+										rst.push('              간편요약 ' + targetDiv);
+										rst.push('예정율: ' + planRate + ' % (' + plan + ' / ' + target + ' )');
+										rst.push('진척률: ' + CheckInRate + ' % (' + checkIn + ' / ' + target + ' )');
+										// 중간 바 02
+										return rst;
+									},
+								}
+							}
+						}
+					}
+				});
+			}
+			//#endregion
+		}).then((value) => {
+			//#region 그리드 세팅
+			if(detailKeyResultListDisplayPlanCds.length > 0){
+				var unit = '';
+				var planCd = '';
+				for (let i = 0, length = detailKeyResultListDisplayPlanCds.length; i < length; i++) {
+					var param = { //조회조건
+						planCd : detailKeyResultListDisplayPlanCds[i],
+					};
+					var checkInComparedToPlanList = edsUtil.getAjax("/WORK_LOG/getWorkLogCheckInComparedToPlanList", param);
+					var planSeqBf = '';
+					var planSeqAf = '';
+					var checkInSubAmt = 0;
+					var checkInTotAmt = 0;
+					var planTotAmt = 0;
+					planCd = detailKeyResultListDisplayPlanCds[i];
+					for (let j = 0, length = checkInComparedToPlanList.length; j < length; j++) {
+						// 단위 세팅
+						unit = checkInComparedToPlanList[j].unit;
+
+						// 앞뒤 같은 계획인지 구분
+						planSeqAf = checkInComparedToPlanList[j].planSeq;
+
+						// 앞뒤 계획 대비 소계 밑 합계
+						checkInSubAmt += Number(checkInComparedToPlanList[j].checkInAmt);
+						checkInTotAmt += Number(checkInComparedToPlanList[j].checkInAmt);
+						if(planSeqBf !== planSeqAf) planTotAmt += Number(checkInComparedToPlanList[j].planAmt);
+
+						//#region 5-1-1. 체크인 상태값 대비 i 태그 세팅
+						var i01Tag = document.createElement('tr');
+						switch (checkInComparedToPlanList[j].statusDivi) {
+							case '01':
+								i01Tag.setAttribute('class','fa-regular fa-face-meh-blank fa-shake fa-lg');
+								i01Tag.setAttribute('style','--fa-animation-duration: 3s; --fa-fade-opacity: 0.1;');
+								break;
+							case '02':
+								i01Tag.setAttribute('class','fa-regular fa-face-smile-beam fa-lg fa-flip');
+								i01Tag.setAttribute('style','--fa-animation-duration: 3s;color:#68bae7;');
+								break;
+							case '03':
+								i01Tag.setAttribute('class','fa-regular fa-face-surprise fa-beat fa-lg');
+								i01Tag.setAttribute('style','color:#da362e');
+
+								break;
+							case '04':
+								i01Tag.setAttribute('class','fa-regular fa-face-laugh-beam fa-lg');
+								i01Tag.setAttribute('style','color:#51ab42');
+								break;
+						}
+						//#endregion 5-1-1. 체크인 상태값 대비 i 태그 세팅
+
+						//#region 5-1-2. 계획대비체크인 내역 테이블 헤더 내용 세팅
+						/** @type {HTMLElement} tr */
+						let tr01Tag = document.createElement('tr');
+						/** @type {HTMLElement} td */
+						let td01Tag = document.createElement('td');
+						td01Tag.setAttribute('scope','col');
+						td01Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+						if(planSeqBf !== planSeqAf) td01Tag.innerText = checkInComparedToPlanList[j].planDt;
+						/** @type {HTMLElement} td */
+						let td02Tag = document.createElement('td');
+						td02Tag.setAttribute('scope','col');
+						td02Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%');
+						if(planSeqBf !== planSeqAf) td02Tag.innerText = checkInComparedToPlanList[j].planNote;
+						/** @type {HTMLElement} td */
+						let td03Tag = document.createElement('td');
+						td03Tag.setAttribute('scope','col');
+						td03Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+						if(planSeqBf !== planSeqAf) td03Tag.innerText = checkInComparedToPlanList[j].planAmt + ' ' + unit;
+						/** @type {HTMLElement} td */
+						let td04Tag = document.createElement('td');
+						td04Tag.setAttribute('scope','col');
+						td04Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+						td04Tag.innerText = checkInComparedToPlanList[j].checkInDt;
+						/** @type {HTMLElement} td */
+						let td05Tag = document.createElement('td');
+						td05Tag.setAttribute('scope','col');
+						td05Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%');
+						td05Tag.innerText = checkInComparedToPlanList[j].checkInNote;
+						/** @type {HTMLElement} td */
+						let td06Tag = document.createElement('td');
+						td06Tag.setAttribute('scope','col');
+						td06Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+						td06Tag.innerText = checkInComparedToPlanList[j].checkInAmt + ' ' + unit;
+						/** @type {HTMLElement} td */
+						let td07Tag = document.createElement('td');
+						td07Tag.setAttribute('scope','col');
+						td07Tag.setAttribute('style','font-size: 0.8rem;width: 5%;text-align: center;');
+						//#endregion
+
+						td07Tag.appendChild(i01Tag);
+						tr01Tag.appendChild(td01Tag);
+						tr01Tag.appendChild(td02Tag);
+						tr01Tag.appendChild(td03Tag);
+						tr01Tag.appendChild(td04Tag);
+						tr01Tag.appendChild(td05Tag);
+						tr01Tag.appendChild(td06Tag);
+						tr01Tag.appendChild(td07Tag);
+						document.getElementById('detailKeyObjectInfoTbody-'+planCd).appendChild(tr01Tag);
+
+						//#region 5-1-3. 앞뒤 계획 대비 소계 세팅
+						if(j+1 < length){
+							if(checkInComparedToPlanList[j].planSeq !== checkInComparedToPlanList[j+1].planSeq){
+								/** @type {HTMLElement} tr */
+								let tr01Tag = document.createElement('tr');
+								tr01Tag.setAttribute('style', 'background-color: #efefef;')
+								/** @type {HTMLElement} td */
+								let td01Tag = document.createElement('td');
+								td01Tag.setAttribute('scope','col');
+								td01Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+
+								/** @type {HTMLElement} td */
+								let td02Tag = document.createElement('td');
+								td02Tag.setAttribute('scope','col');
+								td02Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%;text-align: center;');
+								td02Tag.innerText = '소계';
+								/** @type {HTMLElement} td */
+								let td03Tag = document.createElement('td');
+								td03Tag.setAttribute('scope','col');
+								td03Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+								/** @type {HTMLElement} td */
+								let td04Tag = document.createElement('td');
+								td04Tag.setAttribute('scope','col');
+								td04Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+								/** @type {HTMLElement} td */
+								let td05Tag = document.createElement('td');
+								td05Tag.setAttribute('scope','col');
+								td05Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%');
+								/** @type {HTMLElement} td */
+								let td06Tag = document.createElement('td');
+								td06Tag.setAttribute('scope','col');
+								td06Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+								td06Tag.innerText = checkInSubAmt + ' ' + unit;
+								/** @type {HTMLElement} td */
+								let td07Tag = document.createElement('td');
+								td07Tag.setAttribute('scope','col');
+								td07Tag.setAttribute('style','font-size: 0.8rem;width: 5%;text-align: center;');
+								//#endregion
+
+								tr01Tag.appendChild(td01Tag);
+								tr01Tag.appendChild(td02Tag);
+								tr01Tag.appendChild(td03Tag);
+								tr01Tag.appendChild(td04Tag);
+								tr01Tag.appendChild(td05Tag);
+								tr01Tag.appendChild(td06Tag);
+								tr01Tag.appendChild(td07Tag);
+								document.getElementById('detailKeyObjectInfoTbody-'+planCd).appendChild(tr01Tag);
+
+								checkInSubAmt = 0;
+							}
+						}else if(j+1 === length){
+							/** @type {HTMLElement} tr */
+							let tr01Tag = document.createElement('tr');
+							tr01Tag.setAttribute('style', 'background-color: #efefef;')
+							/** @type {HTMLElement} td */
+							let td01Tag = document.createElement('td');
+							td01Tag.setAttribute('scope','col');
+							td01Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+
+							/** @type {HTMLElement} td */
+							let td02Tag = document.createElement('td');
+							td02Tag.setAttribute('scope','col');
+							td02Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%;text-align: center;');
+							td02Tag.innerText = '소계';
+							/** @type {HTMLElement} td */
+							let td03Tag = document.createElement('td');
+							td03Tag.setAttribute('scope','col');
+							td03Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+							/** @type {HTMLElement} td */
+							let td04Tag = document.createElement('td');
+							td04Tag.setAttribute('scope','col');
+							td04Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+							/** @type {HTMLElement} td */
+							let td05Tag = document.createElement('td');
+							td05Tag.setAttribute('scope','col');
+							td05Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%');
+							/** @type {HTMLElement} td */
+							let td06Tag = document.createElement('td');
+							td06Tag.setAttribute('scope','col');
+							td06Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+							td06Tag.innerText = checkInSubAmt + ' ' + unit;
+							/** @type {HTMLElement} td */
+							let td07Tag = document.createElement('td');
+							td07Tag.setAttribute('scope','col');
+							td07Tag.setAttribute('style','font-size: 0.8rem;width: 5%;text-align: center;');
+							//#endregion
+
+							tr01Tag.appendChild(td01Tag);
+							tr01Tag.appendChild(td02Tag);
+							tr01Tag.appendChild(td03Tag);
+							tr01Tag.appendChild(td04Tag);
+							tr01Tag.appendChild(td05Tag);
+							tr01Tag.appendChild(td06Tag);
+							tr01Tag.appendChild(td07Tag);
+							document.getElementById('detailKeyObjectInfoTbody-'+planCd).appendChild(tr01Tag);
+
+							checkInSubAmt = 0;
+						}
+						//#endregion 5-1-3. 앞뒤 계획 대비 소계 세팅
+
+						planSeqBf = planSeqAf;
+
+					}
+
+					//#region 5-1-4. 앞뒤 계획 대비 체크인 합계 세팅
+					/** @type {HTMLElement} tr */
+					let tr01Tag = document.createElement('tr');
+					tr01Tag.setAttribute('style', 'background-color: #dbdbdb;')
+					/** @type {HTMLElement} td */
+					let td01Tag = document.createElement('td');
+					td01Tag.setAttribute('scope','col');
+					td01Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+
+					/** @type {HTMLElement} td */
+					let td02Tag = document.createElement('td');
+					td02Tag.setAttribute('scope','col');
+					td02Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%;text-align: center;');
+					td02Tag.innerText = '합계';
+					/** @type {HTMLElement} td */
+					let td03Tag = document.createElement('td');
+					td03Tag.setAttribute('scope','col');
+					td03Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+					td03Tag.innerText = planTotAmt + ' ' + unit;
+					/** @type {HTMLElement} td */
+					let td04Tag = document.createElement('td');
+					td04Tag.setAttribute('scope','col');
+					td04Tag.setAttribute('style','font-size: 0.8rem;width: 13%;text-align: center;');
+					/** @type {HTMLElement} td */
+					let td05Tag = document.createElement('td');
+					td05Tag.setAttribute('scope','col');
+					td05Tag.setAttribute('style','font-size: 0.8rem;width: 27.5%;text-align: center;');
+					/** @type {HTMLElement} td */
+					let td06Tag = document.createElement('td');
+					td06Tag.setAttribute('scope','col');
+					td06Tag.setAttribute('style','font-size: 0.8rem;width: 7%;text-align: right;');
+					td06Tag.innerText = checkInTotAmt + ' ' + unit;
+					/** @type {HTMLElement} td */
+					let td07Tag = document.createElement('td');
+					td07Tag.setAttribute('scope','col');
+					td07Tag.setAttribute('style','font-size: 0.8rem;width: 5%;text-align: center;');
+					//#endregion
+
+					tr01Tag.appendChild(td01Tag);
+					tr01Tag.appendChild(td02Tag);
+					tr01Tag.appendChild(td03Tag);
+					tr01Tag.appendChild(td04Tag);
+					tr01Tag.appendChild(td05Tag);
+					tr01Tag.appendChild(td06Tag);
+					tr01Tag.appendChild(td07Tag);
+					document.getElementById('detailKeyObjectInfoTbody-'+planCd).appendChild(tr01Tag);
+
+					checkInTotAmt = 0;
+					planTotAmt = 0;
+					//#endregion 5-1-1. 앞뒤 계획 대비 소계 세팅
+				}
+			}
+			//#endregion
 		})
 	}
 	//#endregion
@@ -1376,7 +1882,8 @@
 		}
 	}
 	//#endregion
-	//#endregion
+
+	//#region
 	function promiseThenDelay(value, ms) {
 		return new Promise(resolve => {
 			setTimeout(() => resolve(value), ms);

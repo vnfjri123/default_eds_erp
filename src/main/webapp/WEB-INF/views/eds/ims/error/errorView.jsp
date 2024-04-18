@@ -47,8 +47,8 @@
 <script>
 
     var mainSheet;
-    var errorEditor, updateErrorEditor;
-    var selectpicker;
+    var errorEditor, updateErrorEditor, errorComment;
+    var selectpicker, selectpickerDivi;
     var today = getCurrentDateYYMMDD();
 
     // const { Editor } = toastui;
@@ -117,6 +117,22 @@
             }
         });
 
+        $(".selectpickerDivi").on('change', async ev => {
+            var id = ev.target.id;
+            switch (id) {
+                case 'clasifyDiviSearch':
+                    await doAction('mainSheet', 'search');
+            }
+        });
+
+        $('#progressDivi, #progressDiviUpdate').on('input', (e)=>{
+            if (e.target.value === '02') {
+                $('#completionDt, #completionDtUpdate').val(yyyymmdd(new Date()));
+            } else{
+                $('#completionDt, #completionDtUpdate').val('');
+            }
+        });
+
         $(document).on('shown.bs.modal', function (e) {
             $('input').attr('autocomplete', 'off');
             $(this).find('[autofocus]').focus();
@@ -126,6 +142,7 @@
 
     async function init() {
         // $('[data-mask]').inputmask();
+        // imsUtil.CreateCommentContainer(document.querySelector('#commentForm'));
         var param = {};
         param.corpCd = '${LoginInfo.corpCd}';
         param.depaCd = '${LoginInfo.depaCd}';
@@ -135,6 +152,7 @@
         edsUtil.setForm(document.querySelector("#modalForm"), "basma");
         // edsUtil.setForm(document.querySelector("#modalFormND"), "basma");
         edsUtil.setForm(document.querySelector("#updateForm"), "basma");
+        edsUtil.setForm(document.querySelector("#commentForm"), "basma");
         // edsUtil.setForm(document.querySelector("#updateFormND"), "basma");
 
         var errorImages = [];
@@ -194,7 +212,7 @@
         });
         updateErrorEditor = new toastui.Editor({
             el: document.querySelector('#updateEditor'),
-            height: '400px',
+            height: '350px',
             language: 'ko',
             initialEditType: 'wysiwyg',
             theme: 'dark',
@@ -242,6 +260,8 @@
                 },
             }
         });
+
+        // var errorComment = new imsUtil
 
         errorEditor.on('change', function () {
             // 현재 이미지 이름을 업데이트
@@ -302,7 +322,7 @@
             rowHeight: 30,
             minRowHeight: 30,
             // rowHeaders: ['rowNum', 'checkbox'], // 체크박스 기능
-            rowHeaders: ['rowNum'], // 체크박스 기능
+            // rowHeaders: ['rowNum'],
             header: {
                 height: 35,
                 minRowHeight: 35
@@ -372,9 +392,15 @@
                 hidden: true
             },
             {
+                header: '번호',
+                name: 'index',
+                width: 60,
+                align: 'center',
+            },
+            {
                 header: '부서명',
                 name: 'depaNm',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
                 filter: 'select',
                 showClearBtn: true,
@@ -382,9 +408,8 @@
             {
                 header: '지자체',
                 name: 'ad',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
-                filter: 'select',
                 editor: {type: 'select', options: {listItems: setCommCode("SYS010")}},
                 formatter: 'listItemText',
             },
@@ -394,26 +419,20 @@
                 minWidth: 60,
                 align: 'center',
                 className: 'highlight-cell',
-                filter: {
-                    type: 'text',
-                    showClearBtn: true
-                }
             },
             {
                 header: '구분',
                 name: 'clasifyDivi',
-                minWidth: 60,
+                width: 90,
                 align: 'center',
-                filter: 'select',
                 editor: {type: 'select', options: {listItems: setCommCode("SYS012")}},
                 formatter: 'listItemText',
             },
             {
                 header: '제목',
                 name: 'title',
-                minWidth: 60,
-                align: 'center',
-                filter: 'select',
+                minWidth: 100,
+                align: 'center'
             },
             // {
             //     header: '내용',
@@ -428,7 +447,7 @@
             {
                 header: '접수일',
                 name: 'receiptDt',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
                 filter: {
                     type: 'date',
@@ -444,7 +463,7 @@
             {
                 header: '진행상태',
                 name: 'progressDivi',
-                minWidth: 60,
+                width: 70,
                 align: 'center',
                 filter: 'select',
                 editor: {
@@ -460,14 +479,14 @@
             {
                 header: '작성자',
                 name: 'inpId',
-                minWidth: 60,
+                width: 70,
                 align: 'center',
                 filter: 'select',
             },
             {
                 header: '작성일자',
                 name: 'inpDttm',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
                 filter: {
                     type: 'date',
@@ -484,14 +503,14 @@
             {
                 header: '처리자',
                 name: 'handler',
-                minWidth: 60,
+                width: 70,
                 align: 'center',
                 filter: 'select',
             },
             {
                 header: '처리일자',
                 name: 'completionDt',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
                 filter: {
                     type: 'date',
@@ -501,7 +520,7 @@
                     showClearBtn: true,
                 },
                 formatter({value}) {
-                    if (value === '') {
+                    if (value === '' || value === null) {
                         return '';
                     } else {
                         return yyyymmdd(new Date(value));
@@ -511,14 +530,14 @@
             {
                 header: '수정자',
                 name: 'updId',
-                minWidth: 60,
+                width: 70,
                 align: 'center',
                 filter: 'select',
             },
             {
                 header: '수정일자',
                 name: 'updDttm',
-                minWidth: 60,
+                width: 80,
                 align: 'center',
                 filter: {
                     type: 'date',
@@ -534,11 +553,43 @@
                 }
             },
         ]);
+
         mainSheet.disableColumn('ad');
         mainSheet.disableColumn('clasifyDivi');
         selectpicker = $('.selectpicker').select2({
             language: 'ko'
         });
+
+        selectpickerDivi = $('.selectpickerDivi').select2({
+            language: 'ko',
+            data: [{
+                id: '',
+                text: '전체',
+                selected: true
+            }],
+            sorter: function(data) {
+                return data.sort(function(a, b) {
+                    if (a.id < b.id) {
+                        return -1;
+                    }
+                    if (a.id > b.id) {
+                        return 1;
+                    }
+                    return 0;
+                });
+            }
+        });
+
+        // 사용 예시
+        errorComment = new imsUtil.Comment({
+            el: document.querySelector('#comment'),
+            height: '35px',
+            maxHeight: '140px', // 최대 높이 설정
+            placeholder: 'Enter : 입력  /  Shift + Enter : 줄바꿈',
+            corpCd : `${LoginInfo.corpCd}`,
+            empCd : `${LoginInfo.empCd}`
+        });
+
         // mainSheet.disableColumn('progressDivi');
         doAction('mainSheet', 'search');
 
@@ -547,11 +598,11 @@
          ***********************************************************************/
 
         // '사이트 등록' 버튼 노출 부서 구분
-        if ('${LoginInfo.depaCd}'.includes('1008') || '${LoginInfo.depaCd}'.includes('1009') || '${LoginInfo.depaCd}'.includes('1012') || '${LoginInfo.empCd}' === '0007') {
-            $('#insertPjBtn').css('display', 'block');
-        } else {
-            $('#insertPjBtn').css('display', 'none');
-        }
+        <%--if ('${LoginInfo.depaCd}'.includes('1008') || '${LoginInfo.depaCd}'.includes('1009') || '${LoginInfo.depaCd}'.includes('1012') || '${LoginInfo.empCd}' === '0007') {--%>
+        <%--    $('#insertPjBtn').css('display', 'block');--%>
+        <%--} else {--%>
+        <%--    $('#insertPjBtn').css('display', 'none');--%>
+        <%--}--%>
 
         $('#insertPjBtn').on('click', (e) => {
             $('#modalBody').removeClass('hide').addClass('show')
@@ -629,9 +680,6 @@
                 formData.append('file', file);
             });
 
-            console.log('formData')
-            console.log(formData)
-
             $.ajax({
                 url: "/errorView/cudError",
                 type: "POST",
@@ -677,7 +725,8 @@
                 $('#modalBody').removeClass('show').addClass('hide')
                 $('#modalBodyUpdate').removeClass('hide').addClass('show')
                 $('#exampleModal').modal('show');
-
+                var inpId = document.querySelector('#inpId');
+                inpId.value = '${LoginInfo.empCd}';
                 var cellData = mainSheet.getData()[e.rowKey];
 
                 <%--if (cellData.depaCd !== '${LoginInfo.depaCd}') {--%>
@@ -691,16 +740,18 @@
                 <%--    $('.btnSaveUpdate').css('display', 'inline-block');--%>
                 <%--    $('.btnDeleteUpdate').css('display', 'inline-block');--%>
                 <%--}--%>
-                var btnSaveUpdateDisplay = cellData.depaCd !== '${LoginInfo.depaCd}' ? 'none' : 'inline-block';
-                var btnDeleteUpdateDisplay = cellData.depaCd !== '${LoginInfo.depaCd}' ? 'none' : 'inline-block';
 
-                if ('${LoginInfo.empCd}' === '0007' && cellData.depaCd === '1009') {
-                    btnSaveUpdateDisplay = 'inline-block';
-                    btnDeleteUpdateDisplay = 'inline-block';
-                }
+                // 수정, 삭제버튼 부서 구분
+                <%--var btnSaveUpdateDisplay = cellData.depaCd !== '${LoginInfo.depaCd}' ? 'none' : 'inline-block';--%>
+                <%--var btnDeleteUpdateDisplay = cellData.depaCd !== '${LoginInfo.depaCd}' ? 'none' : 'inline-block';--%>
 
-                $('.btnSaveUpdate').css('display', btnSaveUpdateDisplay);
-                $('.btnDeleteUpdate').css('display', btnDeleteUpdateDisplay);
+                <%--if ('${LoginInfo.empCd}' === '0007' && cellData.depaCd === '1009') {--%>
+                <%--    btnSaveUpdateDisplay = 'inline-block';--%>
+                <%--    btnDeleteUpdateDisplay = 'inline-block';--%>
+                <%--}--%>
+
+                <%--$('.btnSaveUpdate').css('display', btnSaveUpdateDisplay);--%>
+                <%--$('.btnDeleteUpdate').css('display', btnDeleteUpdateDisplay);--%>
 
                 $('#errorIndex').val(cellData.index);
                 param.errorIndex = $('#errorIndex').val();
@@ -711,6 +762,8 @@
 
                 param.index = cellData.index;
                 var siteData = edsUtil.getAjax("/errorView/selectErrorByIndex", param);
+                var userId = document.getElementById('userId');
+                userId.value = siteData[0].userId;
 
                 var data = {}
                 data.data = siteData[0]
@@ -722,6 +775,8 @@
                 imageList.data = updateErrorEditor.getHTML();
 
                 var dataToForm = await edsUtil.eds_dataToForm(data);
+
+                await imsUtil.selectMessageData();
             }
         })
 
@@ -908,6 +963,7 @@
                     param.corpCd = ${LoginInfo.corpCd};
                     //param.depaCd = ${LoginInfo.depaCd};
                     param.busiCd = "${LoginInfo.busiCd}"
+
                     mainSheet.resetData(edsUtil.getAjax("/errorView/selectError", param));
                     for (var i = 0; i < mainSheet.getColumnValues('progressDivi').length; i++) {
                         if (mainSheet.getColumnValues('progressDivi')[i] === '02') {
@@ -916,6 +972,7 @@
                             mainSheet.addCellClassName(i, 'progressDivi', 'inCompleted')
                         }
                     }
+
                     break;
                 case "search2":
                     var param = ut.serializeObject(document.querySelector("#searchForm"));
@@ -931,6 +988,7 @@
                             mainSheet.addCellClassName(i, 'progressDivi', 'inCompleted')
                         }
                     }
+
                     break;
             }
         }
@@ -943,8 +1001,11 @@
             $(this).find('.error').removeClass('error');
             $(this).find('form')[0].reset();
             $(this).find('form')[1].reset();
+            $('#handlerUpdate, #completionDtUpdate').val('');
             errorEditor.reset();
             updateErrorEditor.reset();
+            errorComment.reset();
+            document.querySelector('#submitInput').style.height = '35px';
         });
     }
 
@@ -989,12 +1050,10 @@
                     required: true
                 },
                 completionDt: {
-                    required: function () {
-                        if ($('select[name=progressDivi]').val() === '02') {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    required: function (e) {
+                        var progressDivi = e.id === 'completionDt' ? '#progressDivi' : '#progressDiviUpdate';
+
+                        return $(progressDivi).val() === '02';
                     },
                 },
             },
@@ -1033,7 +1092,7 @@
                     $('input[name=installDt]').val(callback.installDt)
                     $('input[name=batteryDt]').val(callback.batteryDt)
                     $('select:not(#adSearch)[name=ad]').val(callback.ad)
-                    $('select[name=clasifyDivi]').val(callback.clasifyDivi)
+                    $('select[name=clasifyDivi]').not($('#clasifyDiviSearch')).val(callback.clasifyDivi)
                     $('select[name=modelDivi]').val(callback.modelDivi)
 
                     // $('input[name=siteIndex]').val(callback.siteIndex)
@@ -1101,32 +1160,39 @@
 
         <!-- ./input hidden -->
         <div class="form-group">
-          <button id="insertPjBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                  style="display: none">장애처리 등록
+          <button id="insertPjBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">장애처리 등록
           </button>
           <div class="form-group" style="margin-left: 4rem"></div>
 
-          <label for="siteNm">사이트명 &nbsp;</label>
+
+          <div class="form-group">
+            <label class="mb-0" for="adSearch">지자체 &nbsp;</label>
+            <select class="form-control selectpicker" style="width: 150px;" id="adSearch" name="ad"></select>
+          </div>
+          <div class="form-group" style="margin-left: 2rem"></div>
+
+          <div class="form-group">
+            <label class="mb-0" for="adSearch">구분 &nbsp;</label>
+            <select class="form-control selectpickerDivi" style="width: 160px;" id="clasifyDiviSearch" name="clasifyDivi"></select>
+          </div>
+          <div class="form-group" style="margin-left: 2rem"></div>
+
           <div class="input-group input-group-sm">
+            <label class="mb-0" for="siteNmSearch">사이트명 &nbsp;</label>
             <input type="text" class="form-control" style="width: 150px; font-size: 15px;" name="siteNm"
                    id="siteNmSearch"
                    title="사이트명">
           </div>
           <div class="form-group" style="margin-left: 4rem"></div>
 
-          <label for="titleSearch">제목 &nbsp;</label>
           <div class="input-group input-group-sm">
+            <label class="mb-0" for="titleSearch">제목 &nbsp;</label>
             <input type="text" class="form-control" style="width: 150px; font-size: 15px;" name="title"
                    id="titleSearch"
                    title="사이트명">
           </div>
         </div>
 
-        <div class="form-group" style="margin-left: 5rem"></div>
-
-        <div class="form-group">
-          <select class="form-control selectpicker" style="width: 150px;" id="adSearch" name="ad"></select>
-        </div>
       </form>
       <!-- ./form -->
     </div>
@@ -1142,7 +1208,7 @@
 <!--   Modal  -->
 <div class="modal fade" data-backdrop="static" id="exampleModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
+  <div class="modal-dialog modal-xl mb-0" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color: #ddd; padding: 5px;">
         <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
@@ -1153,7 +1219,7 @@
       <%-- create / 등록 body --%>
       <div class="modal-body form-input" id="modalBody" style="padding: unset;">
         <div class="form-group col-md-12">
-          <%--사회재난 input form--%>
+          <%--input form--%>
           <form id="modalForm" method="post" onsubmit="return false;">
             <input hidden="hidden" id="siteIndex" name="siteIndex">
             <input hidden="hidden" id="errorIndex" name="errorIndex">
@@ -1215,20 +1281,20 @@
                   <input type="text" class="form-control" id="inpId" name="inpId">
                 </div>
                 <div class="col-md-1 mb-3">
-                  <label for="completionDt"><b>처리 완료일자</b></label>
-                  <input id="completionDt" class="form-control" name="completionDt" type="date" max="9999-12-31">
-                </div>
-                <div class="col-md-1 mb-3">
-                  <label for="handler"><b>처리자</b></label>
-                  <input disabled placeholder="자동기입" type="text" class="form-control" id="handler" name="handler">
-                </div>
-                <div class="col-md-1 mb-3">
                   <label for="progressDivi"><b>진행상태</b></label>
                   <select onchange="changeOptColor('insert')" class="form-control modal-select" id="progressDivi"
                           name="progressDivi">
                     <option selected value="01">진행중</option>
                     <option value="02">완료</option>
                   </select>
+                </div>
+                <div class="col-md-1 mb-3">
+                  <label for="completionDt"><b>처리 완료일자</b></label>
+                  <input id="completionDt" class="form-control" name="completionDt" type="date" max="9999-12-31">
+                </div>
+                <div class="col-md-1 mb-3">
+                  <label for="handler"><b>처리자</b></label>
+                  <input disabled placeholder="자동기입" type="text" class="form-control" id="handler" name="handler">
                 </div>
               </div>
             </div>
@@ -1265,8 +1331,16 @@
 
       <%-- update / 수정 body --%>
       <div class="modal-body hide form-update hide" id="modalBodyUpdate" style="padding: unset;">
-        <div class="form-group col-md-12">
-          <%--사회재난 input form--%>
+        <div class="form-group col-md-12 mb-0">
+          <%--input form--%>
+          <form hidden="hidden" id="commentForm" method="post" onsubmit="return false;">
+            <input id="commentCorpCd" value="${LoginInfo.corpCd}">
+            <input id="commentDepaCd" value="${LoginInfo.depaCd}">
+            <input id="commentDepaNm" value="${LoginInfo.depaNm}">
+            <input id="commentEmpNm" value="${LoginInfo.empNm}">
+            <input id="commentEmpCd" value="${LoginInfo.empCd}">
+            <input id="userId">
+          </form>
           <form id="updateForm" method="post" onsubmit="return false;">
             <input hidden="hidden" id="index" name="index">
             <%--            <input hidden="hidden" id="siteIndex" name="siteIndex">--%>
@@ -1327,20 +1401,20 @@
                   <input type="text" class="form-control" id="inpIdUpdate" name="inpId">
                 </div>
                 <div class="col-md-1 mb-3">
-                  <label for="completionDtUpdate"><b>처리 완료일자</b></label>
-                  <input id="completionDtUpdate" class="form-control" name="completionDt" type="date" max="9999-12-31">
-                </div>
-                <div class="col-md-1 mb-3">
-                  <label for="handlerUpdate"><b>처리자</b></label>
-                  <input disabled placeholder="자동기입" type="text" class="form-control" id="handlerUpdate" name="handler">
-                </div>
-                <div class="col-md-1 mb-3">
                   <label for="progressDiviUpdate"><b>진행상태</b></label>
                   <select onchange="changeOptColor('update')" class="form-control modal-select" id="progressDiviUpdate"
                           name="progressDivi">
                     <option selected value="01">진행중</option>
                     <option value="02">완료</option>
                   </select>
+                </div>
+                <div class="col-md-1 mb-3">
+                  <label for="completionDtUpdate"><b>처리 완료일자</b></label>
+                  <input id="completionDtUpdate" class="form-control" name="completionDt" type="date" max="9999-12-31">
+                </div>
+                <div class="col-md-1 mb-3">
+                  <label for="handlerUpdate"><b>처리자</b></label>
+                  <input disabled placeholder="자동기입" type="text" class="form-control" id="handlerUpdate" name="handler">
                 </div>
               </div>
             </div>
@@ -1349,9 +1423,10 @@
             <label for="updateEditor"><b>내용</b></label>
             <div id="updateEditor"></div>
           </div>
+          <div id="comment" class="content-dis"></div>
         </div>
         <!--Footer-->
-        <div class="modal-footer" style="display: block; padding-top: 1px">
+        <div class="modal-footer" style="display: block; padding: unset">
           <div class="row">
             <div class="col-md-12" style="padding: 0 15px 0 15px; background-color: #ebe9e4">
               <div class="col text-center">

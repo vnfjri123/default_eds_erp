@@ -39,7 +39,7 @@
 <script src="/js/util/eds.ims.js"></script>
 
 <script>
-    var mainSheet, noticeEditor, updateNoticeEditor, dropzone, updateDropzone;
+    var mainSheet, noticeEditor, updateNoticeEditor, dropzone, updateDropzone, isChecked;
     var postNum;
     var dropzoneRemoveArr = new Array;
     Dropzone.autoDiscover = false;
@@ -59,7 +59,7 @@
 
         // 팝업 알림 옵션 체크 여부에 따라 처리
         $('#popUpOpt, #popUpOptUpdate').change(function () {
-            var isChecked = $(this).prop('checked');
+            isChecked = $(this).prop('checked');
             $('#endDt, #endDtUpdate').prop('readonly', !isChecked).val(isChecked ? '' : null);
             if (isChecked) setEndDate();
         });
@@ -327,7 +327,6 @@
 
         // 글 번호 부여
         mainSheet.on('onGridMounted', ({instance}) => {
-            console.log(instance.getData())
             const sortedData = instance.getData().sort((a, b) => a.rowNum - b.rowNum);
 
             sortedData.forEach(({rowKey}, index) => {
@@ -396,6 +395,10 @@
                 cache: false,
                 success: async function (result) {
                     $('#mainModal').modal('hide');
+
+                    if (isChecked) {
+                        setCookie('popup_secret_coupon_ims', 'done', -1);
+                    }
 
                     var userParam = {};
                     userParam.corpCd = '${LoginInfo.corpCd}';
@@ -589,6 +592,10 @@
                 cache: false,
                 success: async function (result) {
                     $('#mainModal').modal('hide');
+
+                    if (isChecked) {
+                        setCookie('popup_secret_coupon_ims', 'done', -1);
+                    }
 
                     var paramData = [];
                     for (const files of dropzoneRemoveArr) {
@@ -850,14 +857,10 @@
                     param.corpCd = '${LoginInfo.corpCd}';
                     param.depaCd = '${LoginInfo.depaCd}';
 
-                    console.log('조회')
-                    console.log(mainSheet.getData())
-
                     mainSheet.resetData(edsUtil.getAjax("/noticeView/selectNotice", param));
 
                     // 게시글 번호 정렬
                     const sortedData = mainSheet.getData().sort((a, b) => a.rowNum - b.rowNum);
-                    console.log(sortedData)
                     sortedData.forEach(({rowKey}, index) => {
                         mainSheet.setValue(rowKey, 'rowNum', mainSheet.getData().length - index);
                     });
@@ -901,6 +904,13 @@
             dropzoneRemoveArr = [];
             $('.dz-image-preview').remove();
         });
+    }
+
+    //쿠키데이터 설정 function
+    function setCookie(name, value, expiredays) {
+        var todayDate = new Date();
+        todayDate.setDate(todayDate.getDate() + expiredays);
+        document.cookie = name + "=" + escape(value) + "; path=/; expires=" + todayDate.toGMTString() + ";";
     }
 
 </script>

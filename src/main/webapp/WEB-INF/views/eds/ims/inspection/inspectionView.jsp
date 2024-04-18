@@ -150,7 +150,7 @@
 
               // {header: '기간', name: 'period', width: 30, align: 'Center'},
               {
-                  header: '프로젝트', name: 'projNm', minWidth: 90, align: 'Center', filter: {
+                  header: '프로젝트', name: 'projNm', minWidth: 100, align: 'Center', filter: {
                       type: 'text',
                       showClearBtn: true
                   }
@@ -160,19 +160,14 @@
                   name: 'ad',
                   width: 50,
                   align: 'center',
-                  filter: 'select',
                   editor: {type: 'select', options: {listItems: setCommCode("SYS010")}},
                   formatter: 'listItemText',
               },
               {
-                  header: '사이트명', name: 'siteNm', width: 90, align: 'Center',
-                  filter: {
-                      type: 'text',
-                      showClearBtn: true
-                  }
+                  header: '사이트명', name: 'siteNm', width: 120, align: 'Center'
               },
               {
-                  header: '구분', name: 'clasifyDivi', width: 80, align: 'Center',
+                  header: '구분', name: 'clasifyDivi', width: 90, align: 'Center',
                   filter: 'select',
                   editor: {type: 'select', options: {listItems: setCommCode("SYS012")}},
                   formatter: 'listItemText',
@@ -199,7 +194,7 @@
                   }
               },
               {
-                  header: '점검내용', name: 'content', width: 120, align: 'left',
+                  header: '점검내용', name: 'content', width: 200, align: 'left',
                   // validation: {
                   //     required: true
                   // },

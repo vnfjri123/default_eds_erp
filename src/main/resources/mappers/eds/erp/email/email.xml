@@ -12,7 +12,7 @@
         ,T1.estCd
         <choose>
             <when test="divi == 'estimate' or divi.equals('estimate')">
-
+                ,T1.sendDivi
             </when>
             <when test="divi == 'project' or divi.equals('project')">
                 ,T1.projCd
@@ -89,7 +89,8 @@
         ,T1.estCd
         <choose>
             <when test="divi == 'estimate' or divi.equals('estimate')">
-
+                ,(SELECT I1.projNm FROM tb_yeongeob_est_list I1 WHERE I1.corpCd = T1.corpCd AND I1.estCd = T1.estCd) AS projNm
+                ,T1.sendDivi
             </when>
             <when test="divi == 'project' or divi.equals('project')">
                 ,T1.projCd
@@ -127,7 +128,12 @@
             <when test="divi == 'estimate' or divi.equals('estimate')">
                 FROM tb_yeongeob_est_email_list T1
                 WHERE T1.corpCd = #{corpCd}
-                AND T1.estCd = #{estCd}
+                <if test="estCd != null and !estCd.equals('')">
+                    AND T1.estCd = #{estCd}
+                </if>
+                <if test="seq != null and !seq.equals('')">
+                    AND T1.seq = #{seq}
+                </if>
             </when>
             <when test="divi == 'project' or divi.equals('project')">
                 FROM tb_project_email_list T1
@@ -411,6 +417,7 @@
                 corpCd
                 ,busiCd
                 ,estCd
+                ,projCd
                 ,seq
             </when>
             <when test="divi == 'project' or divi.equals('project')">
@@ -467,6 +474,7 @@
                 #{corpCd}
                 ,#{busiCd}
                 ,#{estCd}
+                ,#{projCd}
                 ,(SELECT IFNULL(MAX(CAST(seq as signed)),0)+1 FROM tb_yeongeob_est_email_list WHERE corpCd = #{corpCd} AND estCd = #{estCd})
             </when>
             <when test="divi == 'project' or divi.equals('project')">
@@ -725,12 +733,26 @@
     </insert>
 
     <update id="applySendEmail" parameterType="hashMap">
-        UPDATE tb_gumae_ord_email_list /* applySendEmail */
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                UPDATE tb_yeongeob_est_email_list /* applySendEmail*/
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                UPDATE tb_gumae_ord_email_list /* applySendEmail*/
+            </when>
+        </choose>
         SET sendDivi = #{sendDivi},
             updId = #{userId},
             updDttm = now()
         WHERE corpCd = #{corpCd}
-          AND ordCd = #{ordCd}
+        <choose>
+            <when test="divi == 'estimate' or divi.equals('estimate')">
+                AND estCd = #{estCd}
+            </when>
+            <when test="divi == 'order' or divi.equals('order')">
+                AND ordCd = #{ordCd}
+            </when>
+        </choose>
           AND seq = #{seq}
     </update>
 </mapper>

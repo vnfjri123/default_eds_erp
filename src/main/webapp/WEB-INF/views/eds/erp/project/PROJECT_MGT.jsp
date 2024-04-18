@@ -320,11 +320,9 @@
 				{ header:'부가세액',		name:'vatAmt3',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	hidden:true },
 			]);
 			projectGridList.on('beforeFilter', async ev => {
-				console.log('여기요');
 				
 			});
 			projectGridList.on('afterFilter', async ev => {
-				console.log('여기요2222222');
 
 			});
 			projectGridList.setFilter('projDivi', 'text')

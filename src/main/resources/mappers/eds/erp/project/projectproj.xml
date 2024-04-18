@@ -66,6 +66,7 @@
         ,T1.margin3
         ,T1.profit3
         ,T1.manager
+        ,IFNULL((SELECT projPur FROM tb_edms_est_list  I1 WHERE I1.corpCd = '1001' AND I1.submitCd = T1.submitCd ORDER BY submitCd*1 LIMIT 1 ),'') AS projPur
         ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
         ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
         FROM TB_PROJECT_LIST T1 LEFT JOIN TB_PROJECT_ITEM_LIST T2
@@ -304,7 +305,20 @@
         ) T1
         WHERE 1=1
         <if test = "stDt != null and !stDt.equals('')">
-            AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+            <choose>
+                <when test="dtDivi.equals('') or dtDivi == null">
+#                     AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+                </when>
+                <when test="dtDivi.equals('01')">
+                    AND T1.cntDt BETWEEN #{stDt} AND #{edDt}
+                </when>
+                <when test="dtDivi.equals('02')">
+                    AND T1.initiateDt BETWEEN #{stDt} AND #{edDt}
+                </when>
+                <when test="dtDivi.equals('03')">
+                    AND T1.endDt BETWEEN #{stDt} AND #{edDt}
+                </when>
+            </choose>
         </if>
         GROUP BY T1.corpCd, T1.projCd
         ORDER BY T1.projCd*1 DESC

@@ -166,6 +166,7 @@
 									<div class="row">
 										<div class="col text-center">
 											<button type="button" class="btn btn-sm btn-primary" name="btnEmailSend"	id="btnEmailSend"	onclick="doAction('guMaeGridEmail', 'emailSend')"><i class="fa fa-print"></i> 메일승인</button>
+											<button type="button" class="btn btn-sm btn-primary" name="btnEmailBack"	id="btnEmailBack"	onclick="doAction('guMaeGridEmail', 'emailBack')"><i class="fa fa-print"></i> 메일반려</button>
 <%--											<button type="button" class="btn btn-sm btn-primary" name="btnEmailSend"	id="btnEmailSend"	onclick="doAction('guMaeGridEmail', 'apply')"><i class="fa fa-print"></i> 메일승인</button>--%>
 											<button type="button" class="btn btn-sm btn-primary d-none" name="btnEmailFileSearch"	id="btnEmailFileSearch"	onclick="doAction('guMaeGridEmailFile', 'search')"><i class="fa fa-print"></i> 조회</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnClose3"		id="btnClose3"		onclick="doAction('guMaeGridEmail', 'btnClose')" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> 닫기</button>
@@ -254,7 +255,9 @@
 		guMaeGridEmail.setColumns([
 			{ header:'발송여부',		name:'sendDivi',	width:100,		align:'center',
 			  formatter: function (value) {
-				if(value.value === '02') return '발송완료';
+				if(value.value === '01') return '미발송';
+				else if(value.value === '02') return '발송완료';
+				else if(value.value === '03') return '발송반려';
 				else return '미발송';
 			  },
 			},
@@ -448,12 +451,13 @@
 					await guMaeGridEmail.removeCheckedRows(true);
 					await edsUtil.doCUD("/GUMAE_ORD_MGT/cudOrdEmailList", "guMaeGridEmail", guMaeGridEmail);
 					break;
-				case "apply"://삭제
+				case "apply"://전송 적용
 						var cell = guMaeGridEmail.getFocusedCell();
 						var params = [{
 							corpCd: guMaeGridEmail.getValue(cell.rowKey,'corpCd'),
 							ordCd: guMaeGridEmail.getValue(cell.rowKey,'ordCd'),
 							seq: guMaeGridEmail.getValue(cell.rowKey,'seq'),
+							sendDivi: '02',
 							divi: 'order',
 						}];
 					await edsUtil.doApply("/EMAIL_MGT/applySendEmail", params);
@@ -571,6 +575,18 @@
 							await fn_CopyGuMaeGridEmail2Form();
 						}, 300)
 					}
+					break;
+				case "emailBack":// 이메일 반려 보내기
+					var cell = guMaeGridEmail.getFocusedCell();
+					var params = [{
+						corpCd: guMaeGridEmail.getValue(cell.rowKey,'corpCd'),
+						ordCd: guMaeGridEmail.getValue(cell.rowKey,'ordCd'),
+						seq: guMaeGridEmail.getValue(cell.rowKey,'seq'),
+						sendDivi: '03',
+						divi: 'order',
+					}];
+					await edsUtil.doApply("/EMAIL_MGT/applySendEmail", params);
+					await doAction("guMaeGridEmail", "search");
 					break;
 			}
 		}if (sheetNm == 'guMaeGridEmailFile') {

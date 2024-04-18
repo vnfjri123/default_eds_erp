@@ -9,7 +9,11 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -1031,4 +1035,58 @@ public class Util {
 		
 		return true;
 	}
+
+	/**
+     * 입력받은 String 값이 숫자로만 이루어졌는지 검사
+     * @param num  입력받는 문자열
+     * @return num
+     */
+    public static String num2han(String num) {
+        num = num.replaceAll("[^0-9]", ""); // 숫자만 있는 문자열로 변환
+        if (num.equals("0"))
+            return "영";
+        String[] number = {"영", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"};
+        String[] unit = {"", "만", "억", "조"};
+        String[] smallUnit = {"천", "백", "십", ""};
+        List<String> result = new ArrayList<>();
+
+        int unitCnt = (int) Math.ceil(num.length() / 4.0);
+        num = String.format("%0" + (unitCnt * 4) + "d", Integer.parseInt(num)); // 4자리 값이 되도록 0을 채운다
+
+        Pattern pattern = Pattern.compile(".{4}");
+        Matcher matcher = pattern.matcher(num);
+        int unitIndex = 0;
+        while (matcher.find()) {
+            String hanValue = makeHan(matcher.group());
+            if (hanValue.equals("")) // 값이 없을땐 해당 단위의 값이 모두 0이란 뜻
+                continue;
+            result.add(0, hanValue + unit[unitIndex]);
+            unitIndex++;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String s : result) {
+            sb.append(s);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 입력받은 String 값이 숫자로만 이루어졌는지 검사
+     * @param text  숫자 to 한글
+     * @return text
+     */
+    private static String makeHan(String text) {
+        String[] number = {"영", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"};
+        String[] smallUnit = {"천", "백", "십", ""};
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char num = text.charAt(i);
+            if (num == '0') // 0은 읽지 않는다
+                continue;
+            str.append(number[Character.getNumericValue(num)]).append(smallUnit[i]);
+        }
+        return str.toString();
+    }
 }

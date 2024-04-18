@@ -605,7 +605,44 @@ public class emailService {
             }
 
             // 알람 저장
-            if(divi.equals("order")){// 알람 저장
+            if(divi.equals("estimate")){// 알람 저장
+                Map<String, Object> alarmDataParam = new HashMap<>();
+                alarmDataParam.put("corpCd",SessionUtil.getUser().getCorpCd());
+                alarmDataParam.put("estCd",estCd);
+                alarmDataParam.put("divi","estimate");
+                alarmDataParam.put("seq","");
+                alarmDataParam.put("authDivi","");
+                List<emailListVO> result = emailMapper.selectSendEmailInfo2(alarmDataParam);
+
+                emailListVO vo = result.get(0);
+                Map<String, Object> alarmData = new HashMap<>();
+
+                alarmData.put("corpCd",vo.getCorpCd());
+                alarmData.put("empCd",vo.getInpId());
+                alarmData.put("empNm",vo.getInpNm());
+                alarmData.put("navMessage","[" + vo.getProjNm().toString() + "] 프로젝트의 견적요청이 도착하였습니다.");
+                alarmData.put("inpId",vo.getInpId());
+                alarmData.put("updId",vo.getInpId());
+                alarmData.put("submitCd",vo.getEstCd().toString() + "-" + vo.getSeq());
+                alarmData.put("submitNm","견적서발송 - " + vo.getProjNm().toString() + " 견적요청의 건");
+                alarmData.put("stateDivi","11"); // 견적서발송 코드
+                alarmData.put("readDivi","00");
+                alarmData.put("saveDivi","00");
+
+                alarmData.put("target",vo.getInpId());
+                List<String> partCds = new ArrayList<>();
+                partCds.add("0004"); // 발주서요청 알림 받아야할 사원코드 넣어야함(사장님)
+//                partCds.add("0000"); // 발주서요청 알림 받아야할 사원코드 넣어야함
+                partCds = partCds.stream()
+                        .distinct()
+                        .collect(Collectors.toList());
+                int partCdsLength = partCds.size();
+                for (int i = 0; i < partCdsLength; i++) {
+                    alarmData.put("id",partCds.get(i));
+                    alarmData.put("target",partCds.get(i));
+                    alarmService.insertAlarmList(alarmData);
+                }
+            }else if(divi.equals("order")){// 알람 저장
                 Map<String, Object> alarmDataParam = new HashMap<>();
                 alarmDataParam.put("corpCd",SessionUtil.getUser().getCorpCd());
                 alarmDataParam.put("ordCd",ordCd);
@@ -615,9 +652,8 @@ public class emailService {
                 List<emailListVO> result = emailMapper.selectSendEmailInfo2(alarmDataParam);
 
                 emailListVO vo = result.get(0);
-
-                System.out.println(vo);
                 Map<String, Object> alarmData = new HashMap<>();
+
                 alarmData.put("corpCd",vo.getCorpCd());
                 alarmData.put("empCd",vo.getInpId());
                 alarmData.put("empNm",vo.getInpNm());
@@ -632,7 +668,8 @@ public class emailService {
 
                 alarmData.put("target",vo.getInpId());
                 List<String> partCds = new ArrayList<>();
-                partCds.add("0004"); // 발주서요청 알림 받아야할 사원코드 넣어야함
+                partCds.add("0004"); // 발주서요청 알림 받아야할 사원코드 넣어야함(사장님)
+//                partCds.add("0000"); // 발주서요청 알림 받아야할 사원코드 넣어야함
                 partCds = partCds.stream()
                         .distinct()
                         .collect(Collectors.toList());
@@ -1095,9 +1132,10 @@ public class emailService {
 
         try{
 
+            String sendDiv = map.get("sendDivi").toString();
+            sendDiv = (sendDiv.equals("02"))?"승인":(sendDiv.equals("03")?"반려":"");
             /* 발주 이메일 발송 적용*/
             map.put("userId", SessionUtil.getUser().getEmpCd());
-            map.put("sendDivi", "02");
             map.put("authDivi", "");
             returnData = emailMapper.applySendEmail(map);
 
@@ -1106,19 +1144,30 @@ public class emailService {
 
             emailListVO vo = result.get(0);
 
-            System.out.println(vo);
             Map<String, Object> alarmData = new HashMap<>();
             alarmData.put("corpCd",vo.getCorpCd());
             alarmData.put("empCd",SessionUtil.getUser().getEmpCd());
             alarmData.put("empNm",SessionUtil.getUser().getEmpNm());
-            alarmData.put("navMessage","[" + vo.getProjNm().toString() + "] 프로젝트의 발주요청이 승인되었습니다.");
             alarmData.put("inpId",SessionUtil.getUser().getEmpCd());
             alarmData.put("updId",SessionUtil.getUser().getEmpCd());
-            alarmData.put("submitCd",vo.getOrdCd().toString() + "-" + vo.getSeq());
-            alarmData.put("submitNm","발주서조회 - " + vo.getProjNm().toString() + " 발주승인의 건");
-            alarmData.put("stateDivi","09"); // 발주서발송 코드
             alarmData.put("readDivi","00");
             alarmData.put("saveDivi","00");
+
+            if(map.get("divi").toString().equals("estimate")){
+                String stateDivi = map.get("sendDivi").toString();
+                stateDivi = (stateDivi.equals("02"))?"12":(stateDivi.equals("03")?"13":"");
+                alarmData.put("submitCd",vo.getEstCd().toString() + "-" + vo.getSeq());
+                alarmData.put("navMessage","[" + vo.getProjNm().toString() + "] 프로젝트의 견적요청이 "+sendDiv+"되었습니다.");
+                alarmData.put("submitNm","견적서조회 - " + vo.getProjNm().toString() + " 견적"+sendDiv+"의 건");
+                alarmData.put("stateDivi",stateDivi); // 발주서발송 코드
+            }else if(map.get("divi").toString().equals("order")){
+                String stateDivi = map.get("sendDivi").toString();
+                stateDivi = (stateDivi.equals("02"))?"09":(stateDivi.equals("03")?"10":"");
+                alarmData.put("submitCd",vo.getOrdCd().toString() + "-" + vo.getSeq());
+                alarmData.put("navMessage","[" + vo.getProjNm().toString() + "] 프로젝트의 발주요청이 "+sendDiv+"되었습니다.");
+                alarmData.put("submitNm","발주서조회 - " + vo.getProjNm().toString() + " 발주"+sendDiv+"의 건");
+                alarmData.put("stateDivi",stateDivi); // 발주서발송 코드
+            }
 
             alarmData.put("target",vo.getInpId());
             List<String> partCds = new ArrayList<>();
@@ -1132,6 +1181,7 @@ public class emailService {
                 alarmData.put("target",partCds.get(i));
                 alarmService.insertAlarmList(alarmData);
             }
+            returnData = 1;
         }catch (Exception e){
 
             String exc = e.toString();

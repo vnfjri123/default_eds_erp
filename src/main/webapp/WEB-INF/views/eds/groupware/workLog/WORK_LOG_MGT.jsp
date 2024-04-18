@@ -1187,7 +1187,7 @@
 	</div>
 </div>
 <!----------------------------------------
----- 하위핵심결과지표 계획하기 모달 End
+---- 하위핵심결과지표 체크인하기 모달 End
 ------------------------------------------>
 <!----------------------------------------
 ---- 월간성과기획서 계획하기 Start
@@ -3262,6 +3262,7 @@
 									data: amtValues,
 									borderColor: `#fd6283`,
 									backgroundColor: `#fdb0bf66`,
+									tension: 0.4,
 								},
 								{
 									label: '목표',
@@ -3269,10 +3270,16 @@
 									data: edAmtValues,
 									borderColor: `#333333`,
 									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
 								},
 							]
 						},
 						options: {
+							responsive: true,
+							interaction: {
+								intersect: false,
+								mode: 'index'
+							},
 							scales: {
 								x: {
 									beginAtZero: true
@@ -3328,6 +3335,7 @@
 									data: planningAmtValues,
 									borderColor: `#fd6283`,
 									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
 								},
 								{
 									label: '달성',
@@ -3335,6 +3343,7 @@
 									data: ckeckInamtValues,
 									borderColor: `#36a1e9`,
 									backgroundColor: `rgba(153, 206, 243, 0.4)`,
+									tension: 0.4,
 								},
 								{
 									label: '목표',
@@ -3342,16 +3351,58 @@
 									data: edAmtValues,
 									borderColor: `#333333`,
 									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
 								},
 							]
 						},
 						options: {
+							responsive: true,
+							interaction: {
+								intersect: false,
+								mode: 'index'
+							},
 							scales: {
 								x: {
 									beginAtZero: true
 								},
 								y: {
 									beginAtZero: true
+								}
+							},
+							plugins: {
+								tooltip: {
+									callbacks: {
+										footer: (tooltipItems) => {
+											let plan = tooltipItems[0].parsed.y;
+											let checkIn = tooltipItems[1].parsed.y;
+											let target = tooltipItems[2].parsed.y;
+											let planRate = 0;
+											let CheckInRate = 0;
+											let targetDiv = '';
+											let rst = [];
+
+											// 진행예정율
+											planRate = Math.round(plan*100/target);
+
+											// 진행율
+											CheckInRate = Math.round(checkIn*10000/target)/100;
+
+											if(planRate < CheckInRate){
+												targetDiv = '⬆️';
+											}else if(planRate === CheckInRate){
+												targetDiv = '➡️';
+											}else if(planRate > CheckInRate){
+												targetDiv = '⬇️';
+											}
+
+											// 제목
+											rst.push('              간편요약 ' + targetDiv);
+											rst.push('예정율: ' + planRate + ' % (' + plan + ' / ' + target + ' )');
+											rst.push('진척률: ' + CheckInRate + ' % (' + checkIn + ' / ' + target + ' )');
+											// 중간 바 02
+											return rst;
+										},
+									}
 								}
 							}
 						}
@@ -3438,16 +3489,42 @@
 					if ('<c:out value="${LoginInfo.respDivi}"/>' === '04' && empCd !== '<c:out value="${LoginInfo.empCd}"/>') {
 						Swal.fire({icon: 'error', title: '실패', text: '내 목표가 아니어서 삭제할 수 없습니다.',})
 					}else {
-						await planGridList.removeRow(planGridList.getFocusedCell().rowKey);
-						await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',planGridList,'') // 삭제
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await planGridList.removeRow(planGridList.getFocusedCell().rowKey);
+								await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',planGridList,'') // 삭제
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					}
 					break;
 				case "delete2":// okr삭제
 					if ('<c:out value="${LoginInfo.respDivi}"/>' === '04' && document.getElementById('detailPlanModalEmpCd').value !== '<c:out value="${LoginInfo.empCd}"/>') {
 						Swal.fire({icon: 'error', title: '실패', text: '내 목표가 아니어서 삭제할 수 없습니다.',})
 					}else {
-						document.getElementById('detailPlanModalStatus').value = 'D';
-						await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList','','detailPlanModalForm') // 삭제
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								document.getElementById('detailPlanModalStatus').value = 'D';
+								await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList','','detailPlanModalForm') // 삭제
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					}
 					break;
 				case "keyResultDelete1":// plan KeyResult삭제
@@ -3457,8 +3534,21 @@
 					if ('<c:out value="${LoginInfo.respDivi}"/>' === '04' && empCd !== '<c:out value="${LoginInfo.empCd}"/>') {
 						Swal.fire({icon: 'error', title: '실패', text: '내 목표가 아니어서 삭제할 수 없습니다.',})
 					}else {
-						await planGridList.removeRow(row.rowKey);
-						await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',planGridList,'') // 삭제
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await planGridList.removeRow(row.rowKey);
+								await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',planGridList,'') // 삭제
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					}
 					break;
 				case "keyResultDelete2":// KeyResult KeyResult삭제
@@ -3468,9 +3558,22 @@
 					if ('<c:out value="${LoginInfo.respDivi}"/>' === '04' && empCd !== '<c:out value="${LoginInfo.empCd}"/>') {
 						Swal.fire({icon: 'error', title: '실패', text: '내 목표가 아니어서 삭제할 수 없습니다.',})
 					}else {
-						await keyResultGridList.removeRow(keyResultGridList.getFocusedCell().rowKey);
-						await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',keyResultGridList,''); // 삭제
-						await doAction('planGridList','keyResultSearch');
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await keyResultGridList.removeRow(keyResultGridList.getFocusedCell().rowKey);
+								await edsUtil.modalCUD('/WORK_LOG/cudWorkLogList','planGridList',keyResultGridList,''); // 삭제
+								await doAction('planGridList','keyResultSearch');
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					}
 					break;
 				case "commentDelete":// 코멘트 삭제
@@ -3482,8 +3585,21 @@
 					param.seq = elId[2];
 					param.inpId = elId[3];
 					setTimeout(async ev=>{
-						await edsUtil.postAjax('/WORK_LOG/cdWorkLogComment', '', param);
-						await doAction('planGridList','commentSearch');
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await edsUtil.postAjax('/WORK_LOG/cdWorkLogComment', '', param);
+								await doAction('planGridList','commentSearch');
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					},40)
 					break;
 				case "activityDelete":// 활동 삭제
@@ -3495,21 +3611,60 @@
 					param.seq = elId[2];
 					param.inpId = elId[3];
 					setTimeout(async ev=>{
-						await edsUtil.postAjax('/WORK_LOG/cdWorkLogActivity', '', param);
-						await doAction('planGridList','activitySearch');
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await edsUtil.postAjax('/WORK_LOG/cdWorkLogActivity', '', param);
+								await doAction('planGridList','activitySearch');
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					},40)
 					break;
 				case "planningKeyResultDelete":// kr plan 저장
-					await document.getElementById('insertPlanningKeyResultModalStatus').setAttribute('value','D')
-					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogPlanningKeyResult','','','insertPlanningKeyResultModalForm');
-					await doAction('planGridList','planningKeyResulChartSearch');
-					await doAction('planGridList','planningKeyResulListSearch');
+					Swal.fire({
+						title: "정말 삭제하시겠습니까?",
+						showDenyButton: true,
+						showCancelButton: false,
+						confirmButtonText: "삭제",
+						denyButtonText: `취소`
+					}).then(async (result) => {
+						/* Read more about isConfirmed, isDenied below */
+						if (result.isConfirmed) {
+							await document.getElementById('insertPlanningKeyResultModalStatus').setAttribute('value','D')
+							await edsUtil.modalCUD('/WORK_LOG/cudWorkLogPlanningKeyResult','','','insertPlanningKeyResultModalForm');
+							await doAction('planGridList','planningKeyResulChartSearch');
+							await doAction('planGridList','planningKeyResulListSearch');
+						} else if (result.isDenied) {
+							Swal.fire("취소되었습니다.", "", "info");
+						}
+					});
 					break;
 				case "checkInKeyResultDelete":// kr plan 저장
-					await document.getElementById('insertCheckInKeyResultModalStatus').setAttribute('value','D')
-					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogCheckInKeyResult','','','insertCheckInKeyResultModalForm');
-					await doAction('planGridList','checkInKeyResulChartSearch');
-					await doAction('planGridList','checkInKeyResulListSearch');
+					Swal.fire({
+						title: "정말 삭제하시겠습니까?",
+						showDenyButton: true,
+						showCancelButton: false,
+						confirmButtonText: "삭제",
+						denyButtonText: `취소`
+					}).then(async (result) => {
+						/* Read more about isConfirmed, isDenied below */
+						if (result.isConfirmed) {
+							await document.getElementById('insertCheckInKeyResultModalStatus').setAttribute('value','D')
+							await edsUtil.modalCUD('/WORK_LOG/cudWorkLogCheckInKeyResult','','','insertCheckInKeyResultModalForm');
+							await doAction('planGridList','checkInKeyResulChartSearch');
+							await doAction('planGridList','checkInKeyResulListSearch');
+						} else if (result.isDenied) {
+							Swal.fire("취소되었습니다.", "", "info");
+						}
+					});
 					break;
 			}
 		}

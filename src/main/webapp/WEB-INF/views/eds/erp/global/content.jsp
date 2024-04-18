@@ -184,9 +184,15 @@ img
 									<option value="05">활동</option>
 									<option value="07">코멘트</option>
 								</optgroup>
-								<optgroup label="이메일">
-									<option value="08">발주요청</option>
-									<option value="09">발주승인</option>
+								<optgroup label="발주서">
+									<option value="08">요청</option>
+									<option value="09">승인</option>
+									<option value="10">반려</option>
+								</optgroup>
+								<optgroup label="견적서">
+									<option value="11">요청</option>
+									<option value="12">승인</option>
+									<option value="13">반려</option>
 								</optgroup>
 							</select>
 						</div>

@@ -1,3 +1,10 @@
+.select2-container .select2-selection--single,
+.select2-selection__arrow,
+.select2-selection__rendered{
+    height: 100% !important;
+    align-content: center;
+}
+
 #testImg, #testImg1{
     width: 98%;
     padding: 0 1px 0 1px;
@@ -28,9 +35,13 @@ form input::file-selector-button {
     text-overflow: ellipsis;
 }
 
-.dataName.main:hover {
+#modalForm .dataName.main:hover {
     cursor: unset;
     color: unset;
+}
+
+#updateFile:hover{
+    cursor: pointer;
 }
 
 #title-error,
@@ -58,7 +69,7 @@ form input::file-selector-button {
 
 #bodyContent {
     justify-content: center;
-    gap: 10px 0;
+    gap: 1rem 0.5rem;
 }
 
 /*#bodyContent > div {*/
@@ -70,7 +81,6 @@ form input::file-selector-button {
 
 #bodyContent > div:hover {
     scale: 105%;
-    text-decoration: underline;
 }
 
 /*#bodyContent > div > a {*/
@@ -80,19 +90,24 @@ form input::file-selector-button {
 /*}*/
 
 #bodyContent > div > a > img {
-    height: 13rem;
+    height: 12rem;
+    object-fit: cover;
     /*max-width: 100%;*/
     width: 100%;
     /*aspect-ratio: 1/1;*/
     /*object-fit: contain;*/
-    border-radius: 0.5rem;
+    border: 1px solid rgba(0,0,0,0.125);
+    border-bottom: none;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    /*border-radius: 0.5rem;*/
 }
 
 .item-footer {
-    display: flex;
+    /*display: flex;*/
     /*justify-content: space-around;*/
-    width: inherit;
-    white-space: nowrap;        /* 줄 바꿈 방지 */
+    /*width: inherit;*/
+    /*white-space: nowrap;        !* 줄 바꿈 방지 *!*/
     overflow: hidden;           /* 내용이 넘치는 경우 숨김 */
     text-overflow: ellipsis;    /* 텍스트가 넘칠 경우 elipsis 표시 */
 }
@@ -126,16 +141,35 @@ form input::file-selector-button {
 /*페이징 끝*/
 
 /* bootstrap custom style 시작 */
+#accordion .btn-link{
+    padding: unset !important;
+}
+
+#accordion .btn:focus{
+    box-shadow: unset !important;
+}
+
+
+#accordion .btn-link:hover{
+    text-decoration: unset !important;
+}
+
+#heading{
+    padding: 0 0.5rem;
+}
+
 .custom-col-lg-5 {
-    flex: 0 0 calc(19%); /* 20%는 5개의 열에 대한 너비, px는 열 사이의 간격 */
-    position: relative;
-    width: 18rem;
+    flex: 0 0 calc(18%); /* 20%는 5개의 열에 대한 너비, px는 열 사이의 간격 */
+    max-width: 18%;
+    /*position: relative;*/
+    /*width: 18rem;*/
     /* width: 100%; */ /* 이 부분을 삭제하면 꽉 차게 설정됩니다. */
     padding-right: 0px;
     margin-left: 15px;
     /*padding-left: 15px;*/
-    border: solid 1px rgba(0,0,0,0.2);
-    border-radius: 0.5rem;
+
+    /*border: solid 1px rgba(0,0,0,0.2);*/
+    /*border-radius: 0.5rem;*/
 }
 
 @media (max-width: 720px) {

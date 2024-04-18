@@ -171,6 +171,8 @@ public class emailController {
 
 		Map mp = new HashMap();
 		Map rtn = new HashMap();
+		String sendDivi = "";
+		String divi = "";
 		try {
 			// ibsheet에서 넘어온 내용
 			List saveData = (List) param.get("data");
@@ -180,11 +182,23 @@ public class emailController {
 
 			for (int i = 0; i < saveData.size(); i++) {
 				Map row = (Map) saveData.get(i);
+				sendDivi = row.get("sendDivi").toString();
+				divi = row.get("divi").toString();
 				updatedCnt += emailService.applySendEmail(row);
 			}
 			if (updatedCnt > 0) { // 정상 저장
-				rtn.put("Result", 0);
-				rtn.put("Message", "발송 되었습니다.");
+				if(divi.equals("estimate") || divi.equals("order")){
+					if(sendDivi.equals("02")){
+						rtn.put("Result", 0);
+						rtn.put("Message", "발송 되었습니다.");
+					}else if(sendDivi.equals("03")){
+						rtn.put("Result", 0);
+						rtn.put("Message", "반려 되었습니다.");
+					}
+				}else{
+					rtn.put("Result", 0);
+					rtn.put("Message", "발송 되었습니다.");
+				}
 			} else { // 저장 실패
 				rtn.put("Result", -100); // 음수값은 모두 실패
 				rtn.put("Message", "발송에 실패하였습니다.");

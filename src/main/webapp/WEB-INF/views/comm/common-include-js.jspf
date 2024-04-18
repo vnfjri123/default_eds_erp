@@ -64,3 +64,13 @@
 	<script type="text/javascript" src='/js/util/eds.commute.js?curr=<c:out value="${common_include_js_curr}" />'></script>
 	<script type="text/javascript" src='/js/util/eds.workLog.js?curr=<c:out value="${common_include_js_curr}" />'></script>
 	<script type="text/javascript" src='/js/util/eds.error.js?curr=<c:out value="${common_include_js_curr}" />'></script>
+
+
+
+<%------------------------------------------------------------------------------------------------------------------------
+---- CHARTJS SET START
+--------------------------------------------------------------------------------------------------------------------------%>
+<script type="text/javascript" src='/chartjs/dist/chart.umd.js'></script>
+<%------------------------------------------------------------------------------------------------------------------------
+---- CHARTJS SET END
+--------------------------------------------------------------------------------------------------------------------------%>

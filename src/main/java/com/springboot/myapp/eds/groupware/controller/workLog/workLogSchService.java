@@ -606,7 +606,6 @@ public class workLogSchService {
                     // "팀원"일 경우 자기 자신 것만 처리
                     if(SessionUtil.getUser().getRespDivi().equals("04")) {
                         // 자기 자신 것 처리
-                        System.out.println("여기");
                         System.out.println(saveData);
                         if(saveData.get("inpId").equals(SessionUtil.getUser().getEmpCd())){
                             returnData.put("status","success");

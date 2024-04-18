@@ -9,7 +9,7 @@
         SELECT /* selectLOGINCnt */
             COUNT(*)
         FROM TB_BASE_USER_LIST
-        WHERE empId = #{id}/* AND pwd = SHA2(#{pwd},256)*/
+        WHERE empId = #{id} /*AND pwd = SHA2(#{pwd},256)*/
     </select>
 
     <select id="selectLOGINInfo"  resultType="com.springboot.myapp.eds.erp.vo.base.baseUserListVO">

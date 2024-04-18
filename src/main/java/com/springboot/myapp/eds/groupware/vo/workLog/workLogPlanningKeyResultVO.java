@@ -27,6 +27,7 @@ public class workLogPlanningKeyResultVO {
     private String inpNm;
     private String updId;
     private String updNm;
+    private String unit;
 
     public String getDt() {
         return Util.addMinusChar(dt);

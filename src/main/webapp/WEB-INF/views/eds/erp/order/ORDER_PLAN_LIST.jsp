@@ -14,6 +14,17 @@
 	<!-- adminlte -->
 	<link rel="stylesheet" href="/css/AdminLTE_main/dist/css/adminlte.min.css">
 	<style>
+
+		/************************
+		* swal2 css END
+		*************************/
+		.swal2-title,
+		.swal2-icon-content{
+			font-size: 1.1rem !important;
+		}
+		/************************
+		* swal2 css END
+		*************************/
 		@font-face {
 			font-family: 'Pretendard-Regular';
 			src: url('/bootstrap-4.6.2/dist2/font/Pretendard-Bold.woff') format('woff');
@@ -73,10 +84,62 @@
 		div[class="tui-grid-lside-area"] .tui-grid-row-odd > td{
 			background-color: #fff !important;
 		}
+		.tui-grid-scrollbar-right-bottom,
+		.tui-grid-scrollbar-right-top,
+		.tui-grid-scrollbar-y-inner-border,
+		.tui-grid-scrollbar-y-outer-border,
+		.tui-grid-scrollbar-left-bottom,
+		.tui-grid-border-line-bottom{
+			display: none;
+		}
 
 		/***************************
 		* grid custom css End
 		***************************/
+
+		/************************
+		* progress css END
+		*************************/
+		.progress-container {
+			width: 100%;
+			height: 12px; /* height: 0px; 으로 하면 안 보임 */
+			background-color: #a2a1a1;
+			/*background-color: #dfe2e7;*/
+			z-index: 9997;
+			border-radius: 10px;
+		}
+		.progress-bar {
+			width: 0%;
+			max-width: 100%;
+			height: 12px;
+			background: linear-gradient(to right, rgba(250,180,70,1) 0%, rgba(250,30,30,1) 50%, rgba(130,60,180,1) 100%);
+			/*background: #57adfb;*/
+			border-radius: 10px 10px;
+			/* border-radius: 10px; */
+		}
+
+		.percent {
+			/* display: none; 을 추가 하면 안 보임 */
+			position: absolute;
+			right: 55px;
+			display: block;
+			font-size: 0.9rem;
+			color: #fff;
+			/*color: #333333;*/
+			text-align: center;
+		}
+		.percent::after {
+			/* display: none; 을 추가 하면 안 보임 */
+			position: absolute;
+			bottom: 2px;
+			right: -15px;
+			font-size: 12px;
+			font-weight: 500;
+			opacity: 0.5;
+		}
+		/************************
+		* progress css END
+		*************************/
 
 		/***************************
 		* html custom css Start
@@ -97,6 +160,152 @@
 
 		/***************************
 		* html custom css End
+		***************************/
+
+		/***************************
+		* chartJs css Start
+		***************************/
+
+
+		/*canvas[id='orderPlanModalKeyResultListPlanChart'],*/
+		/*canvas[id='orderPlanModalKeyResultListCheckInChart']*/
+		/*{position:inherit; z-index:2500;}*/
+
+		/***************************
+		* chartJs css End
+		***************************/
+
+		/************************
+        * comment css END
+        *************************/
+		.comment-list,
+		.active-list
+		{
+			list-style: none;
+			padding: 0;
+			overflow-y: auto;
+		}
+		.comment,
+		.active
+		{
+			margin-bottom: 10px;
+			display: flex;
+			align-items: flex-start; /* 항목을 시작점에 맞추어 정렬 */
+		}
+		.profile-pic
+		{
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			margin-right: 10px;
+		}
+		.comment-content,
+		.active-content {
+			margin-left: auto; /* 버튼을 오른쪽으로 정렬 */
+			font-size: 14px;
+		}
+		.comment-time,
+		.active-time {
+			font-size: 12px;
+			color: #666;
+		}
+		.comment-delete-button,
+		.active-delete-button {
+			margin-left: auto; /* 버튼을 오른쪽으로 정렬 */
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+			font-size: 10px;
+			color: #666;
+		}
+		/************************
+        * comment css END
+        *************************/
+
+		/***************************
+		* commen css START
+		***************************/
+
+
+		/* 스크롤바 숨기기 */
+		/*#planningKeyResultGridListDIV *::-webkit-scrollbar,*/
+		/*#checkInKeyResultGridListDIV *::-webkit-scrollbar*/
+		/*{*/
+		/*	display: none; !* Chrome, Safari, Opera*!*/
+		/*}*/
+
+		/* 초기 스타일 */
+		.color-fill {
+			display: inline-block;
+			color: #fff;
+			background: linear-gradient(to left, transparent 50%, #111f93 50%) left;
+			background-size: 200%;
+			transition: 0.2s ease-out;
+		}
+
+		/* 호버하거나, 클래스가 추가될 때 채워지는 효과를 활성화 */
+		.color-fill.active {
+			background-position: right;
+		}
+
+		.color-revert {
+			display: inline-block;
+			color: #333;
+			background: linear-gradient(to left, transparent 50%, #111f93 50%) left;
+			background-size: 202%;
+			transition: 0.2s ease-out;
+			background-position: right; /* 초기 상태를 채워진 상태로 설정 */
+		}
+
+		/* 호버하거나, 클래스가 추가될 때 원래 상태로 돌아가는 효과 활성화 */
+		.color-revert.active {
+			background-position: left;
+		}
+
+		/* bootstrap4.6 col에 스크롤 가능하게함 */
+		.scrollable-div {
+			overflow-y: auto; /* 세로 스크롤 활성화 */
+			scroll-behavior: smooth; /* 부드러운 스크롤 효과 적용 */
+		}
+
+		/* 드래그 막기 */
+		body {
+			user-select: none; /* 드래그 막기 */
+		}
+
+		#orderPlanModalKeyResultListActiveWrapper::-webkit-scrollbar,
+		#orderPlanModalKeyResultListActiveList::-webkit-scrollbar,
+		#orderPlanModalKeyResultListActiveMessageBox::-webkit-scrollbar,
+
+		#orderPlanModalKeyResultListCommentWrapper::-webkit-scrollbar,
+		#orderPlanModalKeyResultListCommentList::-webkit-scrollbar,
+		#orderPlanModalKeyResultListCommentMessageBox::-webkit-scrollbar,
+
+		#orderPlanModalKeyResultListPlanList::-webkit-scrollbar,
+
+		#orderPlanModalKeyResultListCheckInList::-webkit-scrollbar
+
+		{
+			display: none; /* Chrome, Safari, Opera */
+		}
+
+		@media (max-width: 783px) {
+			.carousel-item .col-12.col-md-5.scrollable-div{
+				height: 20vh;
+			}
+			.carousel-item .col-12.col-md-7.scrollable-div.d-flex.flex-column{
+				height: 60vh;
+			}
+			#orderPlanModalKeyResultListActiveList,
+			#orderPlanModalKeyResultListCommentList,
+			#orderPlanModalKeyResultListPlanList,
+			#orderPlanModalKeyResultListCheckInList
+			{
+				height: 60vh !important;
+			}
+		}
+		/***************************
+		* commen css END
 		***************************/
 	</style>
 </head>
@@ -165,11 +374,11 @@
 			</div>
 			<div class="col-lg-12" style="height: calc(2rem);width: 100%; padding: unset; background-color: #ebe9e4">
 				<i class="fa-solid fa-gears" style="float: left;font-size:1.2rem !important;"></i>
-				<i style="float: left;font-size:1.2rem !important;"> 매출계획</i>
+				<i style="float: left;font-size:1.2rem !important;"> 연간성과진행현황</i>
 				<i style="float: left;font-size:1.2rem !important; margin-left: 10px;"> (단위 : 백 만원)</i>
 				<button type="button" class="btn btn-sm btn-primary mr-1 float-right" name="btnAddRow" id="btnAddRow" onclick="doAction('orderPlanGrid','addCol')"><i class="fa fa-solid fa-share"></i> 추가</button>
 				<button type="button" class="btn btn-sm btn-primary mr-1 float-right" name="btnSearch" id="btnSearch" onclick="doAction('orderPlanGrid','search')"><i class="fa fa-solid fa-share"></i> 조회</button>
-				<button type="button" class="invisible" 			 name="btnInputPopEv"		id="btnInputPopEv"			data-toggle="modal" data-target="#modalOrderPlan"></button>
+				<button type="button" class="invisible" 			 name="btnInputPopEv"		id="btnInputPopEv"			data-toggle="modal" data-target="#orderPlanModal"></button>
 			</div>
 		</div>
 		<div class="row" id="contentObjective">
@@ -179,131 +388,240 @@
 		</div>
 	</div>
 </div>
-<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-	<div class="carousel-indicators">
-		<div data-target="#carouselExampleCaptions" data-slide-to="0" class="active">가나다</div>
-		<div data-target="#carouselExampleCaptions" data-slide-to="1">라마바</div>
-		<div data-target="#carouselExampleCaptions" data-slide-to="2">사아자</div>
-	</div>
-	<div class="carousel-inner">
-		<div class="carousel-item active" style="height: 100vh;background-color: red;">
-			<img src="..." class="d-block w-100" alt="...">
-			<div class="carousel-caption d-none d-md-block">
-				<h5>First slide label</h5>
-				<p>Some representative placeholder content for the first slide.</p>
-			</div>
-		</div>
-		<div class="carousel-item" style="height: 100vh;background-color: red;">
-			<img src="..." class="d-block w-100" alt="...">
-			<div class="carousel-caption d-none d-md-block">
-				<h5>Second slide label</h5>
-				<p>Some representative placeholder content for the second slide.</p>
-			</div>
-		</div>
-		<div class="carousel-item" style="height: 100vh;background-color: red;">
-			<img src="..." class="d-block w-100" alt="...">
-			<div class="carousel-caption d-none d-md-block">
-				<h5>Third slide label</h5>
-				<p>Some representative placeholder content for the third slide.</p>
-			</div>
-		</div>
-	</div>
-	<button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
-		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-		<span class="sr-only">Previous</span>
-	</button>
-	<button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
-		<span class="carousel-control-next-icon" aria-hidden="true"></span>
-		<span class="sr-only">Next</span>
-	</button>
-</div>
-<div class="modal fade" id="modalOrderPlan" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-scrollable" role="document">
+<div class="modal fade" id="orderPlanModal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
 		<div class="modal-content">
 			<!--Header-->
-			<div class="modal-header font-color p-0" name="tabs" id="tabs" style="color: #4d4a41">
-				<div class="col-md-6 p-2">
-					<h4 class="modal-title" style="color:#000;font-weight: bold;font-size:1.5rem !important;">상세정보</h4>
+			<div class="modal-header font-color p-0" name="orderPlanModalTabs" id="orderPlanModalTabs" style="color: #4d4a41">
+				<div class="col-md-10 p-1">
+					<div class="row text-center vertical-middle p-1">
+						<div class="col col-md p-1" role="button" style="font-size: 1rem !important; border-right: 2px solid #f6f5f8;" data-target="#carouselOrderPlanModalTabsCaptions" data-slide-to="0" class="active" id="orderPlanModalTabsInfoButton" name="orderPlanModalTabsInfoButton">상세</div>
+						<div class="col col-md p-1" role="button" style="font-size: 1rem !important; border-right: 2px solid #f6f5f8;" data-target="#carouselOrderPlanModalTabsCaptions" data-slide-to="1" id="orderPlanModalTabsCommentButton" name="orderPlanModalTabsCommentButton">코멘트</div>
+						<div class="col col-md p-1" role="button" style="font-size: 1rem !important; border-right: 2px solid #f6f5f8;" data-target="#carouselOrderPlanModalTabsCaptions" data-slide-to="2" id="orderPlanModalTabsActiveButton" name="orderPlanModalTabsActiveButton">활동</div>
+						<div class="col col-md p-1" role="button" style="font-size: 1rem !important; border-right: 2px solid #f6f5f8;" data-target="#carouselOrderPlanModalTabsCaptions" data-slide-to="3" id="orderPlanModalTabsPlanButton" name="orderPlanModalTabsPlanButton">계획</div>
+						<div class="col col-md p-1" role="button" style="font-size: 1rem !important;" data-target="#carouselOrderPlanModalTabsCaptions" data-slide-to="4" id="orderPlanModalTabsCheckInButton" name="orderPlanModalTabsCheckInButton">체크인</div>
+					</div>
 				</div>
-				<div class="col-md-6 p-2 text-right">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true" style="font-size:1.5rem !important;">×</span>
-					</button>
+				<div class="col-md-2 p-2 text-right">
+					<button type="button" class="btn btn-default d-none" style="background-color: #000 !important; color:#fff !important;" data-target="#insertPlanningKeyResultModal" data-toggle="modal" id="orderPlanModalTabsPlanAddButton" name="orderPlanModalTabsPlanAddButton" title="계획추가버튼">추가</button>
+					<button type="button" class="btn btn-default d-none" style="background-color: #000 !important; color:#fff !important;" data-target="#insertCheckInKeyResultModal" data-toggle="modal" id="orderPlanModalTabsCheckInAddButton" name="detailKeyResultModalCheckInAddButton" title="체크인추가버튼">추가</button>
+					<button type="button" class="btn btn-default d-none" style="background-color: #000 !important; color:#fff !important;" data-target="#applyPlanKeyResultModal" data-toggle="modal" onclick="doAction('applyPlanKeyResultModal','planKeyResultGridListSearch','')" id="orderPlanModalTabsPlanApplyOpenButton" name="orderPlanModalTabsPlanApplyOpenButton" title="계획열기버튼">계획</button>
+					<button type="button" class="btn btn-default d-none" style="background-color: #000 !important; color:#fff !important;" data-target="#applyPlanKeyResultModal" data-toggle="modal" id="orderPlanModalTabsPlanApplyCloseButton" name="orderPlanModalTabsPlanApplyCloseButton" title="계획닫기버튼">계획</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal" data-toggle="modal" id="orderPlanModalTabsCloseButton" name="orderPlanModalTabsCloseButton" title="핵심결과지표내역나가기역버튼">닫기</button>
 				</div>
 			</div>
-			<div class="modal-body">
-				<div class="col-md-12" style="height: 100%;" id="log">
-					<form name="orderPlanGridForm" id="orderPlanGridForm" onsubmit="return false;" method="post">
-						<input type="hidden" name="status" 			id="status" 	title="회사코드">
-						<input type="hidden" name="corpCd" 			id="corpCd" 	title="회사코드">
-						<input type="hidden" name="ordPlanCd" 		id="ordPlanCd" 	title="수주계획코드">
-						<div class="row">
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanBusiDivi"><b>대분류</b></label>
-								<select class="form-control selectpicker" id="ordPlanBusiDivi" name="ordPlanBusiDivi" required></select>
-							</div>
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanDivi"><i class="fa-solid fa-star text-danger"></i><b>중분류</b></label>
-								<select class="form-control selectpicker" id="ordPlanDivi" name="ordPlanDivi" required></select>
-							</div>
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanItem"><i class="fa-solid fa-star text-danger"></i><b>소분류</b></label>
-								<select class="form-control selectpicker" id="ordPlanItem" name="ordPlanItem" required></select>
-							</div>
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanCustCd"><b>거래처</b></label>
-								<input type="text" class="form-control text-center" id="ordPlanCustCd" name="ordPlanCustCd" placeholder="거래처" required>
-							</div>
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanAmt"><b>금액</b></label>
-								<input type="text" class="form-control text-right" id="ordPlanAmt" name="ordPlanAmt" placeholder="금액.." required>
-							</div>
-							<div class="col-4 col-md-4 p-2">
-								<label for="ordPlanGr"><b>등급</b></label>
-								<select class="form-control selectpicker" id="ordPlanGr" name="ordPlanGr" required></select>
-							</div>
-							<div class="col-md-4 p-2" style="z-index: 1052;">
-								<label for="ordPlanDt"><b>계획날짜</b></label>
-								<input type="text" class="form-control text-center" id="ordPlanDt" aria-label="Date-Time" title="계획날짜"  placeholder="계획날짜" required>
-								<div id="ordPlanDtDIV" style="margin-top: -1px;"></div>
-							</div>
-							<div class="col-12 col-md-12 p-2">
-								<label for="ordPlanEmpCd"><b>담당자</b></label>
-								<select class="form-control selectpicker" id="ordPlanEmpCd" name="ordPlanEmpCd" required></select>
-							</div>
-							<div class="col-6 col-md-6 p-2">
-								<label for="ordPlanBusiCd"><b>사업장</b></label>
-								<select class="form-control selectpicker" id="ordPlanBusiCd" name="ordPlanBusiCd" required disabled></select>
-							</div>
-							<div class="col-6 col-md-6 p-2">
-								<label for="ordPlanDepaCd"><b>부서</b></label>
-								<select class="form-control selectpicker" id="ordPlanDepaCd" name="ordPlanDepaCd" required disabled></select>
-							</div>
-							<div class="col-md-12 p-2">
-								<label for="ordPlanNote"><b>메모</b></label>
-								<textarea type="text" rows="5" class="form-control" style="resize: unset" id="ordPlanNote" name="ordPlanNote" placeholder="메모" value=""></textarea>
+			<div id="carouselOrderPlanModalTabsCaptions" class="carousel slide" data-interval="false" data-ride="carousel">
+				<div class="carousel-inner scrollable-div">
+					<div class="carousel-item active" style="height: 80vh;">
+						<div class="modal-body">
+							<div class="col-md-12 " style="height: 100%;" id="log">
+								<form name="orderPlanGridForm" id="orderPlanGridForm" onsubmit="return false;" method="post">
+									<input type="hidden" name="status" 			id="status" 	title="회사코드">
+									<input type="hidden" name="corpCd" 			id="corpCd" 	title="회사코드">
+									<input type="hidden" name="ordPlanCd" 		id="ordPlanCd" 	title="수주계획코드">
+									<div class="row">
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanBusiDivi"><b>대분류</b></label>
+											<select class="form-control selectpicker" id="ordPlanBusiDivi" name="ordPlanBusiDivi" required></select>
+										</div>
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanDivi"><i class="fa-solid fa-star text-danger"></i><b>중분류</b></label>
+											<select class="form-control selectpicker" id="ordPlanDivi" name="ordPlanDivi" required></select>
+										</div>
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanItem"><i class="fa-solid fa-star text-danger"></i><b>소분류</b></label>
+											<select class="form-control selectpicker" id="ordPlanItem" name="ordPlanItem" required></select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanCustCd"><b>거래처</b></label>
+											<input type="text" class="form-control text-center" id="ordPlanCustCd" name="ordPlanCustCd" placeholder="거래처" required>
+										</div>
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanAmt"><b>금액</b></label>
+											<input type="text" class="form-control text-right" id="ordPlanAmt" name="ordPlanAmt" placeholder="금액.." required>
+										</div>
+										<div class="col-4 col-md-4 p-2">
+											<label for="ordPlanGr"><b>등급</b></label>
+											<select class="form-control selectpicker" id="ordPlanGr" name="ordPlanGr" required></select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4 p-2" style="z-index: 1052;">
+											<label for="ordPlanDt"><b>계획날짜</b></label>
+											<input type="text" class="form-control text-center" id="ordPlanDt" aria-label="Date-Time" title="계획날짜"  placeholder="계획날짜" required>
+											<div id="ordPlanDtDIV" style="margin-top: -1px;"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12 col-md-12 p-2">
+											<label for="ordPlanEmpCd"><b>담당자</b></label>
+											<select class="form-control selectpicker" id="ordPlanEmpCd" name="ordPlanEmpCd" required></select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-6 col-md-6 p-2">
+											<label for="ordPlanBusiCd"><b>사업장</b></label>
+											<select class="form-control selectpicker" id="ordPlanBusiCd" name="ordPlanBusiCd" required disabled></select>
+										</div>
+										<div class="col-6 col-md-6 p-2">
+											<label for="ordPlanDepaCd"><b>부서</b></label>
+											<select class="form-control selectpicker" id="ordPlanDepaCd" name="ordPlanDepaCd" required disabled></select>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12 p-2">
+											<label for="ordPlanNote"><b>메모</b></label>
+											<textarea type="text" rows="5" class="form-control" style="resize: unset" id="ordPlanNote" name="ordPlanNote" placeholder="메모" value=""></textarea>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
-					</form>
-				</div>
-			</div>
-			<!--Footer-->
-			<div class="modal-footer" style="display: block">
-				<div class="row">
-					<div class="col-md-12" style="padding: 5px 15px 0 15px;">
-						<div class="col text-center">
-							<form class="form-inline" role="form" name="errorLogModalButtonForm" id="errorLogModalButtonForm" method="post" onsubmit="return false;">
-								<div class="container">
-									<div class="row">
-										<div class="col text-center">
-											<button type="button" class="btn btn-sm btn-primary d-none" name="btnReset"	id="btnReset"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','reset')"><i class="fa fa-trash"></i> 초기화</button>
-											<button type="button" class="btn btn-sm btn-primary" name="btnSave"		id="btnSave"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','save')"><i class="fa fa-save"></i> 저장</button>
-											<button type="button" class="btn btn-sm btn-primary" name="btnDelete"	id="btnDelete"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','delete')"><i class="fa fa-trash"></i> 삭제</button>
-											<button type="button" class="btn btn-sm btn-primary" name="btnClose"	id="btnClose"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','close')" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> 닫기</button>
+						<!--Footer-->
+						<div class="modal-footer" style="display: block">
+							<div class="row">
+								<div class="col-md-12" style="padding: 5px 15px 0 15px;">
+									<div class="col text-center">
+										<form class="form-inline" role="form" name="errorLogModalButtonForm" id="errorLogModalButtonForm" method="post" onsubmit="return false;">
+											<div class="container">
+												<div class="row">
+													<div class="col text-center">
+														<button type="button" class="btn btn-sm btn-primary d-none" name="btnReset"	id="btnReset"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','reset')"><i class="fa fa-trash"></i> 초기화</button>
+														<button type="button" class="btn btn-sm btn-primary" name="btnSave"		id="btnSave"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','save')"><i class="fa fa-save"></i> 저장</button>
+														<button type="button" class="btn btn-sm btn-primary" name="btnDelete"	id="btnDelete"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','delete')"><i class="fa fa-trash"></i> 삭제</button>
+														<button type="button" class="btn btn-sm btn-primary" name="btnClose"	id="btnClose"	style="background-color: #544e4c" onclick="doAction('orderPlanGrid','close')" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> 닫기</button>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="carousel-item" style="height: 80vh;">
+						<div class="row flex-grow-1">
+							<div class="col-12 col-md-5 scrollable-div" style="border-right: 0.3rem solid #e0e0e0;" id="orderPlanModalKeyResultListCommentWrapper" style="height: 80vh;">
+							</div>
+
+							<div class="col-12 col-md-7 scrollable-div d-flex flex-column" style="height: 80vh;" id="orderPlanModalKeyResultListCommentList">
+								<div class="row flex-grow-1" style="height: calc(100% - 3rem) !important">
+									<!-- 메세지 박스-->
+									<div class="col-12 col-md-12 h-100" style="overflow: auto;" id="orderPlanModalKeyResultListCommentMessageBox" name="orderPlanModalKeyResultListCommentMessageBox">
+										<ul id="comments" class="comment-list scrollable-div pr-2">
+											<li>
+
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!-- 메세지 박스-->
+								<div class="row">
+									<div class="col-12 col-md-12">
+										<div class="input-group pr-2">
+											<div class="input-group-prepend d-flex justify-content-center align-items-center">
+												<img class="img-circle img-sm float-left mr-2"
+													 style="height: 2rem;width: 2rem;"
+													 src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/${LoginInfo.corpCd}:${LoginInfo.empCd}"
+													 alt="사용자 이미지">
+											</div>
+											<textarea class="form-control" style="resize: unset" rows="1" placeholder="코멘트.." disabled id="orderPlanModalKeyResultListCommentTextArea" name="orderPlanModalKeyResultListCommentTextArea"></textarea>
+											<div class="input-group-append d-flex justify-content-center align-items-center">
+												<i class="fa-solid fa-circle-up ml-2" style="font-size: 1.5rem !important;" role="button" id="orderPlanModalKeyResultListCommentTextAreaSubmit" name="orderPlanModalKeyResultListCommentTextAreaSubmit"></i>
+											</div>
 										</div>
 									</div>
 								</div>
-							</form>
+							</div>
+						</div>
+					</div>
+					<div class="carousel-item" style="height: 80vh;">
+						<div class="row flex-grow-1">
+							<div class="col-12 col-md-5 scrollable-div" style="border-right: 0.3rem solid #e0e0e0;" id="orderPlanModalKeyResultListActiveWrapper" style="height: 80vh;">
+							</div>
+							<div class="col-12 col-md-7 scrollable-div d-flex flex-column" style="height: 80vh;" id="orderPlanModalKeyResultListActiveList">
+								<div class="row flex-grow-1" style="height: calc(100% - 3rem) !important">
+									<!-- 메세지 박스-->
+									<div class="col-12 col-md-12 h-100" style="overflow: auto;" id="orderPlanModalKeyResultListActiveMessageBox" name="orderPlanModalKeyResultListActiveMessageBox">
+										<ul id="actives" class="active-list scrollable-div pr-2" >
+											<li>
+
+											</li>
+										</ul>
+									</div>
+								</div>
+								<!-- 메세지 박스-->
+								<div class="row">
+									<div class="col-12 col-md-12">
+										<div class="input-group fixed-bottom-input pr-2">
+											<div class="input-group-prepend d-flex justify-content-center align-items-center">
+												<img class="img-circle img-sm float-left mr-2"
+													 style="height: 2rem;width: 2rem;"
+													 src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/${LoginInfo.corpCd}:${LoginInfo.empCd}"
+													 alt="사용자 이미지">
+											</div>
+											<div class="input-group-prepend d-flex justify-content-center align-items-center">
+												<input type="text"
+													   class="form-control text-center"
+													   style="width: 110px;"
+													   aria-label="Date-Time"
+													   placeholder="활동일 입력"
+													   title="활동일"
+													   autocomplete="off"
+													   onblur="edsUtil.convertToISOFormat(this)"
+													   id="activityDt"
+													   name="activityDt"
+													   required>
+											</div>
+											<textarea class="form-control" style="resize: unset" rows="1" placeholder="코멘트.." disabled id="orderPlanModalKeyResultListActiveTextArea" name="orderPlanModalKeyResultListActiveTextArea"></textarea>
+											<div class="input-group-append d-flex justify-content-center align-items-center">
+												<i class="fa-solid fa-circle-up ml-2" style="font-size: 1.5rem !important;" role="button" id="orderPlanModalKeyResultListActiveTextAreaSubmit" name="orderPlanModalKeyResultListActiveTextAreaSubmit"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="carousel-item" style="height: 80vh;">
+						<div class="row flex-grow-1">
+							<div class="col-12 col-md-5 scrollable-div" style="border-right: 0.3rem solid #e0e0e0;" id="orderPlanModalKeyResultListPlanWrapper">
+							</div>
+							<div class="col-12 col-md-7 scrollable-div d-flex flex-column" id="orderPlanModalKeyResultListPlanDetails">
+								<div class="row">
+									<div class="col-md-12 p-2" style="padding-right: 4px !important;">
+										<canvas id="orderPlanModalKeyResultListPlanChart"></canvas>
+									</div>
+								</div>
+
+								<div class="row scrollable-div" style="height: 500px;">
+									<div class="col-md-12 p-2" id="planningKeyResult" style="padding-right: 4px !important;">
+										<!-- 시트가 될 DIV 객체 -->
+										<div id="planningKeyResultGridListDIV" style="width:100%;"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="carousel-item" style="height: 80vh;">
+						<div class="row flex-grow-1">
+							<div class="col-12 col-md-5 scrollable-div" style="border-right: 0.3rem solid #e0e0e0;" id="orderPlanModalKeyResultListCheckInWrapper">
+							</div>
+							<div class="col-12 col-md-7 scrollable-div d-flex flex-column" id="orderPlanModalKeyResultListCheckInDetails">
+								<div class="row">
+									<div class="col-md-12 p-2" style="padding-right: 4px !important;">
+										<canvas id="orderPlanModalKeyResultListCheckInChart"></canvas>
+									</div>
+								</div>
+								<div class="row scrollable-div" style="height: 500px;">
+									<div class="col-md-12 p-2" id="checkInKeyResult" style="padding-right: 4px !important;">
+										<!-- 시트가 될 DIV 객체 -->
+										<div id="checkInKeyResultGridListDIV" style="width:100%;"></div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -311,8 +629,232 @@
 		</div>
 	</div>
 </div>
+
+<!----------------------------------------
+---- 하위핵심결과지표 계획하기 모달 Start
+ ----------------------------------------->
+<div class="modal left fade" style="z-index: 1052" id="insertPlanningKeyResultModal" tabindex="-1" role="dialog" aria-labelledby="planningKeyResultLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header p-0">
+				<div class="col-md-6 p-2">
+					<h4 class="modal-title" id="planningKeyResultLabel">성과 계획</h4>
+				</div>
+				<div class="col-md-6 p-2 text-right">
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="insertPlanningKeyResultModalSubmitButton" name="insertPlanningKeyResultModalSubmitButton">완료</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="updatePlanningKeyResultModalSubmitButton" name="updatePlanningKeyResultModalSubmitButton">수정</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal" id="deletePlanningKeyResultModalSubmitButton" name="deletePlanningKeyResultModalSubmitButton">삭제</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal" data-toggle="modal" id="insertPlanningKeyResultModalCloseButton" name="insertPlanningKeyResultModalCloseButton">나가기</button>
+				</div>
+			</div>
+			<div class="modal-body p-9">
+				<form id="insertPlanningKeyResultModalForm" name="insertPlanningKeyResultModalForm">
+					<input type="hidden" id="insertPlanningKeyResultModalCorpCd" name="insertPlanningKeyResultModalCorpCd">
+					<input type="hidden" id="insertPlanningKeyResultModalPlanCd" name="insertPlanningKeyResultModalPlanCd">
+					<input type="hidden" id="insertPlanningKeyResultModalSeq" name="insertPlanningKeyResultModalSeq">
+					<input type="hidden" id="insertPlanningKeyResultModalCheckInDivi" name="insertPlanningKeyResultModalCheckInDivi">
+					<input type="hidden" id="insertPlanningKeyResultModalStatus" name="insertPlanningKeyResultModalStatus">
+					<input type="hidden" id="insertPlanningKeyResultModalInpId" name="insertPlanningKeyResultModalInpId">
+					<div class="row p-2 rounded-lg" style="background-color: #efefef" id="insertPlanningKeyResultModal-modal-content-01" name="insertPlanningKeyResultModal-modal-content-01">
+						<div class="col-md-12">
+							· 현재 : <b id="insertPlanningKeyResultModalAmt1" name="insertPlanningKeyResultModalAmt1"></b><b id="insertPlanningKeyResultModalUnit1" name="insertPlanningKeyResultModalUnit"></b>
+						</div>
+						<div class="col-md-12">
+							· 목표 : <b id="insertPlanningKeyResultModalAmt2" name="insertPlanningKeyResultModalAmt2"></b><b id="insertPlanningKeyResultModalUnit2" name="insertPlanningKeyResultModalUnit"></b>
+						</div>
+					</div>
+					<div class="row" id="insertPlanningKeyResultModal-modal-content-02" name="insertPlanningKeyResultModal-modal-content-02">
+						<div class="col-md-12 p-2">
+							<label for="insertPlanningKeyResultModalDt"><i class="fa-solid fa-star text-danger"></i><b>계획 마감 일자를 입력해주세요.</b></label>
+							<div class="row">
+								<div class="col-6 col-md-6" style="z-index: 1;">
+									<input type="text" class="form-control text-center" aria-label="Date-Time" placeholder="계획 일자 입력" required title="계획 일자" autocomplete="off" onblur="edsUtil.convertToISOFormat(this)" id="insertPlanningKeyResultModalDt" name="insertPlanningKeyResultModalDt">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 p-2">
+							<label for="insertPlanningKeyResultModalAmt"><i class="fa-solid fa-star text-danger"></i> <b>계획 수치를 입력해주세요.</b></label>
+							<div class="input-group">
+								<input type="text" class="form-control text-right rounded-sm" placeholder="수치 입력" required title="수치" autocomplete="off" oninput="edsUtil.formatNumberHtmlInputForDouble(this)" id="insertPlanningKeyResultModalAmt" name="insertPlanningKeyResultModalAmt">
+								<div class="input-group-append text-left">
+									<span class="input-group-text bg-white" style="color: #939BA2 !important;border: unset;" id="insertPlanningKeyResultModalUnit3" name="insertPlanningKeyResultModalUnit"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 p-2 d-none">
+							<input type="hidden" id="insertPlanningKeyResultModalStatusDivi" name="insertPlanningKeyResultModalStatusDivi">
+							<i class="fa-solid fa-star text-danger"></i> <b>상태를 체크하세요.</b>
+							<div class="row text-center vertical-middle p-2">
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertPlanningKeyResultModalStatusDiviOption01" name="insertPlanningKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-meh-blank"></i> 대기
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertPlanningKeyResultModalStatusDiviOption02" name="insertPlanningKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-smile-beam" style="color:#68bae7"></i> 진행중
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertPlanningKeyResultModalStatusDiviOption03" name="insertPlanningKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-surprise" style="color:#da362e"></i> 문제발생
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" id="insertPlanningKeyResultModalStatusDiviOption04" name="insertPlanningKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-laugh-beam" style="color:#51ab42"></i> 완료
+								</div>
+							</div>
+							<script>
+								document.getElementById('insertPlanningKeyResultModal').addEventListener('click', ev => {
+									let targetId = ev.target.tagName === "I"?ev.target.parentNode.id:ev.target.id;
+									switch (true) {
+										case targetId.includes('insertPlanningKeyResultModalStatusDivi') === true:
+											document.getElementById('insertPlanningKeyResultModalStatusDivi').value = targetId.replaceAll('insertPlanningKeyResultModalStatusDiviOption','');
+											document.getElementsByName('insertPlanningKeyResultModalStatusDiviOption').forEach(el => {
+												if(el.id === targetId) el.style.backgroundColor = '#efefef'
+												else el.style.backgroundColor = '#fff'
+											});
+											break;
+									}
+								});
+							</script>
+						</div>
+						<div class="col-md-12 p-2">
+							<label for="insertPlanningKeyResultModalNote"><b>상세설명란을 입력해주세요.</b></label>
+							<textarea type="text" class="form-control" style="resize: none" placeholder="상세설명 입력" rows="3" autocomplete="off" id="insertPlanningKeyResultModalNote" name="insertPlanningKeyResultModalNote"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!----------------------------------------
+---- 하위핵심결과 계획하기 모달 End
+------------------------------------------>
+<!----------------------------------------
+---- 하위핵심결과 체크인하기 모달 Start
+ ----------------------------------------->
+<div class="modal left fade" style="z-index: 1052" id="insertCheckInKeyResultModal" tabindex="-1" role="dialog" aria-labelledby="checkInKeyResultLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header p-0">
+				<div class="col-md-6 p-2">
+					<h4 class="modal-title" id="checkInKeyResultLabel">성과 체크인</h4>
+				</div>
+				<div class="col-md-6 p-2 text-right">
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="insertCheckInKeyResultModalSubmitButton" name="insertCheckInKeyResultModalSubmitButton">완료</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="updateCheckInKeyResultModalSubmitButton" name="updateCheckInKeyResultModalSubmitButton">수정</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal" id="deleteCheckInKeyResultModalSubmitButton" name="deleteCheckInKeyResultModalSubmitButton">삭제</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal" data-toggle="modal" id="insertCheckInKeyResultModalCloseButton" name="insertCheckInKeyResultModalCloseButton">나가기</button>
+				</div>
+			</div>
+			<div class="modal-body p-9">
+				<form id="insertCheckInKeyResultModalForm" name="insertCheckInKeyResultModalForm">
+					<input type="hidden" id="insertCheckInKeyResultModalCorpCd" name="insertCheckInKeyResultModalCorpCd">
+					<input type="hidden" id="insertCheckInKeyResultModalPlanCd" name="insertCheckInKeyResultModalPlanCd">
+					<input type="hidden" id="insertCheckInKeyResultModalSeq" name="insertCheckInKeyResultModalSeq">
+					<input type="hidden" id="insertCheckInKeyResultModalCheckInDivi" name="insertCheckInKeyResultModalCheckInDivi">
+					<input type="hidden" id="insertCheckInKeyResultModalStatus" name="insertCheckInKeyResultModalStatus">
+					<input type="hidden" id="insertCheckInKeyResultModalInpId" name="insertCheckInKeyResultModalInpId">
+					<div class="row p-2 rounded-lg" style="background-color: #efefef" id="insertCheckInKeyResultModal-modal-content-01" name="insertCheckInKeyResultModal-modal-content-01">
+						<div class="col-md-12">
+							· 현재 : <b id="insertCheckInKeyResultModalAmt1" name="insertCheckInKeyResultModalAmt1"></b><b id="insertCheckInKeyResultModalUnit1" name="insertCheckInKeyResultModalUnit"></b>
+						</div>
+						<div class="col-md-12">
+							· 목표 : <b id="insertCheckInKeyResultModalAmt2" name="insertCheckInKeyResultModalAmt2"></b><b id="insertCheckInKeyResultModalUnit2" name="insertCheckInKeyResultModalUnit"></b>
+						</div>
+					</div>
+					<div class="row" id="insertCheckInKeyResultModal-modal-content-02" name="insertCheckInKeyResultModal-modal-content-02">
+						<div class="col-md-12 p-2">
+							<label for="insertCheckInKeyResultModalDt"><i class="fa-solid fa-star text-danger"></i><b>체크인 일자를 입력해주세요.</b></label>
+							<div class="row">
+								<div class="col-6 col-md-6" style="z-index: 1;">
+									<input type="text" class="form-control text-center" aria-label="Date-Time" placeholder="계획 일자 입력" required title="계획 일자" autocomplete="off" onblur="edsUtil.convertToISOFormat(this)" id="insertCheckInKeyResultModalDt" name="insertCheckInKeyResultModalDt">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 p-2">
+							<label for="insertCheckInKeyResultModalAmt"><i class="fa-solid fa-star text-danger"></i> <b>체크인 수치를 입력해주세요.</b></label>
+							<div class="input-group">
+								<input type="text" class="form-control text-right rounded-sm" placeholder="수치 입력" required title="수치" autocomplete="off" oninput="edsUtil.formatNumberHtmlInputForDouble(this)" id="insertCheckInKeyResultModalAmt" name="insertCheckInKeyResultModalAmt">
+								<div class="input-group-append text-left">
+									<span class="input-group-text bg-white" style="color: #939BA2 !important;border: unset;" id="insertCheckInKeyResultModalUnit3" name="insertCheckInKeyResultModalUnit"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 p-2">
+							<input type="hidden" title="상태값" required id="insertCheckInKeyResultModalStatusDivi" name="insertCheckInKeyResultModalStatusDivi">
+							<i class="fa-solid fa-star text-danger"></i> <b>상태를 체크하세요.</b>
+							<div class="row text-center vertical-middle p-2">
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertCheckInKeyResultModalStatusDiviOption01" name="insertCheckInKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-meh-blank"></i> 대기
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertCheckInKeyResultModalStatusDiviOption02" name="insertCheckInKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-smile-beam" style="color:#68bae7"></i> 진행중
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" style="border-right: 2px solid #f6f5f8;" id="insertCheckInKeyResultModalStatusDiviOption03" name="insertCheckInKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-surprise" style="color:#da362e"></i> 문제발생
+								</div>
+								<div class="col-3 col-md-3 p-2" role="button" id="insertCheckInKeyResultModalStatusDiviOption04" name="insertCheckInKeyResultModalStatusDiviOption">
+									<i class="fa-regular fa-face-laugh-beam" style="color:#51ab42"></i> 완료
+								</div>
+							</div>
+							<script>
+								document.getElementById('insertCheckInKeyResultModal').addEventListener('click', ev => {
+									let targetId = ev.target.tagName === "I"?ev.target.parentNode.id:ev.target.id;
+									switch (true) {
+										case targetId.includes('insertCheckInKeyResultModalStatusDivi') === true:
+											document.getElementById('insertCheckInKeyResultModalStatusDivi').value = targetId.replaceAll('insertCheckInKeyResultModalStatusDiviOption','');
+											document.getElementsByName('insertCheckInKeyResultModalStatusDiviOption').forEach(el => {
+												if(el.id === targetId) el.style.backgroundColor = '#efefef'
+												else el.style.backgroundColor = '#fff'
+											});
+											break;
+									}
+								});
+							</script>
+						</div>
+						<div class="col-md-12 p-2">
+							<label for="insertCheckInKeyResultModalNote"><b>상세설명란을 입력해주세요.</b></label>
+							<textarea type="text" class="form-control" style="resize: none" placeholder="상세설명 입력" rows="3" autocomplete="off" id="insertCheckInKeyResultModalNote" name="insertCheckInKeyResultModalNote"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!----------------------------------------
+---- 하위핵심결과지표 체크인하기 모달 End
+------------------------------------------>
+<!----------------------------------------
+---- 핵심결과지표 상세 적용하기 Start
+ ----------------------------------------->
+<div class="modal fade"  id="applyPlanKeyResultModal" tabindex="-1" role="dialog" aria-labelledby="applyPlanKeyResultLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-slideout modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header p-0">
+				<div class="col-auto col-md-auto p-2">
+				</div>
+				<div class="col-auto col-md-auto p-2 text-right">
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="selectPlanKeyResultModalButton">조회</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" id="applyPlanKeyResultModalButton">적용</button>
+					<button type="button" class="btn btn-default" style="background-color: #000 !important; color:#fff !important;" data-dismiss="modal">나가기</button>
+				</div>
+			</div>
+			<div class="modal-body p-9" style="padding-right: 0px !important;">
+				<form id="applyPlanKeyResultModalForm" name="applyPlanKeyResultModalForm">
+					<div class="row">
+						<div class="col-md-12 p-2" style="padding-right: 4px !important;">
+							<!-- 시트가 될 DIV 객체 -->
+							<div id="planKeyResultGridListDIV" style="width:100%;"></div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!----------------------------------------
+---- 핵심결과지표 상세 적용하기 End
+ ----------------------------------------->
 <script>
-	var orderPlanGrid;
+	var orderPlanGrid, planningKeyResultGridList, planKeyResultGridList;
 	var ordPlanDt, ordPlanSetDt;
 	var select;
 	var beforeRow, beforeCol;
@@ -352,6 +894,345 @@
 		})
 		/*************************************
 		 * contentObjective margin-set END
+		 * **********************************/
+
+		/*************************************
+		 * orderPlanModal click-set START
+		 * **********************************/
+		document.getElementById('orderPlanModal').addEventListener('click', ev => {
+			const targetId = ev.target.id;
+			const buttonIds = ['orderPlanModalTabsInfoButton', 'orderPlanModalTabsCommentButton', 'orderPlanModalTabsActiveButton', 'orderPlanModalTabsPlanButton', 'orderPlanModalTabsCheckInButton'];
+			const ordPlanCd = document.getElementById('ordPlanCd').value
+			if (buttonIds.includes(targetId)) detailKeyResultModalButtonMove(targetId, buttonIds);
+			switch (true) {
+				case targetId.includes('orderPlanModalTabs'):
+					if(targetId.includes('Info')){ // 상세
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							document.getElementById('orderPlanModalTabsPlanAddButton').classList.add('d-none');
+							document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 추가 가능
+							//#endregion KR 추가 함수
+						});
+
+					}else if(targetId.includes('CommentButton')){ // 코멘트
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							document.getElementById('orderPlanModalKeyResultListCommentTextArea').disabled = true;
+							document.getElementById('orderPlanModalKeyResultListCommentTextAreaSubmit').classList.add('d-none');
+							displayOrderPlanModalKeyResultList(ordPlanCd,'Comment');
+							displayComments('');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 추가 가능
+							document.getElementById('orderPlanModalTabsPlanAddButton').classList.add('d-none');
+							document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+						});
+					}else if(targetId.includes('ActiveButton')){ // 활동
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							document.getElementById('orderPlanModalKeyResultListActiveTextArea').disabled = true;
+							document.getElementById('orderPlanModalKeyResultListActiveTextAreaSubmit').classList.add('d-none');
+							document.getElementById('activityDt').disabled = true;
+							displayOrderPlanModalKeyResultList(ordPlanCd,'Active');
+							displayActives('');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 추가 가능
+							document.getElementById('orderPlanModalTabsPlanAddButton').classList.add('d-none');
+							document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+						});
+					}else if(targetId.includes('PlanButton')){ // 계획
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							displayOrderPlanModalKeyResultList(ordPlanCd,'Plan');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 그래프 초기화 가능
+							var chartStatus = Chart.getChart('orderPlanModalKeyResultListPlanChart');
+							if (chartStatus !== undefined) {
+								chartStatus.destroy();
+							}
+							//#endregion KR 추가 함수
+						}).then(value => {
+							//#region 그리드 초기화 가능
+							planningKeyResultGridList.refreshLayout(); // 데이터 초기화
+							planningKeyResultGridList.clear(); // 데이터 초기화
+							//#endregion KR 추가 함수
+						}).then(value => {
+							//#region 그리드 초기화 가능
+							document.getElementById('orderPlanModalTabsPlanAddButton').classList.add('d-none');
+							document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+						});
+					}else if(targetId.includes('CheckInButton')){ // 체크인
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							displayOrderPlanModalKeyResultList(ordPlanCd,'CheckIn');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 그래프 초기화 가능
+							var chartStatus = Chart.getChart('orderPlanModalKeyResultListCheckInChart');
+							if (chartStatus !== undefined) {
+								chartStatus.destroy();
+							}
+							//#endregion KR 추가 함수
+						}).then(value => {
+							//#region 그리드 초기화 가능
+							checkInKeyResultGridList.refreshLayout(); // 데이터 초기화
+							checkInKeyResultGridList.clear(); // 데이터 초기화
+							//#endregion KR 추가 함수
+						}).then(value => {
+							//#region 그리드 초기화 가능
+							document.getElementById('orderPlanModalTabsPlanAddButton').classList.add('d-none');
+							document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+						});
+					}else if(targetId.includes('PlanAddButton')){ // 계획 추가 버튼
+						console.log('여기니')
+						new Promise((resolve, reject) => {
+							//#region KR 추가 함수
+							document.getElementById('insertPlanningKeyResultModalSubmitButton').classList.remove('d-none');
+							document.getElementById('updatePlanningKeyResultModalSubmitButton').classList.add('d-none');
+							document.getElementById('deletePlanningKeyResultModalSubmitButton').classList.add('d-none');
+							//#endregion KR 추가 함수
+							resolve();
+						}).then(value => {
+							//#region 성과수치 계획 모달 초기화 가능
+							document.getElementById('insertPlanningKeyResultModalStatus').value = 'C'
+							document.getElementById('insertPlanningKeyResultModalCorpCd').value = '<c:out value="${LoginInfo.corpCd}"/>'
+							document.getElementById('insertPlanningKeyResultModalPlanCd').value = document.querySelectorAll('div[id="orderPlanModalKeyResultListPlanWrapper"] div[name="orderPlanModalKeyResultListBodyPlan"].color-fill')[0].id.split('-')[1];
+							document.getElementById('insertPlanningKeyResultModalSeq').value = '';
+							document.getElementById('insertPlanningKeyResultModalCheckInDivi').value = '01';
+							document.getElementById('insertPlanningKeyResultModalDt').value = moment().format('YYYY-MM-DD');
+							document.getElementById('insertPlanningKeyResultModalAmt').value = '';
+							document.getElementById('insertPlanningKeyResultModalStatusDivi').value = '';
+							document.getElementById('insertPlanningKeyResultModalNote').value = '';
+							//#endregion KR 추가 함수
+						});
+					}
+					break;
+				case targetId.includes('orderPlanModalKeyResultList'):
+					let orderPlanModalKeyResultListDiv;
+					let orderPlanModalKeyResultListPlanCd = targetId.split('-')[1];
+
+					/** @type {HTMLElement} KR 클릭 타겟 */
+					let orderPlanModalKeyResultList;
+
+					/** @type {NodeListOf<Element>} Kr 모든 타겟 */
+					let orderPlanModalKeyResultListBodyArr = [];
+					/** @type {number} Kr 모든 타겟 수*/
+					let orderPlanModalKeyResultListBodyArrLength = 0;
+
+					if(targetId.includes('orderPlanModalKeyResultListCommentTextArea') ||
+							targetId.includes('orderPlanModalKeyResultListActiveTextArea')) { // 코멘트 공간 예외처리
+						if(targetId.includes('TextAreaSubmit')){ // 코멘트 버튼 예외처리
+							if(targetId.includes('Comment')){ // 코멘트
+								doAction('orderPlanModal','commentInput');
+							}else if(targetId.includes('Active')){ // 활동
+								doAction('orderPlanModal','activeInput');
+							}
+						}else{ // 나머지 클릭 시 초기화
+						}
+					}else{
+
+						// 0. Wrapper, MessageBox, Details 클릭 시, 아무런 이벤트도 안일어 나도록 처리
+						if (targetId.includes('Wrapper') || targetId.includes('MessageBox') || targetId.includes('Details')) return;
+
+						// 1. 각 섹션 구분 필요
+						var modalDiv = targetId.replaceAll('orderPlanModalKeyResultList','').replaceAll('Wrapper','').replaceAll('MessageBox','').split('-')[0]
+						new Promise((resolve, reject) => {
+							// 2. 각 섹션 구분에 대한 kr 리스트 세팅
+							displayComments(orderPlanModalKeyResultListPlanCd);
+							resolve();
+						}).then(value => {
+							// 3. 각 섹션 구분 값 및 css 적용
+							switch (true) {
+								case modalDiv.endsWith('Comment'):
+									orderPlanModalKeyResultListDiv = 'Comment';
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextAreaSubmit').classList.add('d-none');
+									break;
+								case modalDiv.endsWith('Active'):
+									orderPlanModalKeyResultListDiv = 'Active';
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextAreaSubmit').classList.add('d-none');
+									break;
+								case modalDiv.endsWith('Plan'):
+									orderPlanModalKeyResultListDiv = 'Plan';
+									break;
+								case modalDiv.endsWith('CheckIn'):
+									orderPlanModalKeyResultListDiv = 'CheckIn';
+									break;
+							}
+						}).then(value => {
+							// 4. 각 섹션 구분에 대한 kr 버튼 초기화 css 적용
+							orderPlanModalKeyResultList = document.getElementById('orderPlanModalKeyResultListBody'+orderPlanModalKeyResultListDiv+'-'+orderPlanModalKeyResultListPlanCd);
+							orderPlanModalKeyResultListBodyArr = document.querySelectorAll('div[name="orderPlanModalKeyResultListBody'+orderPlanModalKeyResultListDiv+'"]');
+							orderPlanModalKeyResultListBodyArrLength = orderPlanModalKeyResultListBodyArr.length;
+							for(let i=0; i<orderPlanModalKeyResultListBodyArrLength;i++){
+								orderPlanModalKeyResultListBodyArr[i].classList.remove('color-fill');
+								orderPlanModalKeyResultListBodyArr[i].classList.add('color-revert');
+							}
+						}).then(value => {
+							// 5. 각 섹션 구분에 대한 kr 클릭 css 적용
+							if(orderPlanModalKeyResultList){
+								orderPlanModalKeyResultList.classList.remove('color-revert');
+								orderPlanModalKeyResultList.classList.add('color-fill');
+							}
+						}).then(value => {
+							// 6. 선택한 kr에 대한 우측 상세목록 처리
+							switch (true) {
+								case modalDiv.endsWith('Comment'):
+									displayComments(orderPlanModalKeyResultListPlanCd);
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextArea').disabled = false;
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextAreaSubmit').classList.remove('d-none');
+									break;
+								case modalDiv.endsWith('Active'):
+									displayActives(orderPlanModalKeyResultListPlanCd);
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextArea').disabled = false;
+									document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'TextAreaSubmit').classList.remove('d-none');
+									document.getElementById('activityDt').disabled = false;
+									break;
+								case modalDiv.endsWith('Plan'):
+									new Promise((resolve, reject) => {
+										doAction('orderPlanModal', 'planningKeyResulChartSearch', '');
+										resolve();
+									}).then(value => {
+										doAction('orderPlanModal', 'planningKeyResulListSearch', '');
+									}).then(value => {
+										document.getElementById('orderPlanModalTabsPlanAddButton').classList.remove('d-none');
+									});
+									break;
+								case modalDiv.endsWith('CheckIn'):
+									new Promise((resolve, reject) => {
+										doAction('orderPlanModal', 'checkInKeyResulChartSearch', '');
+										resolve();
+									}).then(value => {
+										doAction('orderPlanModal', 'checkInKeyResulListSearch', '');
+									}).then(value => {
+										document.getElementById('orderPlanModalTabsPlanApplyOpenButton').classList.remove('d-none');
+									});
+									break;
+							}
+						});
+					}
+					break;
+			}
+		});
+		/*************************************
+		 * orderPlanModal click-set END
+		 * **********************************/
+
+		/*************************************
+		 * orderPlanModal keydown-set START
+		 * **********************************/
+		document.getElementById('orderPlanModal').addEventListener('keydown', ev => {
+			const targetId = ev.target.id;
+			const keyCode = ev.code;
+			const shiftKey = ev.shiftKey;
+			switch (true) {
+				case targetId.includes('orderPlanModalKeyResultList'):
+					if (keyCode === "Enter" && !shiftKey && !ev.isComposing) {
+						if (targetId.includes('orderPlanModalKeyResultListCommentTextArea')) {
+							new Promise((resolve, reject) => {
+								ev.preventDefault(); // 기본 Enter 동작 (줄바꿈) 방지
+								resolve();
+							}).then(value => {
+								doAction('orderPlanModal','commentInput')
+							})
+						}else if (targetId.includes('orderPlanModalKeyResultListActiveTextArea')) {
+							new Promise((resolve, reject) => {
+								ev.preventDefault(); // 기본 Enter 동작 (줄바꿈) 방지
+								resolve();
+							}).then(value => {
+								doAction('orderPlanModal','activeInput')
+							})
+						}
+					}
+					break;
+			}
+		});
+		/*************************************
+		 * orderPlanModal keydown-set END
+		 * **********************************/
+
+		/*************************************
+		 * insertPlanningKeyResultModal click ev set START
+		 * **********************************/
+		document.getElementById('insertPlanningKeyResultModal').addEventListener('click', async ev =>{
+			const targetId = ev.target.id;
+			if (targetId === 'insertPlanningKeyResultModalSubmitButton') {
+				var ajaxCondition = await modifyModalInputCheck('insertPlanningKeyResultModalForm');
+				if (!ajaxCondition) { // 저장
+					await doAction('insertPlanningKeyResultModal', 'planningKeyResultInput');
+					await document.getElementById('insertPlanningKeyResultModalCloseButton').click(); // 여기
+				}
+			}
+			else if (targetId === 'updatePlanningKeyResultModalSubmitButton') {
+				await doAction('insertPlanningKeyResultModal', 'planningKeyResultUpdate');
+			}
+			else if (targetId === 'deletePlanningKeyResultModalSubmitButton') {
+				await doAction('insertPlanningKeyResultModal', 'planningKeyResultDelete');
+			}
+		})
+		/*************************************
+		 * insertPlanningKeyResultModal click ev set END
+		 * **********************************/
+
+		/*************************************
+		 * insertCheckInKeyResultModal click ev set START
+		 * **********************************/
+		document.getElementById('insertCheckInKeyResultModal').addEventListener('click', async ev =>{
+			const targetId = ev.target.id;
+			if (targetId === 'insertCheckInKeyResultModalSubmitButton') {
+				var ajaxCondition = await modifyModalInputCheck('insertCheckInKeyResultModalForm');
+				if (!ajaxCondition) { // 저장
+					await doAction('insertCheckInKeyResultModal', 'checkInKeyResultInput');
+					await document.getElementById('insertCheckInKeyResultModalCloseButton').click();
+				}
+			}
+			else if (targetId === 'updateCheckInKeyResultModalSubmitButton') {
+				await doAction('insertCheckInKeyResultModal', 'checkInKeyResultUpdate')
+			}
+			else if (targetId === 'deleteCheckInKeyResultModalSubmitButton') {
+				await doAction('insertCheckInKeyResultModal', 'checkInKeyResultDelete')
+			};
+		})
+		/*************************************
+		 * insertCheckInKeyResultModal click ev set END
+		 * **********************************/
+
+		/*************************************
+		 * applyPlanKeyResultModal click ev set START
+		 * **********************************/
+		document.getElementById('applyPlanKeyResultModal').addEventListener('click', async ev =>{
+			const targetId = ev.target.id;
+			switch (targetId) {
+				case 'selectPlanKeyResultModalButton': await doAction('applyPlanKeyResultModal','planKeyResultGridListSearch'); break;
+				case 'applyPlanKeyResultModalButton': await doAction('applyPlanKeyResultModal','planKeyResultGridListApply'); break;
+			}
+		})
+		/*************************************
+		 * applyPlanKeyResultModal click ev set END
+		 * **********************************/
+
+
+		/*************************************
+		 * carousel-set START
+		 * **********************************/
+		$('.carousel').carousel({
+			interval: false,
+		})
+		/*************************************
+		 * carousel-set END
 		 * **********************************/
 
 
@@ -541,6 +1422,51 @@
 		/* Form 셋팅 */
 		// edsUtil.setForm(document.querySelector("#orderPlanGridForm"), "guMae");
 		// select =$('.select2').select2();
+
+		/**********************************************************************
+		 * Grid Class 영역 START
+		 ***********************************************************************/
+		class CustomSliderRenderer {
+			constructor(props) {
+
+				const rowKey = props.rowKey;
+				const value = props.value;
+				var divi = props.grid.el.id.includes('planningKeyResultGridListDIV')?'planningKeyResultGridListDIV'
+						 : props.grid.el.id.includes('checkInKeyResultGridListDIV')?'checkInKeyResultGridListDIV':'';
+				var progressBar = 'progress-bar_' + divi + '_' + rowKey
+				var percent = 'percent_' + divi + '_' + rowKey
+
+				const elDivContainer = document.createElement('Div');
+				elDivContainer.setAttribute('class', 'progress-container');
+
+				const elDivProgressBar = document.createElement('Div');
+				elDivProgressBar.setAttribute('class', 'progress-bar');
+				elDivProgressBar.setAttribute('id', progressBar);
+
+				const elSpanPercent = document.createElement('span');
+				elSpanPercent.setAttribute('class', 'percent');
+				elSpanPercent.setAttribute('id', percent);
+
+				elDivProgressBar.appendChild(elSpanPercent);
+				elDivContainer.appendChild(elDivProgressBar);
+
+				this.el = elDivContainer;
+
+				$(document).ready(function (e) {
+					$("#"+progressBar).css("width", value + "%");
+					$("#"+percent).text(value + "%");
+					divi.includes('planGridListDIV')?$("#"+percent).css("right", "125px")
+							: divi.includes('planningKeyResultGridListDIV')?$("#"+percent).css("right", "5px"):'';
+				});
+			}
+
+			getElement() {
+				return this.el;
+			}
+		}
+		/**********************************************************************
+		 * Grid Class 영역 END
+		 ***********************************************************************/
 
 		/**********************************************************************
 		 * Grid Info 영역 START
@@ -861,6 +1787,377 @@
 			orderPlanGrid.disableColumn('ordPlanGr10');
 			orderPlanGrid.disableColumn('ordPlanGr11');
 			orderPlanGrid.disableColumn('ordPlanGr12');
+		// planning key result
+		planningKeyResultGridList = new tui.Grid({
+			el: document.getElementById('planningKeyResultGridListDIV'),
+			// data: treeData,
+			scrollX: true,
+			scrollY: true,
+			editingEvent: 'click',
+			bodyHeight: 'auto',
+			rowHeight:'auto',
+			minRowHeight:30,
+			rowHeaders: [/*'rowNum', 'checkbox'*/],
+			header: {
+				height: 30,
+				minRowHeight: 30
+			},
+			columns:[],
+			columnOptions: {
+				resizable: true
+			}
+		});
+
+		planningKeyResultGridList.setColumns([
+			{ header:'계획마감일자',	name:'dt',			width:85,	align:'center'},
+			{ header:'상세설명란',	name:'note',		minWidth:250,		align:'left',	whiteSpace:'pre-line'},
+			{ header:'계획수치',		name:'amt',			width:50,	align:'right',
+				formatter:function (ev) {
+					return edsUtil.addComma(ev.value) + ' ' + ev.row.unit;
+				},
+				whiteSpace:'pre-line'
+			},
+			{ header:'누적률',		name:'rate',		width:100,		align:'center', renderer: {type: CustomSliderRenderer,}},
+			{ header:'상태',			name:'statusDivi',	width:50,		align:'center',
+				formatter:function (ev) {
+					var rtn = '';
+					switch (ev.row.statusDivi) {
+						case '01':
+							// rtn = `<b>대기<b/>`
+							rtn = `<i class="fa-regular fa-face-meh-blank fa-shake fa-lg" style="--fa-animation-duration: 3s; --fa-fade-opacity: 0.1;"></i> `
+							break;
+						case '02':
+							// rtn = `<b style="color:#68bae7">진행중<b/>`
+							rtn = `<i class="fa-regular fa-face-smile-beam fa-lg fa-flip" style="--fa-animation-duration: 3s;color:#68bae7;"></i> `
+							break;
+						case '03':
+							// rtn = `<b style="color:#da362e">문제발생<b/>`
+							rtn = `<i class="fa-regular fa-face-surprise fa-beat fa-lg" style="color:#da362e"></i>`
+							break;
+						case '04':
+							// rtn = `<b style="color:#51ab42">완료<b/>`
+							rtn = `<i class="fa-regular fa-face-laugh-beam fa-lg" style="color:#51ab42"></i>`
+							break;
+					}
+					return rtn;
+				},
+				hidden:true},
+			// hidden(숨김)
+			{ header:'회사코드',		name:'corpCd',		width:150,		align:'center',	hidden:true },
+			{ header:'회사명',		name:'corpNm',		width:150,		align:'center',	hidden:true },
+			{ header:'기획코드',		name:'planCd',		width:150,		align:'center',	hidden:true },
+			{ header:'순번',			name:'seq',			width:150,		align:'center',	hidden:true },
+			{ header:'저장상태',		name:'saveDivi',	width:100,		align:'center',	hidden:true },
+			{ header:'체크인구분',	name:'checkInDivi',	width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장코드',name:'busiCd',		width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장명',	name:'busiNm',		width:150,		align:'center',	hidden:true },
+			{ header:'담당부서코드',	name:'depaCd',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자자코드',	name:'inpId',		width:150,		align:'center',	hidden:true },
+			{ header:'수정자코드',	name:'updId',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자',		name:'inpNm',	width:100,			align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.inpId+'">'+ ev.row.inpNm;
+				},
+				hidden:true},
+			{ header:'수정자',		name:'inpNm',	width:100,		align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.updId+'">'+ ev.row.updNm;
+				},
+				hidden:true},
+			{ header:'부서',			name:'depaNm',		width:100,		align:'center',
+				formatter:function (ev) {
+					return '<div style="text-align: center;vertical-align: middle;background-color: #fff;border-radius: 1rem;color: '+ev.row.depaColorCd+';padding: 2px 0px;">'+ev.row.depaNm+'</div>';
+				},
+				hidden:true},
+		]);
+
+		planningKeyResultGridList.on('click', async ev => {
+			if(ev.columnName !== 'fn' && ev.targetType === 'cell'){ // 상세보기 별도 구분
+
+				/* 성과수치 계획 모달 적용*/
+
+				await document.getElementById('orderPlanModalTabsPlanAddButton').click();
+				await edsUtil.eds_CopySheet2Form({
+					sheet: planningKeyResultGridList,
+					form: document.insertPlanningKeyResultModalForm,
+					rowKey: ev.rowKey,
+				})
+				document.getElementById('insertPlanningKeyResultModalStatus').value = 'U';
+
+				var statusDivi = document.getElementById('insertPlanningKeyResultModalStatusDivi').value;
+				document.getElementsByName('insertPlanningKeyResultModalStatusDiviOption').forEach(el => {
+					if(el.id.includes(statusDivi)) el.style.backgroundColor = '#efefef';
+					else el.style.backgroundColor = '#fff';
+					if(statusDivi.length === 0) el.style.backgroundColor = '#fff';
+				});
+
+				await document.getElementById('insertPlanningKeyResultModalSubmitButton').classList.add('d-none');
+				await document.getElementById('updatePlanningKeyResultModalSubmitButton').classList.remove('d-none');
+				await document.getElementById('deletePlanningKeyResultModalSubmitButton').classList.remove('d-none');
+			}
+		});
+		// check in key result
+		checkInKeyResultGridList = new tui.Grid({
+			el: document.getElementById('checkInKeyResultGridListDIV'),
+			// data: treeData,
+			scrollX: true,
+			scrollY: true,
+			editingEvent: 'click',
+			bodyHeight: 'auto',
+			rowHeight:'auto',
+			rowHeaders: [/*'rowNum', 'checkbox'*/],
+			header: {
+				height: 30,
+				minRowHeight: 30
+			},
+			columns:[],
+			columnOptions: {
+				resizable: true
+			}
+		});
+
+		checkInKeyResultGridList.setColumns([
+			{ header:'체크인마감일자',	name:'dt',			width:85,	align:'center'},
+			{ header:'상세설명란',		name:'note',		minWidth:250,	align:'left',	whiteSpace:'pre-line'},
+			{ header:'체크인수치',		name:'amt',			width:50,		align:'right',
+				formatter:function (ev) {
+					return edsUtil.addComma(ev.value) + ' ' + ev.row.unit;
+				},
+				whiteSpace:'pre-line'
+			},
+			{ header:'누적률',		name:'rate',		width:100,		align:'center', renderer: {type: CustomSliderRenderer,}},
+			{ header:'상태',			name:'statusDivi',	width:50,		align:'center',
+				formatter:function (ev) {
+					var rtn = '';
+					switch (ev.row.statusDivi) {
+						case '01':
+							// rtn = `<b>대기<b/>`
+							rtn = `<i class="fa-regular fa-face-meh-blank fa-shake fa-lg" style="--fa-animation-duration: 3s; --fa-fade-opacity: 0.1;"></i> `
+							break;
+						case '02':
+							// rtn = `<b style="color:#68bae7">진행중<b/>`
+							rtn = `<i class="fa-regular fa-face-smile-beam fa-lg fa-flip" style="--fa-animation-duration: 3s;color:#68bae7;"></i> `
+							break;
+						case '03':
+							// rtn = `<b style="color:#da362e">문제발생<b/>`
+							rtn = `<i class="fa-regular fa-face-surprise fa-beat fa-lg" style="color:#da362e"></i>`
+							break;
+						case '04':
+							// rtn = `<b style="color:#51ab42">완료<b/>`
+							rtn = `<i class="fa-regular fa-face-laugh-beam fa-lg" style="color:#51ab42"></i>`
+							break;
+					}
+					return rtn;
+				}},
+			// hidden(숨김)
+			{ header:'회사코드',		name:'corpCd',		width:150,		align:'center',	hidden:true },
+			{ header:'회사명',		name:'corpNm',		width:150,		align:'center',	hidden:true },
+			{ header:'기획코드',		name:'planCd',		width:150,		align:'center',	hidden:true },
+			{ header:'순번',			name:'seq',			width:150,		align:'center',	hidden:true },
+			{ header:'저장상태',		name:'saveDivi',	width:100,		align:'center',	hidden:true },
+			{ header:'체크인구분',	name:'checkInDivi',	width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장코드',name:'busiCd',		width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장명',	name:'busiNm',		width:150,		align:'center',	hidden:true },
+			{ header:'담당부서코드',	name:'depaCd',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자자코드',	name:'inpId',		width:150,		align:'center',	hidden:true },
+			{ header:'수정자코드',	name:'updId',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자',		name:'inpNm',	width:100,			align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.inpId+'">'+ ev.row.inpNm;
+				},
+				hidden:true},
+			{ header:'수정자',		name:'inpNm',	width:100,		align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.updId+'">'+ ev.row.updNm;
+				},
+				hidden:true},
+			{ header:'부서',			name:'depaNm',		width:100,		align:'center',
+				formatter:function (ev) {
+					return '<div style="text-align: center;vertical-align: middle;background-color: #fff;border-radius: 1rem;color: '+ev.row.depaColorCd+';padding: 2px 0px;">'+ev.row.depaNm+'</div>';
+				},
+				hidden:true},
+		]);
+
+		checkInKeyResultGridList.on('click', async ev => {
+			if(ev.columnName !== 'fn' && ev.targetType === 'cell'){ // 상세보기 별도 구분
+
+				/* 성과수치 계획 모달 적용*/
+
+				await document.getElementById('orderPlanModalTabsCheckInAddButton').click();
+				await edsUtil.eds_CopySheet2Form({
+					sheet: checkInKeyResultGridList,
+					form: document.insertCheckInKeyResultModalForm,
+					rowKey: ev.rowKey,
+				})
+				document.getElementById('insertCheckInKeyResultModalStatus').value = 'U'
+
+				var statusDivi = document.getElementById('insertCheckInKeyResultModalStatusDivi').value;
+				document.getElementsByName('insertCheckInKeyResultModalStatusDiviOption').forEach(el => {
+					if(el.id.includes(statusDivi)) el.style.backgroundColor = '#efefef';
+					else el.style.backgroundColor = '#fff';
+					if(statusDivi.length === 0) el.style.backgroundColor = '#fff';
+				});
+
+				await document.getElementById('insertCheckInKeyResultModalSubmitButton').classList.add('d-none');
+				await document.getElementById('updateCheckInKeyResultModalSubmitButton').classList.remove('d-none');
+				await document.getElementById('deleteCheckInKeyResultModalSubmitButton').classList.remove('d-none');
+			}
+		});
+
+		// planning key result
+		planKeyResultGridList = new tui.Grid({
+			el: document.getElementById('planKeyResultGridListDIV'),
+			// data: treeData,
+			scrollX: true,
+			scrollY: true,
+			editingEvent: 'click',
+			bodyHeight: 'auto',
+			treeColumnOptions: {
+				name: 'planNm',
+				useCascadingCheckbox: false,
+				useIcon: false,
+			},
+			rowHeight:'auto',
+			minRowHeight:50,
+			rowHeaders: [/*'rowNum',*/ /*'checkbox'*/],
+			header: {
+				height: 50,
+				minRowHeight: 50
+			},
+			columns:[],
+			columnOptions: {
+				resizable: true
+			}
+		});
+
+		planKeyResultGridList.setColumns([
+			{ header:'계획마감일자',	name:'dt',			width:85,	align:'center'},
+			{ header:'상세설명란',	name:'note',		minWidth:250,		align:'left',	whiteSpace:'pre-line'},
+			{ header:'계획수치',		name:'amt',			width:50,	align:'right',
+				formatter:function (ev) {
+					return edsUtil.addComma(ev.value) + ' ' + ev.row.unit;
+				},
+				whiteSpace:'pre-line'
+			},
+			{ header:'체크인수치',	name:'applyTotAmt',	width:50,	align:'right',
+				formatter:function (ev) {
+					return edsUtil.addComma(ev.value) + ' ' + ev.row.unit;
+				},
+				whiteSpace:'pre-line'
+			},
+			{ header:'적용수치',		name:'applyAmt',	width:50,	align:'right',	whiteSpace:'pre-line', editor:{type: 'text'}},
+			{ header:'적용률',		name:'rate',		width:100,		align:'center', renderer: {type: CustomSliderRenderer,}},
+			{ header:'상태',			name:'statusDivi',	width:50,		align:'center',
+				formatter:function (ev) {
+					var rtn = '';
+					switch (ev.row.statusDivi) {
+						case '01':
+							// rtn = `<b>대기<b/>`
+							rtn = `<i class="fa-regular fa-face-meh-blank fa-shake fa-lg" style="--fa-animation-duration: 3s; --fa-fade-opacity: 0.1;"></i> `
+							break;
+						case '02':
+							// rtn = `<b style="color:#68bae7">진행중<b/>`
+							rtn = `<i class="fa-regular fa-face-smile-beam fa-lg fa-flip" style="--fa-animation-duration: 3s;color:#68bae7;"></i> `
+							break;
+						case '03':
+							// rtn = `<b style="color:#da362e">문제발생<b/>`
+							rtn = `<i class="fa-regular fa-face-surprise fa-beat fa-lg" style="color:#da362e"></i>`
+							break;
+						case '04':
+							// rtn = `<b style="color:#51ab42">완료<b/>`
+							rtn = `<i class="fa-regular fa-face-laugh-beam fa-lg" style="color:#51ab42"></i>`
+							break;
+					}
+					return rtn;
+				},
+				hidden:true},
+			// hidden(숨김)
+			{ header:'회사코드',		name:'corpCd',		width:150,		align:'center',	hidden:true },
+			{ header:'회사명',		name:'corpNm',		width:150,		align:'center',	hidden:true },
+			{ header:'기획코드',		name:'planCd',		width:150,		align:'center',	hidden:true },
+			{ header:'순번',			name:'seq',			width:150,		align:'center',	hidden:true },
+			{ header:'저장상태',		name:'saveDivi',	width:100,		align:'center',	hidden:true },
+			{ header:'체크인구분',	name:'checkInDivi',	width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장코드',name:'busiCd',		width:150,		align:'center',	hidden:true },
+			{ header:'담당사업장명',	name:'busiNm',		width:150,		align:'center',	hidden:true },
+			{ header:'담당부서코드',	name:'depaCd',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자자코드',	name:'inpId',		width:150,		align:'center',	hidden:true },
+			{ header:'수정자코드',	name:'updId',		width:150,		align:'center',	hidden:true },
+			{ header:'입력자',		name:'inpNm',	width:100,			align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.inpId+'">'+ ev.row.inpNm;
+				},
+				hidden:true},
+			{ header:'수정자',		name:'inpNm',	width:100,		align:'center',
+				formatter:function (ev) {
+					return '<img class="img-circle elevation-2"'+
+							'id="userFace"'+
+							'style="height: 2rem;width: 2rem;margin-right: 10px;"'+
+							'src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/'+ev.row.corpCd+':'+ev.row.updId+'">'+ ev.row.updNm;
+				},
+				hidden:true},
+			{ header:'부서',			name:'depaNm',		width:100,		align:'center',
+				formatter:function (ev) {
+					return '<div style="text-align: center;vertical-align: middle;background-color: #fff;border-radius: 1rem;color: '+ev.row.depaColorCd+';padding: 2px 0px;">'+ev.row.depaNm+'</div>';
+				},
+				hidden:true},
+		]);
+
+		planKeyResultGridList.on('afterChange', async ev => {
+			var columnName = ev.changes[0].columnName
+			var prevValue = ev.changes[0].prevValue
+			var value = ev.changes[0].value
+			var rowKey = ev.changes[0].rowKey
+			if(columnName === 'applyAmt'){
+				if(isNumber(value)){
+					if(value === '' || value === undefined || value === '0' || value === 0 || value === null){
+						new Promise((resolve, reject) => {
+							planKeyResultGridList.setValue(rowKey, columnName, '');
+							resolve();
+						}).then((value) => {
+							planKeyResultGridList.uncheck(rowKey)
+							planKeyResultGridList.removeRowClassName(rowKey, 'selected')
+						})
+					}else{
+						let data = '';
+						new Promise((resolve, reject) => {
+							edsUtil.formatNumberHtmlValueForDouble(value).then(result => {
+								data = result
+							});
+							resolve();
+						}).then((value) => {
+							planKeyResultGridList.setValue(rowKey, columnName, data);
+						}).then((value) => {
+							planKeyResultGridList.check(rowKey)
+							planKeyResultGridList.addRowClassName(rowKey, 'selected')
+						})
+					}
+				}else{
+					new Promise((resolve, reject) => {
+						planKeyResultGridList.setValue(rowKey, columnName, '');
+						resolve();
+					}).then((value) => {
+						planKeyResultGridList.uncheck(rowKey)
+						planKeyResultGridList.removeRowClassName(rowKey, 'selected')
+					})
+				}
+			}
+		});
 		/**********************************************************************
 		 * Grid Info 영역 END
 		 ***********************************************************************/
@@ -927,58 +2224,67 @@
 				var data = orderPlanGrid.getRow(orderPlanGrid.getFocusedCell().rowKey);
 				var mth = colNm.slice(-2);
 
-				document.getElementById('btnInputPopEv').click();
+				new Promise((resolve, reject) => {
+					document.getElementById('btnInputPopEv').click();
+					resolve();
+				}).then(value => {
+					document.getElementById('orderPlanModalTabsInfoButton').click();
+				}).then(value => {// button el
+					document.getElementById('orderPlanModalTabsCommentButton').classList.remove('d-none');
+					document.getElementById('orderPlanModalTabsActiveButton').classList.remove('d-none');
+					document.getElementById('orderPlanModalTabsPlanButton').classList.remove('d-none');
+					document.getElementById('orderPlanModalTabsCheckInButton').classList.remove('d-none');
 
-				// 일반 el
-				document.querySelector('form[id="orderPlanGridForm"] input[id="corpCd"]').value = data['corpCd'+mth]??'';
-				document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanCd"]').value = data['ordPlanCd'+mth]??'';
-				document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanCustCd"]').value = data['ordPlanCustCd'+mth]??'';
-				document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanAmt"]').value = data['ordPlanAmt'+mth]??'';
-				document.querySelector('form[id="orderPlanGridForm"] textarea[id="ordPlanNote"]').value = data['ordPlanNote'+mth]??'';
-				// select2 el
-				var status = '';
-				var ordPlanDivi = '';
-				var ordPlanItem = '';
-				var ordPlanYear = '';
-				var ordPlanBusiCd = '';
-				var ordPlanDepaCd = '';
-				var ordPlanEmpCd = '';
-				var ordPlanBusiDivi = '';
-				var ordPlanGr = '';
-				if(data['ordPlanCd'+mth]){
-					status = 'U'
-					ordPlanYear = (data['ordPlanYear'+mth]??'') + '-' + (data['ordPlanMonth'+mth]??'');
-					ordPlanDivi = data['ordPlanDivi'+mth]??null;
-					ordPlanItem = data['ordPlanItem'+mth]??null;
-					ordPlanBusiCd = data['ordPlanBusiCd'+mth]??null;
-					ordPlanDepaCd = data['ordPlanDepaCd'+mth]??null;
-					ordPlanEmpCd = data['ordPlanEmpCd'+mth]??null;
-					ordPlanBusiDivi = data['ordPlanBusiDivi'+mth]??null;
-					ordPlanGr = data['ordPlanGr'+mth]??null;
-				}else{
-					status = 'C';
-					ordPlanYear = document.getElementById('ordPlanSetDt').value + '-' + mth;
-					ordPlanBusiCd = '${LoginInfo.busiCd}';
-					ordPlanDepaCd = '${LoginInfo.depaCd}';
-					ordPlanEmpCd = '${LoginInfo.empCd}';
-					ordPlanBusiDivi = '01';
-					ordPlanGr = '01';
-					for (let i = 1; i <= 12; i++) {
-						ordPlanDivi = data['ordPlanDivi'+i.toString().padStart(2, '0')];
-						ordPlanItem = data['ordPlanItem'+i.toString().padStart(2, '0')];
-						if(ordPlanDivi&&ordPlanDivi) break;
+					// 일반 el
+					document.querySelector('form[id="orderPlanGridForm"] input[id="corpCd"]').value = data['corpCd'+mth]??'';
+					document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanCd"]').value = data['ordPlanCd'+mth]??'';
+					document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanCustCd"]').value = data['ordPlanCustCd'+mth]??'';
+					document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanAmt"]').value = data['ordPlanAmt'+mth]??'';
+					document.querySelector('form[id="orderPlanGridForm"] textarea[id="ordPlanNote"]').value = data['ordPlanNote'+mth]??'';
+					// select2 el
+					var status = '';
+					var ordPlanDivi = '';
+					var ordPlanItem = '';
+					var ordPlanYear = '';
+					var ordPlanBusiCd = '';
+					var ordPlanDepaCd = '';
+					var ordPlanEmpCd = '';
+					var ordPlanBusiDivi = '';
+					var ordPlanGr = '';
+					if(data['ordPlanCd'+mth]){
+						status = 'U'
+						ordPlanYear = (data['ordPlanYear'+mth]??'') + '-' + (data['ordPlanMonth'+mth]??'');
+						ordPlanDivi = data['ordPlanDivi'+mth]??null;
+						ordPlanItem = data['ordPlanItem'+mth]??null;
+						ordPlanBusiCd = data['ordPlanBusiCd'+mth]??null;
+						ordPlanDepaCd = data['ordPlanDepaCd'+mth]??null;
+						ordPlanEmpCd = data['ordPlanEmpCd'+mth]??null;
+						ordPlanBusiDivi = data['ordPlanBusiDivi'+mth]??null;
+						ordPlanGr = data['ordPlanGr'+mth]??null;
+					}else{
+						status = 'C';
+						ordPlanYear = document.getElementById('ordPlanSetDt').value + '-' + mth;
+						ordPlanBusiCd = '${LoginInfo.busiCd}';
+						ordPlanDepaCd = '${LoginInfo.depaCd}';
+						ordPlanEmpCd = '${LoginInfo.empCd}';
+						ordPlanBusiDivi = '01';
+						ordPlanGr = '01';
+						for (let i = 1; i <= 12; i++) {
+							ordPlanDivi = data['ordPlanDivi'+i.toString().padStart(2, '0')];
+							ordPlanItem = data['ordPlanItem'+i.toString().padStart(2, '0')];
+							if(ordPlanDivi&&ordPlanDivi) break;
+						}
 					}
-				}
-				document.querySelector('form[id="orderPlanGridForm"] input[id="status"]').value = status;
-				document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanDt"]').value = ordPlanYear;
-				$('form[id="orderPlanGridForm"] select[id="ordPlanDivi"]').val(ordPlanDivi).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanItem"]').val(ordPlanItem).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanBusiDivi"]').val(ordPlanBusiDivi).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanGr"]').val(ordPlanGr).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanBusiCd"]').val(ordPlanBusiCd).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanDepaCd"]').val(ordPlanDepaCd).trigger('change');
-				$('form[id="orderPlanGridForm"] select[id="ordPlanEmpCd"]').val(ordPlanEmpCd).trigger('change');
-
+					document.querySelector('form[id="orderPlanGridForm"] input[id="status"]').value = status;
+					document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanDt"]').value = ordPlanYear;
+					$('form[id="orderPlanGridForm"] select[id="ordPlanDivi"]').val(ordPlanDivi).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanItem"]').val(ordPlanItem).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanBusiDivi"]').val(ordPlanBusiDivi).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanGr"]').val(ordPlanGr).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanBusiCd"]').val(ordPlanBusiCd).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanDepaCd"]').val(ordPlanDepaCd).trigger('change');
+					$('form[id="orderPlanGridForm"] select[id="ordPlanEmpCd"]').val(ordPlanEmpCd).trigger('change');
+				})
 			}else{
 				// guMaeGridList.finishEditing();
 			}
@@ -1036,7 +2342,7 @@
 	 ***********************************************************************/
     	/** 버튼이벤트
 	 * */
-	async function doAction(sheet, name){
+	async function doAction(sheet, name, el){
 		if(sheet === 'orderPlanGrid'){
 			switch (name) {
 				case 'search':
@@ -1078,11 +2384,29 @@
 				case 'delete': // 삭제
 					document.getElementById('status').value = 'D';
 					setTimeout(async () => {
-						await edsUtil.modalCUD('/ORDER_PLAN_LIST/cuOrderPlanList','orderPlanGrid',orderPlanGrid,'orderPlanGridForm')
-						await document.getElementById('btnClose').click();
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								await edsUtil.modalCUD('/ORDER_PLAN_LIST/cuOrderPlanList','orderPlanGrid',orderPlanGrid,'orderPlanGridForm')
+								await document.getElementById('btnClose').click();
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
 					}, 100);
 				break;
 				case "resetAll":// 초기화
+					// button el
+					document.getElementById('orderPlanModalTabsCommentButton').classList.add('d-none');
+					document.getElementById('orderPlanModalTabsActiveButton').classList.add('d-none');
+					document.getElementById('orderPlanModalTabsPlanButton').classList.add('d-none');
+					document.getElementById('orderPlanModalTabsCheckInButton').classList.add('d-none');
 					// 일반 el
 					document.querySelector('form[id="orderPlanGridForm"] input[id="corpCd"]').value = '';
 					document.querySelector('form[id="orderPlanGridForm"] input[id="ordPlanCd"]').value = '';
@@ -1154,6 +2478,415 @@
 					param.salInp04 = document.querySelector('input[id="salInp04"]').value;
 					await edsUtil.postAjax('/ORDER_PLAN_LIST/cuOrderPlanSetList', orderPlanGrid, param);
 
+					break;
+			}
+		}else if(sheet === 'orderPlanModal'){
+			switch (name) {
+				case "commentInput":// comment 신규
+					if(document.querySelectorAll('div[id="orderPlanModalKeyResultListCommentWrapper"] div[name="orderPlanModalKeyResultListBodyComment"].color-fill').length < 1) return;
+					var param = {};
+					param.status = 'C';
+					param.planCd = document.querySelectorAll('div[id="orderPlanModalKeyResultListCommentWrapper"] div[name="orderPlanModalKeyResultListBodyComment"].color-fill')[0].id.split('-')[1];
+					param.planNm = document.querySelectorAll('div[id="orderPlanModalKeyResultListCommentWrapper"] div[name="orderPlanModalKeyResultListBodyComment"].color-fill div[name="orderPlanModalKeyResultListPlanNmComment"]')[0].innerText;
+					param.content = document.getElementById('orderPlanModalKeyResultListCommentTextArea').value;
+					param.empCd = '';
+					param.partCds = '';
+					setTimeout(async ev=>{
+						new Promise((resolve, reject) => {
+							edsUtil.postAjax('/WORK_LOG/cdWorkLogComment', '', param);
+							resolve();
+						}).then(value => {
+							document.querySelectorAll('div[id="orderPlanModalKeyResultListCommentWrapper"] div[name="orderPlanModalKeyResultListBodyComment"].color-fill')[0].click();
+							document.getElementById('orderPlanModalKeyResultListCommentTextArea').value = '';
+						})
+					},40)
+					break;
+				case "commentDelete":// 코멘트 삭제
+					var elId = el.id.split(',')
+					var param = {};
+					param.status = 'D';
+					param.corpCd = elId[0];
+					param.planCd = elId[1];
+					param.seq = elId[2];
+					param.inpId = elId[3];
+					setTimeout(async ev=>{
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								new Promise((resolve, reject) => {
+									edsUtil.postAjax('/WORK_LOG/cdWorkLogComment', '', param);
+									resolve();
+								}).then(value => {
+									document.querySelectorAll('div[id="orderPlanModalKeyResultListCommentWrapper"] div[name="orderPlanModalKeyResultListBodyComment"].color-fill')[0].click();
+								})
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
+					},40)
+					break;
+				case "activeInput":// active 신규
+					if(document.querySelectorAll('div[id="orderPlanModalKeyResultListActiveWrapper"] div[name="orderPlanModalKeyResultListBodyActive"].color-fill').length < 1) return;
+					var param = {};
+					param.status = 'C';
+					param.planCd = document.querySelectorAll('div[id="orderPlanModalKeyResultListActiveWrapper"] div[name="orderPlanModalKeyResultListBodyActive"].color-fill')[0].id.split('-')[1];
+					param.planNm = document.querySelectorAll('div[id="orderPlanModalKeyResultListActiveWrapper"] div[name="orderPlanModalKeyResultListBodyActive"].color-fill div[name="orderPlanModalKeyResultListPlanNmActive"]')[0].innerText;
+					param.activityDt = document.getElementById('activityDt').value;
+					param.content = document.getElementById('orderPlanModalKeyResultListActiveTextArea').value;
+					param.empCd = '';
+					param.partCds = '';
+					setTimeout(async ev=>{
+						new Promise((resolve, reject) => {
+							edsUtil.postAjax('/WORK_LOG/cdWorkLogActive', '', param);
+							resolve();
+						}).then(value => {
+							document.querySelectorAll('div[id="orderPlanModalKeyResultListActiveWrapper"] div[name="orderPlanModalKeyResultListBodyActive"].color-fill')[0].click();
+							document.getElementById('orderPlanModalKeyResultListActiveTextArea').value = '';
+						})
+					},40)
+					break;
+				case "activeDelete":// 코멘트 삭제
+					var elId = el.id.split(',')
+					var param = {};
+					param.status = 'D';
+					param.corpCd = elId[0];
+					param.planCd = elId[1];
+					param.seq = elId[2];
+					param.inpId = elId[3];
+					setTimeout(async ev=>{
+						Swal.fire({
+							title: "정말 삭제하시겠습니까?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "삭제",
+							denyButtonText: `취소`
+						}).then(async (result) => {
+							/* Read more about isConfirmed, isDenied below */
+							if (result.isConfirmed) {
+								new Promise((resolve, reject) => {
+									edsUtil.postAjax('/WORK_LOG/cdWorkLogActive', '', param);
+									resolve();
+								}).then(value => {
+									document.querySelectorAll('div[id="orderPlanModalKeyResultListActiveWrapper"] div[name="orderPlanModalKeyResultListBodyActive"].color-fill')[0].click();
+								})
+							} else if (result.isDenied) {
+								Swal.fire("취소되었습니다.", "", "info");
+							}
+						});
+					},40)
+					break;
+				case "planningKeyResulChartSearch":// 계획 차트 조회
+					var chartStatus = Chart.getChart('orderPlanModalKeyResultListPlanChart');
+					if (chartStatus !== undefined) {
+						chartStatus.destroy();
+					}
+					var param = { //조회조건
+						planCd : document.querySelectorAll('div[id="orderPlanModalKeyResultListPlanWrapper"] div[name="orderPlanModalKeyResultListBodyPlan"].color-fill')[0].id.split('-')[1],
+					};
+					var data = edsUtil.getAjax("/WORK_LOG/getWorkLogPlanningKeyResultChart", param);
+					// dt와 amt 값을 분리하여 저장할 배열을 초기화합니다.
+					var dtValues = [];
+					var amtValues = [];
+					var edAmtValues = [];
+
+					// 데이터 배열을 순회하면서 각 객체의 dt와 amt 값을 추출하여 배열에 저장합니다.
+					data.forEach(item => {
+						dtValues.push(item.dt);
+						amtValues.push(item.amt);
+						edAmtValues.push(item.edAmt);
+					});
+
+					// 차트 생성
+					var ctx = document.getElementById('orderPlanModalKeyResultListPlanChart');
+					new Chart(ctx, {
+						type: 'line',
+						data: {
+							labels: dtValues,
+							datasets: [
+								{
+									label: '계획',
+									fill: true,
+									data: amtValues,
+									borderColor: `#fd6283`,
+									backgroundColor: `#fdb0bf66`,
+									tension: 0.4,
+								},
+								{
+									label: '목표',
+									fill: true,
+									data: edAmtValues,
+									borderColor: `#333333`,
+									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
+								},
+							]
+						},
+						options: {
+							responsive: true,
+							interaction: {
+								intersect: false,
+								mode: 'index'
+							},
+							scales: {
+								x: {
+									beginAtZero: true
+								},
+								y: {
+									beginAtZero: true
+								},
+							},
+						}
+					});
+
+					// 추가, 수정 모달에 최종 계획, 목표 값 적용
+					document.getElementById('insertPlanningKeyResultModalAmt1').textContent = Number(data[data.length - 1].amt);
+					document.getElementById('insertPlanningKeyResultModalAmt2').textContent = Number(data[data.length - 1].edAmt);
+					document.getElementById('insertPlanningKeyResultModalUnit1').textContent = data[data.length - 1].unit;
+					document.getElementById('insertPlanningKeyResultModalUnit2').textContent = data[data.length - 1].unit;
+					document.getElementById('insertPlanningKeyResultModalUnit3').textContent = data[data.length - 1].unit;
+					break;
+				case "planningKeyResulListSearch":// 계획 리스트 조회
+					setTimeout(async ev => {
+						planningKeyResultGridList.refreshLayout(); // 데이터 초기화
+						planningKeyResultGridList.clear(); // 데이터 초기화
+						var param = { //조회조건
+							planCd : document.querySelectorAll('div[id="orderPlanModalKeyResultListPlanWrapper"] div[name="orderPlanModalKeyResultListBodyPlan"].color-fill')[0].id.split('-')[1],
+						};
+						await planningKeyResultGridList.resetData(edsUtil.getAjax("/WORK_LOG/selectWorkLogPlanningKeyResult", param));
+					},170);
+					break;
+				case "checkInKeyResulChartSearch":// 체크인 차트 조회
+					var chartStatus = Chart.getChart('orderPlanModalKeyResultListCheckInChart');
+					if (chartStatus !== undefined) {
+						chartStatus.destroy();
+					}
+					var param = { //조회조건
+						planCd : document.querySelectorAll('div[id="orderPlanModalKeyResultListCheckInWrapper"] div[name="orderPlanModalKeyResultListBodyCheckIn"].color-fill')[0].id.split('-')[1],
+					};
+					var data = edsUtil.getAjax("/WORK_LOG/getWorkLogCheckInKeyResultChart", param);
+					// dt와 amt 값을 분리하여 저장할 배열을 초기화합니다.
+					var dtValues = [];
+					var planningAmtValues = [];
+					var ckeckInamtValues = [];
+					var edAmtValues = [];
+
+					// 데이터 배열을 순회하면서 각 객체의 dt와 amt 값을 추출하여 배열에 저장합니다.
+					data.forEach(item => {
+						dtValues.push(item.dt);
+						planningAmtValues.push(item.planningAmt);
+						ckeckInamtValues.push(item.ckeckInamt);
+						edAmtValues.push(item.edAmt);
+					});
+
+					var ctx = document.getElementById('orderPlanModalKeyResultListCheckInChart');
+					new Chart(ctx, {
+						type: 'line',
+						data: {
+							labels: dtValues,
+							datasets: [
+								{
+									label: '계획',
+									fill: true,
+									data: planningAmtValues,
+									borderColor: `#fd6283`,
+									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
+								},
+								{
+									label: '달성',
+									fill: true,
+									data: ckeckInamtValues,
+									borderColor: `#36a1e9`,
+									backgroundColor: `rgba(153, 206, 243, 0.4)`,
+									tension: 0.4,
+								},
+								{
+									label: '목표',
+									fill: true,
+									data: edAmtValues,
+									borderColor: `#333333`,
+									backgroundColor: `rgba(255, 255, 255, 0)`,
+									tension: 0.4,
+								},
+							]
+						},
+						options: {
+							responsive: true,
+							interaction: {
+								intersect: false,
+								mode: 'index'
+							},
+							scales: {
+								x: {
+									display: true,
+									beginAtZero: true
+								},
+								y: {
+									display: true,
+									beginAtZero: true
+								}
+							},
+							plugins: {
+								tooltip: {
+									callbacks: {
+										footer: (tooltipItems) => {
+											let plan = tooltipItems[0].parsed.y;
+											let checkIn = tooltipItems[1].parsed.y;
+											let target = tooltipItems[2].parsed.y;
+											let planRate = 0;
+											let CheckInRate = 0;
+											let targetDiv = '';
+											let rst = [];
+
+											// 진행예정율
+											planRate = Math.round(plan*100/target);
+
+											// 진행율
+											CheckInRate = Math.round(checkIn*10000/target)/100;
+
+											if(planRate < CheckInRate){
+												targetDiv = '⬆️';
+											}else if(planRate === CheckInRate){
+												targetDiv = '➡️';
+											}else if(planRate > CheckInRate){
+												targetDiv = '⬇️';
+											}
+
+											// 제목
+											rst.push('              간편요약 ' + targetDiv);
+											rst.push('예정율: ' + planRate + ' % (' + plan + ' / ' + target + ' )');
+											rst.push('진척률: ' + CheckInRate + ' % (' + checkIn + ' / ' + target + ' )');
+											// 중간 바 02
+											return rst;
+										},
+									}
+								}
+							}
+						}
+					});
+
+					// 추가, 수정 모달에 최종 계획, 목표 값 적용
+					document.getElementById('insertCheckInKeyResultModalAmt1').textContent = Number(data[data.length - 1].ckeckInamt);
+					document.getElementById('insertCheckInKeyResultModalAmt2').textContent = Number(data[data.length - 1].edAmt);
+					document.getElementById('insertCheckInKeyResultModalUnit1').textContent = data[data.length - 1].unit;
+					document.getElementById('insertCheckInKeyResultModalUnit2').textContent = data[data.length - 1].unit;
+					document.getElementById('insertCheckInKeyResultModalUnit3').textContent = data[data.length - 1].unit;
+					break;
+				case "checkInKeyResulListSearch":// 체크인 리스트 조회
+					setTimeout(async ev => {
+						checkInKeyResultGridList.refreshLayout(); // 데이터 초기화
+						checkInKeyResultGridList.clear(); // 데이터 초기화
+						var param = { //조회조건
+							planCd : document.querySelectorAll('div[id="orderPlanModalKeyResultListCheckInWrapper"] div[name="orderPlanModalKeyResultListBodyCheckIn"].color-fill')[0].id.split('-')[1],
+						};
+						await checkInKeyResultGridList.resetData(edsUtil.getAjax("/WORK_LOG/selectWorkLogCheckInKeyResult", param));
+					},170);
+					break;
+			}
+		}else if(sheet === 'insertPlanningKeyResultModal'){
+			/*
+			* todo: 계획의 추가 수정 기능과 체크인의 수정과 계획 기능 연동만하면 끝
+			* */
+			switch (name) {
+				case "planningKeyResultInput":// kr 신규
+					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogPlanningKeyResult','','','insertPlanningKeyResultModalForm');
+					await doAction('orderPlanModal','planningKeyResulChartSearch');
+					await doAction('orderPlanModal','planningKeyResulListSearch');
+					break;
+				case "planningKeyResultUpdate":// kr plan 저장
+					await document.getElementById('insertPlanningKeyResultModalStatus').setAttribute('value','U')
+					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogPlanningKeyResult','','','insertPlanningKeyResultModalForm');
+					await doAction('orderPlanModal','planningKeyResulChartSearch');
+					await doAction('orderPlanModal','planningKeyResulListSearch');
+					break;
+				case "planningKeyResultDelete":// kr plan 저장
+					Swal.fire({
+						title: "정말 삭제하시겠습니까?",
+						showDenyButton: true,
+						showCancelButton: false,
+						confirmButtonText: "삭제",
+						denyButtonText: `취소`
+					}).then(async (result) => {
+						/* Read more about isConfirmed, isDenied below */
+						if (result.isConfirmed) {
+							await document.getElementById('insertPlanningKeyResultModalStatus').setAttribute('value','D')
+							await edsUtil.modalCUD('/WORK_LOG/cudWorkLogPlanningKeyResult','','','insertPlanningKeyResultModalForm');
+							await doAction('orderPlanModal','planningKeyResulChartSearch');
+							await doAction('orderPlanModal','planningKeyResulListSearch');
+						} else if (result.isDenied) {
+							Swal.fire("취소되었습니다.", "", "info");
+						}
+					});
+					break;
+			}
+		}else if(sheet === 'insertCheckInKeyResultModal'){
+			/*
+			* todo: 계획의 추가 수정 기능과 체크인의 수정과 계획 기능 연동만하면 끝
+			* */
+			switch (name) {
+				case "checkInKeyResultInput":// kr 신규
+					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogCheckInKeyResult','','','insertCheckInKeyResultModalForm');
+					await doAction('orderPlanModal','checkInKeyResulChartSearch');
+					await doAction('orderPlanModal','checkInKeyResulListSearch');
+					break;
+				case "checkInKeyResultUpdate":// kr plan 저장
+					await document.getElementById('insertCheckInKeyResultModalStatus').setAttribute('value','U')
+					await edsUtil.modalCUD('/WORK_LOG/cudWorkLogCheckInKeyResult','','','insertCheckInKeyResultModalForm');
+					await doAction('orderPlanModal','checkInKeyResulChartSearch');
+					await doAction('orderPlanModal','checkInKeyResulListSearch');
+					break;
+				case "checkInKeyResultDelete":// kr plan 저장
+					Swal.fire({
+						title: "정말 삭제하시겠습니까?",
+						showDenyButton: true,
+						showCancelButton: false,
+						confirmButtonText: "삭제",
+						denyButtonText: `취소`
+					}).then(async (result) => {
+						/* Read more about isConfirmed, isDenied below */
+						if (result.isConfirmed) {
+							await document.getElementById('insertCheckInKeyResultModalStatus').setAttribute('value','D')
+							await edsUtil.modalCUD('/WORK_LOG/cudWorkLogCheckInKeyResult','','','insertCheckInKeyResultModalForm');
+							await doAction('orderPlanModal','checkInKeyResulChartSearch');
+							await doAction('orderPlanModal','checkInKeyResulListSearch');
+						} else if (result.isDenied) {
+							Swal.fire("취소되었습니다.", "", "info");
+						}
+					});
+					break;
+			}
+		}else if(sheet === 'applyPlanKeyResultModal'){
+			/*
+			* todo: 계획의 추가 수정 기능과 체크인의 수정과 계획 기능 연동만하면 끝
+			* */
+			switch (name) {
+				case "planKeyResultGridListSearch":// 계획 리스트 적용 조회
+					setTimeout(async ev => {
+						planKeyResultGridList.refreshLayout(); // 데이터 초기화
+						planKeyResultGridList.clear(); // 데이터 초기화
+						var param = { //조회조건
+							planCd : document.querySelectorAll('div[id="orderPlanModalKeyResultListCheckInWrapper"] div[name="orderPlanModalKeyResultListBodyCheckIn"].color-fill')[0].id.split('-')[1],
+						};
+						await planKeyResultGridList.resetData(edsUtil.getAjax("/WORK_LOG/selectWorkLogPlanKeyResult", param));
+					},170);
+					break;
+				case "planKeyResultGridListApply":// 계획 리스트 적용
+					new Promise((resolve, reject)=>{
+						planKeyResultGridList.finishEditing();
+						resolve();
+					}).then(value => {
+						return promiseThenDelay(value,100);
+					}).then(value => {
+						edsUtil.checksCUD('/WORK_LOG/cudWorkLogKeyResultPlanList', 'C', planKeyResultGridList, 'orderPlanModal', 'checkInKeyResulListSearch');
+					}).then(value => {
+						document.getElementById('orderPlanModalTabsPlanApplyCloseButton').click(); // 모달 끄기
+					})
 					break;
 			}
 		}
@@ -1388,6 +3121,289 @@
 		}
 	}
 
+	//#region KR 추가 함수
+	/**
+	 * parePlanCd에 따른 차트 세팅
+	 * @param {string} rootPlanCd - 첫번째 변수 나타낼 데이터 구분 값(main: 최상위 목표 세팅, sub: 하위 목표세팅, kr: 하위 목표세팅, active: 활동내역 세팅)
+	 */
+	async function displayOrderPlanModalKeyResultList(ordPlanCd,orderPlanModalKeyResultListDiv){
+		/** @type {*[]} 조회 값 */
+		let dbData = [];
+		/** @type {number} 조회 길이 값 */
+		let dbDataLength = 0;
+		/** @type {{parePlanCd: string, dateDiv: string, edDt: string}} 조회 조건 값 */
+		let param = {};
+		/** @type {string} 기간 구분 */
+		let dateDiv;
+		/** @type {string[]} 기간 데이터 */
+		let datepicker;
+		/** @type {*[]} 계획코드 값들 */
+		let planCds = [];
+		/** @type {HTMLElement} kr list 공간 */
+		let orderPlanModalKeyResultList;
+
+		new Promise((resolve, reject)=>{
+			//#region 1. 조회 조건 세팅
+			param.ordPlanCd = ordPlanCd;
+			param.dateDiv = '';
+			param.OkrDiv = '02';
+			//#endregion
+			resolve();
+		}).then(value => {
+			//#region 3. 조회 값 세팅
+			dbData = edsUtil.getAjax("/WORK_LOG/getLowKeyResultsForOrderPlanList", param);
+			dbDataLength = dbData.length;
+			//#endregion
+		}).then(value => {
+			//#region 4. 디테일 kr 초기화
+			orderPlanModalKeyResultList = document.getElementById('orderPlanModalKeyResultList'+orderPlanModalKeyResultListDiv+'Wrapper');
+			orderPlanModalKeyResultList.replaceChildren();
+			//#endregion
+		}).then(value => {
+			//#region 5. KR 리스트 세팅
+			for (let i = 0; i < dbDataLength; i++) {
+				planCds.push(dbData[i].planCd)
+
+				/** @type {HTMLElement} div */
+				let div01Tag = document.createElement('div');
+				div01Tag.setAttribute('class','col-md-12 p-1 fade-in-slide-down');
+
+				/** @type {HTMLElement} div */
+				let div02Tag = document.createElement('div');
+				div02Tag.setAttribute('class','card w-100 p-0');
+				div02Tag.setAttribute('style','background: '+ dbData[i].cntColor);
+				div02Tag.setAttribute('id','orderPlanModalKeyResultListTransition'+orderPlanModalKeyResultListDiv+'-'+dbData[i].planCd);
+				div02Tag.setAttribute('name','orderPlanModalKeyResultListTransition'+orderPlanModalKeyResultListDiv);
+
+				/** @type {HTMLElement} div */
+				let div03Tag = document.createElement('div');
+				div03Tag.setAttribute('class','card-body color-revert p-1 orderPlanModalKeyResultListBody'+orderPlanModalKeyResultListDiv);
+				div03Tag.setAttribute('id','orderPlanModalKeyResultListBody'+orderPlanModalKeyResultListDiv+'-'+dbData[i].planCd);
+				div03Tag.setAttribute('name','orderPlanModalKeyResultListBody'+orderPlanModalKeyResultListDiv);
+
+				/** @type {HTMLElement} div */
+				let div04Tag = document.createElement('div');
+				div04Tag.setAttribute('class','row');
+
+				//#region 5-1. KR명 세팅
+				/** @type {HTMLElement} div */
+				let div05Tag = document.createElement('div');
+				div05Tag.setAttribute('class','col-12 h4 mb-0 pb-1');
+				div05Tag.setAttribute('id','orderPlanModalKeyResultListPlanNm'+orderPlanModalKeyResultListDiv+'-'+dbData[i].planCd);
+				div05Tag.setAttribute('name','orderPlanModalKeyResultListPlanNm'+orderPlanModalKeyResultListDiv);
+				div05Tag.setAttribute('style','font-size: 1.0rem !important');
+				div05Tag.textContent = dbData[i].planNm;
+				//#endregion
+
+				//#region 5-1. 목표명 세팅
+				/** @type {HTMLElement} div */
+				let div06Tag = document.createElement('div');
+				div06Tag.setAttribute('class','col-12 h4 mb-0 pb-1');
+				div06Tag.setAttribute('id','orderPlanModalKeyResultListSubPlanNm'+orderPlanModalKeyResultListDiv+'-'+dbData[i].planCd);
+				div06Tag.setAttribute('name','orderPlanModalKeyResultListSubPlanNm'+orderPlanModalKeyResultListDiv);
+				div06Tag.setAttribute('style','font-size: 0.8rem !important');
+				div06Tag.textContent = dbData[i].subPlanNm;
+				//#endregion
+
+				//#region 5-3. 리더 세팅
+				/** @type {HTMLElement} div */
+				let div07Tag = document.createElement('div');
+				div07Tag.setAttribute('class','col-12 pb-1');
+				div07Tag.setAttribute('id','orderPlanModalKeyResultListPartCds'+orderPlanModalKeyResultListDiv+'-'+dbData[i].planCd);
+				div07Tag.setAttribute('name','orderPlanModalKeyResultListPartCds'+orderPlanModalKeyResultListDiv);
+				div07Tag.setAttribute('style','font-size: 0.8rem !important');
+				div07Tag.innerText = '리더 ' + dbData[i].empNm
+				//#endregion
+
+				//#region 5-4. card 세팅
+				div04Tag.appendChild(div05Tag);
+				div04Tag.appendChild(div06Tag);
+				div04Tag.appendChild(div07Tag);
+				div03Tag.appendChild(div04Tag);
+				div02Tag.appendChild(div03Tag);
+				div01Tag.appendChild(div02Tag);
+				//#endregion
+
+				//#region 5-4. card 삽입 세팅
+				orderPlanModalKeyResultList.appendChild(div01Tag);
+				//#endregion
+			}
+			//#endregion
+		})
+	}
+	//#endregion
+
+	//#region detailKeyResultModal button move 함수
+	async function detailKeyResultModalButtonMove(targetId) {
+		// button, modalBody, modalFooter 처리
+		const buttonIds = ['orderPlanModalTabsInfoButton', 'orderPlanModalTabsCommentButton', 'orderPlanModalTabsActiveButton', 'orderPlanModalTabsPlanButton', 'orderPlanModalTabsCheckInButton'];
+		for (let i = 0, length=buttonIds.length; i < length; i++) {
+			let buttonEl = document.getElementById(buttonIds[i]);
+			let modalBodyEl = document.getElementById(buttonIds[i].replace('Button', ''));
+			let modalfooterEl = document.getElementById(buttonIds[i].replace('Button', '')+'Footer');
+			if(targetId === buttonIds[i]){
+				/*button set*/
+				buttonEl.style.color = '#111f94';
+				modalBodyEl?modalBodyEl.classList.remove('d-none'):'';
+				modalfooterEl?modalfooterEl.classList.remove('d-none'):'';
+			} else {
+				/*button set*/
+				buttonEl.style.color = '#212529';
+				modalBodyEl?modalBodyEl.classList.add('d-none'):'';
+				modalfooterEl?modalfooterEl.classList.add('d-none'):'';
+			}
+		}
+	}
+	//#endregion
+
+	//#region 댓글을 HTML로 변환하여 표시 함수
+	/**
+	 * orderPlanModalKeyResultListPlanCd에 따른 차트 세팅
+	 * @param {string} orderPlanModalKeyResultListPlanCd - 첫번째 변수 나타낼 데이터 구분 값(main: 최상위 목표 세팅, sub: 하위 목표세팅, kr: 하위 목표세팅, active: 활동내역 세팅)
+	 */
+	async function displayComments(orderPlanModalKeyResultListPlanCd) {
+		var param = {};
+		param.planCd = orderPlanModalKeyResultListPlanCd;
+		param.content = document.getElementById('orderPlanModalKeyResultListCommentTextArea').value;
+		// 댓글 데이터
+		var data = await edsUtil.getAjax("/WORK_LOG/selectWorkLogComment", param);
+		var commentList = document.getElementById("comments");
+		commentList.innerHTML = ''
+		for (let i = 0, length=data.length; i < length; i++) {
+			const li = document.createElement("li");
+			li.className = "comment";
+			if(data[i].inpId === '<c:out value="${LoginInfo.empCd}"/>'){
+				li.innerHTML = `
+							<img src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/`+data[i].corpCd+`:`+data[i].inpId+`" class="profile-pic" alt="`+data[i].inpNm+`">
+							<div>
+								<strong>`+data[i].inpNm+`[`+data[i].depaNm+`]</strong><br>
+								<span class="comment-content">`+data[i].content.replace(/\n/g, '<br>')+`</span>
+								<div class="comment-time">`+data[i].inpDttm+`</div>
+							</div>
+							<button id="`+data[i].corpCd+`,`+data[i].planCd+`,`+data[i].seq+`,`+data[i].inpId+`" onclick="doAction('orderPlanModal','commentDelete',this)" class="comment-delete-button"><i class="fa-solid fa-trash-can"></i></button>
+							`;
+			}else{
+				li.innerHTML = `
+							<img src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/`+data[i].corpCd+`:`+data[i].inpId+`" class="profile-pic" alt="`+data[i].inpNm+`">
+							<div>
+								<strong>`+data[i].inpNm+`[`+data[i].depaNm+`]</strong><br>
+								<span class="comment-content">`+data[i].content.replace(/\n/g, '<br>')+`</span>
+								<div class="comment-time">`+data[i].inpDttm+`</div>
+							</div>
+							`;
+			}
+			commentList.appendChild(li);
+		}
+
+		setTimeout(() => {
+			// 메세지 세팅 후 가장 아래로 스크롤
+			var orderPlanModalKeyResultListCommentMessageBox = document.getElementById('orderPlanModalKeyResultListCommentMessageBox')
+			orderPlanModalKeyResultListCommentMessageBox.scrollTop = orderPlanModalKeyResultListCommentMessageBox.scrollHeight;
+		}, 100);
+	}
+	//#endregion
+
+	//#region 댓글을 HTML로 변환하여 표시 함수
+	/**
+	 * orderPlanModalKeyResultListPlanCd에 따른 차트 세팅
+	 * @param {string} orderPlanModalKeyResultListPlanCd - 첫번째 변수 나타낼 데이터 구분 값(main: 최상위 목표 세팅, sub: 하위 목표세팅, kr: 하위 목표세팅, active: 활동내역 세팅)
+	 */
+	async function displayActives(orderPlanModalKeyResultListPlanCd) {
+		var param = {};
+		param.planCd = orderPlanModalKeyResultListPlanCd;
+		param.content = document.getElementById('orderPlanModalKeyResultListActiveTextArea').value;
+		// 댓글 데이터
+		var data = await edsUtil.getAjax("/WORK_LOG/selectWorkLogActive", param);
+		var activeList = document.getElementById("actives");
+		activeList.innerHTML = ''
+		for (let i = 0, length=data.length; i < length; i++) {
+			const li = document.createElement("li");
+			li.className = "active";
+			if(data[i].inpId === '<c:out value="${LoginInfo.empCd}"/>'){
+				li.innerHTML = `
+							<img src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/`+data[i].corpCd+`:`+data[i].inpId+`" class="profile-pic" alt="`+data[i].inpNm+`">
+							<div>
+								<strong>`+data[i].inpNm+`[`+data[i].depaNm+`]</strong><br>
+								<span class="active-content">`+data[i].content.replace(/\n/g, '<br>')+`</span>
+								<div class="active-time">`+data[i].activityDt+`</div>
+							</div>
+							<button id="`+data[i].corpCd+`,`+data[i].planCd+`,`+data[i].seq+`,`+data[i].inpId+`" onclick="doAction('orderPlanModal','activeDelete',this)" class="active-delete-button"><i class="fa-solid fa-trash-can"></i></button>
+							`;
+			}else{
+				li.innerHTML = `
+							<img src="/BASE_USER_MGT_LIST/selectUserFaceImageEdms/`+data[i].corpCd+`:`+data[i].inpId+`" class="profile-pic" alt="`+data[i].inpNm+`">
+							<div>
+								<strong>`+data[i].inpNm+`[`+data[i].depaNm+`]</strong><br>
+								<span class="active-content">`+data[i].content.replace(/\n/g, '<br>')+`</span>
+								<div class="active-time">`+data[i].activityDt+`</div>
+							</div>
+							`;
+			}
+			activeList.appendChild(li);
+		}
+
+		setTimeout(() => {
+			// 메세지 세팅 후 가장 아래로 스크롤
+			var orderPlanModalKeyResultListActiveMessageBox = document.getElementById('orderPlanModalKeyResultListActiveMessageBox')
+			orderPlanModalKeyResultListActiveMessageBox.scrollTop = orderPlanModalKeyResultListActiveMessageBox.scrollHeight;
+		}, 100);
+	}
+	//#endregion
+
+	//#region 댓글을 HTML로 변환하여 표시 함수
+	/**
+	 * input 따른 숫자
+	 * @param {string} input - 숫자
+	 */
+	function isNumber(input) {
+		// 쉼표를 제거한 뒤 숫자인지 여부를 확인
+		const numberString = input.replace(/,/g, '');
+		if (!isNaN(numberString)) {
+			// 정수인지 여부를 확인하여 반환
+			return true;
+		} else {
+			// 입력이 숫자가 아닌 경우
+			return false;
+		}
+	}
+	//#endregion
+
+	//#region 댓글을 HTML로 변환하여 표시 함수
+	/**
+	 * 필수 값 체크 기능
+	 * @param {string} modalName - 필수값 id
+	 */
+	async function modifyModalInputCheck(modalName) {
+		var ajaxCondition = 1;
+		var ajaxConditionColumn = [];
+
+		switch (modalName) { // title에 이름넣기, 저장위치에 다 추가하기
+			case 'insertPlanningKeyResultModalForm': // 지표 계획하기
+				ajaxConditionColumn = ['insertPlanningKeyResultModalDt',
+					'insertPlanningKeyResultModalAmt'];
+				break;
+			case 'insertCheckInKeyResultModalForm': // 지표 체크인
+				ajaxConditionColumn = ['insertCheckInKeyResultModalDt',
+					'insertCheckInKeyResultModalAmt',
+					'insertCheckInKeyResultModalStatusDivi'];
+				break;
+		}
+		ajaxCondition = await edsUtil.checkValidationForForm(modalName, ajaxConditionColumn);
+		return ajaxCondition;
+	}
+	//#endregion
+
+	//#region promiseThen 딜레이 함수
+	/**
+	 * 딜레이 기능
+	 * @param {string} modalName - 필수값 id
+	 */
+	function promiseThenDelay(value, ms) {
+		return new Promise(resolve => {
+			setTimeout(() => resolve(value), ms);
+		});
+	}
+	//#endregion
 	/**********************************************************************
 	 * 화면 함수 영역 END
 	 ***********************************************************************/

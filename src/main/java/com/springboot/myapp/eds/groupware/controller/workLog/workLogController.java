@@ -111,6 +111,19 @@ public class workLogController {
 		return mp;
 	}
 
+	@RequestMapping("/WORK_LOG/selectWorkLogActive")
+	@ResponseBody
+	public Map selectWorkLogActive(@RequestBody HashMap<String, Object> map) throws Exception {
+		Map mp = new HashMap();
+		try {
+			List li = workLogService.selectWorkLogActive(map);
+			mp.put("data", li);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return mp;
+	}
+
 	@RequestMapping("/WORK_LOG/selectWorkLogActivity")
 	@ResponseBody
 	public Map selectWorkLogActivity(@RequestBody HashMap<String, Object> map) throws Exception {
@@ -189,6 +202,19 @@ public class workLogController {
 		return mp;
 	}
 
+	@RequestMapping("/WORK_LOG/getWorkLogCheckInComparedToPlanList")
+	@ResponseBody
+	public Map getWorkLogCheckInComparedToPlanList(@RequestBody HashMap<String, Object> map) throws Exception {
+		Map mp = new HashMap();
+		try {
+			List li = workLogService.getWorkLogCheckInComparedToPlanList(map);
+			mp.put("data", li);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return mp;
+	}
+
 	@RequestMapping("/WORK_LOG/getWorkLogSchDetailProgressChartPlanList")
 	@ResponseBody
 	public Map getWorkLogSchDetailProgressChartPlanList(@RequestBody HashMap<String, Object> map) throws Exception {
@@ -234,6 +260,19 @@ public class workLogController {
 		Map mp = new HashMap();
 		try {
 			List li = workLogService.getLowKeyResultsForSch(map);
+			mp.put("data", li);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return mp;
+	}
+
+	@RequestMapping("/WORK_LOG/getLowKeyResultsForOrderPlanList")
+	@ResponseBody
+	public Map getLowKeyResultsForOrderPlanList(@RequestBody HashMap<String, Object> map) throws Exception {
+		Map mp = new HashMap();
+		try {
+			List li = workLogService.getLowKeyResultsForOrderPlanList(map);
 			mp.put("data", li);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -305,6 +344,23 @@ public class workLogController {
 		try {
 
 			returnData = workLogService.cdWorkLogComment(param);
+
+		}catch (Exception e ){
+			e.printStackTrace();
+		}
+
+		return returnData;
+	}
+
+	@RequestMapping("/WORK_LOG/cdWorkLogActive")
+	@ResponseBody
+	public Map<String, Object> cdWorkLogActive(@RequestBody Map<String, Object> param, Model model) throws Exception {
+
+		Map<String, Object> returnData = new HashMap<String, Object>();
+
+		try {
+
+			returnData = workLogService.cdWorkLogActive(param);
 
 		}catch (Exception e ){
 			e.printStackTrace();

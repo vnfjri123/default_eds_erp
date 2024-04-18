@@ -18,6 +18,7 @@ public interface workLogMapper {
     public List<workLogListVO> selectWorkLogObjectiveList(Map<String, Object> map) throws Exception;
     public List<workLogListVO> selectWorkLogKeyResultList(Map<String, Object> map) throws Exception;
     public List<workLogCommentVO> selectWorkLogComment(Map<String, Object> map) throws Exception;
+    public List<workLogActivityVO> selectWorkLogActive(Map<String, Object> map) throws Exception;
     public List<workLogActivityVO> selectWorkLogActivity(Map<String, Object> map) throws Exception;
     public Map<String, Object> selectWorkLogActivityCount(Map<String, Object> map) throws Exception;
     public List<workLogActivityVO> selectWorkLogActiveList(Map<String, Object> map) throws Exception;
@@ -27,10 +28,13 @@ public interface workLogMapper {
     public List<workLogPlanningKeyResultVO> getWorkLogPlanningKeyResultChart(Map<String, Object> map) throws Exception;
     public List<workLogCheckInKeyResultVO> selectWorkLogCheckInKeyResult(Map<String, Object> map) throws Exception;
     public List<workLogCheckInKeyResultVO> getWorkLogCheckInKeyResultChart(Map<String, Object> map) throws Exception;
+    public List<workLogCheckInKeyResultVO> getWorkLogCheckInComparedToPlanList(Map<String, Object> map) throws Exception;
     public List<workLogSchDetailProgressChartVO> getWorkLogSchDetailProgressChart(Map<String, Object> map) throws Exception;
     public List<workLogSchDetailProgressChartVO> getWorkLogSchDetailProgressChartPlanList(Map<String, Object> map) throws Exception;
     public List<workLogListVO> getLowKeyResults(Map<String, Object> map) throws Exception;
     public List<workLogListVO> getLowKeyResultsForSch(Map<String, Object> map) throws Exception;
+    public List<workLogListVO> getLowKeyResultsForOrderPlanList(Map<String, Object> map) throws Exception;
+    public workLogListVO getUsersForOrderPlanList(Map<String, Object> map) throws Exception;
     public Map<String,String> getPlanCdRoot(Map<String, Object> map) throws Exception;
     public List<workLogListVO> getPartCds(Map<String, Object> map) throws Exception;
     public List<workLogListVO> getWorkCds(Map<String, Object> map) throws Exception;
@@ -38,6 +42,7 @@ public interface workLogMapper {
 
     public int insertWorkLogList(Map<String, Object> map) throws Exception;
     public int insertWorkLogContent(Map<String, Object> map) throws Exception;
+    public int insertWorkLogActive(Map<String, Object> map) throws Exception;
     public int insertWorkLogActivity(Map<String, Object> map) throws Exception;
     public int insertWorkLogPlanningKeyResult(Map<String, Object> map) throws Exception;
     public int insertWorkLogCheckInKeyResult(Map<String, Object> map) throws Exception;
@@ -48,6 +53,7 @@ public interface workLogMapper {
 
     public int deleteWorkLogList(Map<String, Object> map) throws Exception;
     public int deleteWorkLogContent(Map<String, Object> map) throws Exception;
+    public int deleteWorkLogActive(Map<String, Object> map) throws Exception;
     public int deleteWorkLogActivity(Map<String, Object> map) throws Exception;
     public int deleteWorkLogPlanningKeyResult(Map<String, Object> map) throws Exception;
     public int deleteWorkLogCheckInKeyResult(Map<String, Object> map) throws Exception;

@@ -780,10 +780,12 @@
 			{ header:'매입단가',		name:'cost',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'매입공급가액',	name:'supAmt',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'매입부가세액',	name:'vatAmt',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
+			{ header:'매입합계금액',	name:'totAmt',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'준공합계금액',	name:'totAmt5',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'매입단가',		name:'cost4',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'매입공급가액',	name:'supAmt4',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'매입부가세액',	name:'vatAmt4',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
+			{ header:'매입합계금액',	name:'totAmt4',		width:100,		align:'right',	defaultValue: '',	formatter: function (value){return edsUtil.addComma(value.value);},	editor:{type:'text'}},
 			{ header:'적요',			name:'note',		minWidth :250,	align:'left',	defaultValue: '',	editor:{type:'text'}},
 			// hidden(숨김)
 			{ header:'회사코드',		name:'corpCd',		width:100,	align:'center',	hidden:true },
@@ -1156,17 +1158,28 @@
 			 * */
 
 			/* 매입가 */
-			cost = Math.ceil(cost); // 올림
-			supAmt = Math.round(supAmt);  // 반올림
-			vatAmt = Math.round(vatAmt); // 반올림
-			totAmt = supAmt + vatAmt; // 합계
+			if(cost < 0||supAmt < 0||vatAmt < 0||totAmt < 0){ // 특별 DC 처리
+				cost = cost*(-1);
+				supAmt = supAmt*(-1);
+				vatAmt = vatAmt*(-1);
+				totAmt = totAmt*(-1);
+				cost = Math.round(cost)*(-1); // 올림
+				supAmt = Math.round(supAmt)*(-1);  // 반올림
+				vatAmt = Math.round(vatAmt)*(-1); // 반올림
+				totAmt = supAmt + vatAmt; // 합계
+			}else{
+				cost = Math.round(cost); // 올림
+				supAmt = Math.round(supAmt);  // 반올림
+				vatAmt = Math.round(vatAmt); // 반올림
+				totAmt = supAmt + vatAmt; // 합계
+			}
 			edmsEstGridItem.setValue(rowKey, "cost", cost);
 			edmsEstGridItem.setValue(rowKey, "supAmt", supAmt);
 			edmsEstGridItem.setValue(rowKey, "vatAmt", vatAmt);
 			edmsEstGridItem.setValue(rowKey, "totAmt", supAmt + vatAmt);
 
 			/* 견적가 */
-			cost2 = Math.ceil(cost2); // 올림
+			cost2 = Math.round(cost2); // 올림
 			supAmt2 = Math.round(supAmt2);  // 반올림
 			vatAmt2 = Math.round(vatAmt2); // 반올림
 			totAmt2 = supAmt2 + vatAmt2; // 합계
@@ -1176,7 +1189,7 @@
 			edmsEstGridItem.setValue(rowKey, "totAmt2", supAmt2 + vatAmt2);
 
 			/* 할인가 */
-			cost3 = Math.ceil(cost3); // 올림
+			cost3 = Math.round(cost3); // 올림
 			supAmt3 = Math.round(supAmt3);  // 반올림
 			vatAmt3 = Math.round(vatAmt3); // 반올림
 			totAmt3 = supAmt3 + vatAmt3; // 합계
@@ -1186,17 +1199,28 @@
 			edmsEstGridItem.setValue(rowKey, "totAmt3", supAmt3 + vatAmt3);
 
 			/* 견적가 */
-			cost4 = Math.ceil(cost4); // 올림
-			supAmt4 = Math.round(supAmt4);  // 반올림
-			vatAmt4 = Math.round(vatAmt4); // 반올림
-			totAmt4 = supAmt4 + vatAmt4; // 합계
+			if(cost4 < 0||supAmt4 < 0||vatAmt4 < 0||totAmt4 < 0){ // 특별 DC 처리
+				cost4 = cost4*(-1);
+				supAmt4 = supAmt4*(-1);
+				vatAmt4 = vatAmt4*(-1);
+				totAmt4 = totAmt4*(-1);
+				cost4 = Math.round(cost4)*(-1); // 올림
+				supAmt4 = Math.round(supAmt4)*(-1);  // 반올림
+				vatAmt4 = Math.round(vatAmt4)*(-1); // 반올림
+				totAmt4 = supAmt4 + vatAmt4; // 합계
+			}else{
+				cost4 = Math.round(cost4); // 올림
+				supAmt4 = Math.round(supAmt4);  // 반올림
+				vatAmt4 = Math.round(vatAmt4); // 반올림
+				totAmt4 = supAmt4 + vatAmt4; // 합계
+			}
 			edmsEstGridItem.setValue(rowKey, "cost4", cost4);
 			edmsEstGridItem.setValue(rowKey, "supAmt4", supAmt4);
 			edmsEstGridItem.setValue(rowKey, "vatAmt4", vatAmt4);
 			edmsEstGridItem.setValue(rowKey, "totAmt4", supAmt4 + vatAmt4);
 
 			/* 할인가 */
-			cost5 = Math.ceil(cost5); // 올림
+			cost5 = Math.round(cost5); // 올림
 			supAmt5 = Math.round(supAmt5);  // 반올림
 			vatAmt5 = Math.round(vatAmt5); // 반올림
 			totAmt5 = supAmt5 + vatAmt5; // 합계

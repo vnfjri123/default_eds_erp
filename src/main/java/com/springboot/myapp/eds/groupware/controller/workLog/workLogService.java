@@ -134,6 +134,12 @@ public class workLogService {
         return result;
     }
 
+    public List<workLogActivityVO> selectWorkLogActive(Map<String, Object> map) throws Exception {
+        map.put("corpCd", SessionUtil.getUser().getCorpCd());
+        List<workLogActivityVO> result = workLogMapper.selectWorkLogActive(map);
+        return result;
+    }
+
     public List<workLogActivityVO> selectWorkLogActivity(Map<String, Object> map) throws Exception {
         map.put("corpCd", SessionUtil.getUser().getCorpCd());
         List<workLogActivityVO> result = workLogMapper.selectWorkLogActivity(map);
@@ -296,6 +302,15 @@ public class workLogService {
         return result;
     }
 
+    public List<workLogCheckInKeyResultVO> getWorkLogCheckInComparedToPlanList(Map<String, Object> map) throws Exception {
+        map.put("corpCd", SessionUtil.getUser().getCorpCd());
+        map.put("saveDivi", "01");
+        map.put("checkInDivi1", "01"); // 계획값
+        map.put("checkInDivi2", "02"); // 목표값
+        List<workLogCheckInKeyResultVO> result = workLogMapper.getWorkLogCheckInComparedToPlanList(map);
+        return result;
+    }
+
     public List<workLogSchDetailProgressChartVO> getWorkLogSchDetailProgressChart(Map<String, Object> map) throws Exception {
         map.put("corpCd", SessionUtil.getUser().getCorpCd());
         map.put("saveDivi1", "01");
@@ -348,6 +363,60 @@ public class workLogService {
         long startTime = System.currentTimeMillis();
         map.put("corpCd", SessionUtil.getUser().getCorpCd());
         List<workLogListVO> result = workLogMapper.getLowKeyResultsForSch(map);
+        int resultLength = result.size();
+        try {
+            for (int i = 0; i < resultLength; i++) {
+                // 상태 데이터 세팅
+                workLogListVO vo = result.get(i);
+                String statusDivi = vo.getStatusDivi();
+                Double rate = vo.getRate();
+                if (statusDivi == null || statusDivi.isBlank()) vo.setStatusDivi("01");
+                else if (statusDivi.contains("03")) vo.setStatusDivi("03");
+                else if (statusDivi.contains("02")) vo.setStatusDivi("02");
+                else if (statusDivi.contains("01")) vo.setStatusDivi("01");
+                else {
+                    if(rate >= 100.0) vo.setStatusDivi("04");
+                    else vo.setStatusDivi("02");
+                };
+
+                // 활동 데이터 추적
+                Map<String, Object> planCd = new HashMap<>();
+                planCd = map;
+                planCd.put("planCd", vo.getPlanCd());
+                planCd.put("OkrDiv", "02");
+                Map<String, Object> cntMap = workLogMapper.selectWorkLogActivityCount(planCd);
+
+                // 활동 수 세팅
+                int cnt = 0;
+                if(cntMap != null) cnt = Integer.parseInt(cntMap.get("cnt").toString());
+
+                // 수 세팅에 따른 색상 세팅
+                String cntColor = "#fff";
+                if(cnt > 0) cntColor = "#efefef";
+                vo.setCntColor(cntColor);
+            }
+            // result 리스트 정렬
+            Collections.sort(result, new Comparator<workLogListVO>() {
+                @Override
+                public int compare(workLogListVO o1, workLogListVO o2) {
+                    // getCntColor 값이 #efefef 인 경우 맨 위로 오도록 설정
+                    return o1.getCntColor().compareTo(o2.getCntColor());
+                }
+            });
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+
+        System.out.println("실행 시간: " + elapsedTime + " 밀리초");
+        return result;
+    }
+
+    public List<workLogListVO> getLowKeyResultsForOrderPlanList(Map<String, Object> map) throws Exception {
+        long startTime = System.currentTimeMillis();
+        map.put("corpCd", SessionUtil.getUser().getCorpCd());
+        List<workLogListVO> result = workLogMapper.getLowKeyResultsForOrderPlanList(map);
         int resultLength = result.size();
         try {
             for (int i = 0; i < resultLength; i++) {
@@ -599,6 +668,25 @@ public class workLogService {
                         e.printStackTrace();
 
                     }
+                    // empCd partCds 없을때 채워넣기
+                    if(map.get("empCd").toString().equals("") ||
+                       map.get("partCds").toString().equals("")){
+                        workLogListVO user = workLogMapper.getUsersForOrderPlanList(map);
+
+                        // 맵에서 "partCds" 키를 사용하여 String 값을 가져옴
+                        String partCdsString = (String) user.getPartCds(); // 적절한 형변환을 가정
+                        if(partCdsString == null) partCdsString = "";
+
+                        // String 값을 쉼표로 분리하여 List<String>으로 변환
+                        List<String> partCds = new ArrayList<>(Arrays.asList(partCdsString.split(",")));
+                        System.out.println(partCdsString.split(","));
+                        System.out.println(Arrays.asList(partCdsString.split(",")));
+                        System.out.println(partCds);
+
+                        map.put("empCd", user.getEmpCd());
+                        map.put("partCds", partCds);
+                        System.out.println(map);
+                    }
                     // 알람 저장
                     Map<String, Object> alarmData = new HashMap<>();
                     alarmData.put("corpCd",map.get("corpCd").toString());
@@ -614,13 +702,17 @@ public class workLogService {
                     alarmData.put("saveDivi","00");
 
                     alarmData.put("target",map.get("empCd"));
+                    System.out.println(map);
                     List<String> partCds = (List<String>) map.get("partCds");
+                    System.out.println(map);
                     partCds.add(map.get("empCd").toString());
                     partCds = partCds.stream()
                             .distinct()
                             .collect(Collectors.toList());
+                    System.out.println(map);
                     int partCdsLength = partCds.size();
                     for (int i = 0; i < partCdsLength; i++) {
+                        if(partCds.get(i).equals(""))continue;
                         alarmData.put("id",partCds.get(i));
                         alarmData.put("target",partCds.get(i));
                         alarmService.insertAlarmList(alarmData);
@@ -647,6 +739,118 @@ public class workLogService {
                     else {
                         map.put("saveDivi", "02");
                         workLogMapper.deleteWorkLogContent(map);
+                        returnData.put("note","성공적으로 내역이 삭제되었습니다.");
+                    }
+                    break;
+                }
+            }
+
+            returnData.put("status","success");
+
+        }catch (Exception e){
+
+            String exc = e.toString();
+            returnData.put("status","fail");
+            returnData.put("exc",exc);
+            returnData.put("note","알 수 없는 오류입니다.\n053-951-4500에 개발팀으로 연락 바랍니다.");
+            e.printStackTrace();
+
+        }
+
+        return returnData;
+    }
+
+    public Map<String, Object> cdWorkLogActive(Map<String, Object> map) throws Exception {
+
+        Map<String, Object> returnData = new HashMap<>();
+
+        try {
+            String status = (String) map.get("status");
+
+            map.put("userId", SessionUtil.getUser().getEmpCd());
+            map.put("corpCd", SessionUtil.getUser().getCorpCd());
+            map.put("busiCd", SessionUtil.getUser().getBusiCd());
+            map.put("depaCd", SessionUtil.getUser().getDepaCd());
+
+            switch (status) {
+                case "C" -> {
+                    try {
+                        map.put("saveDivi", "01");
+                        map.put("activityDt", Util.removeMinusChar(map.get("activityDt").toString()));
+                        workLogMapper.insertWorkLogActive(map);
+                        returnData.put("note","");
+                    }catch (Exception e){
+
+                        String exc = e.toString();
+                        returnData.put("status","fail");
+                        returnData.put("exc",exc);
+                        returnData.put("note","알 수 없는 오류입니다.\n053-951-4500에 개발팀으로 연락 바랍니다.");
+                        e.printStackTrace();
+
+                    }
+                    // empCd partCds 없을때 채워넣기
+                    if(map.get("empCd").toString().equals("") ||
+                       map.get("partCds").toString().equals("")){
+                        workLogListVO user = workLogMapper.getUsersForOrderPlanList(map);
+
+                        // 맵에서 "partCds" 키를 사용하여 String 값을 가져옴
+                        String partCdsString = (String) user.getPartCds() == null?"":(String) user.getPartCds(); // 적절한 형변환을 가정
+
+                        // String 값을 쉼표로 분리하여 List<String>으로 변환
+                        List<String> partCds = new ArrayList<>(Arrays.asList(partCdsString.split(",")));
+
+                        map.put("empCd", user.getEmpCd());
+                        map.put("partCds", partCds);
+                    }
+                    // 알람 저장
+                    Map<String, Object> alarmData = new HashMap<>();
+                    alarmData.put("corpCd",map.get("corpCd").toString());
+                    alarmData.put("empCd",SessionUtil.getUser().getEmpCd());
+                    alarmData.put("empNm",SessionUtil.getUser().getEmpNm());
+                    alarmData.put("navMessage","["+map.get("planNm").toString()+"]에 '"+map.get("content").toString()+ "' 코멘트가 등록되었습니다.");
+                    alarmData.put("inpId",map.get("userId").toString());
+                    alarmData.put("updId",map.get("userId").toString());
+                    alarmData.put("submitCd",map.get("planCd").toString());
+                    alarmData.put("submitNm","성과기획 - " + map.get("planNm").toString() + " 코멘트의 건");
+                    alarmData.put("stateDivi","07");
+                    alarmData.put("readDivi","00");
+                    alarmData.put("saveDivi","00");
+
+                    alarmData.put("target",map.get("empCd"));
+                    List<String> partCds = (List<String>) map.get("partCds");
+                    partCds.add(map.get("empCd").toString());
+                    partCds = partCds.stream()
+                            .distinct()
+                            .collect(Collectors.toList());
+                    int partCdsLength = partCds.size();
+                    for (int i = 0; i < partCdsLength; i++) {
+                        if(partCds.get(i).equals(""))continue;
+                        alarmData.put("id",partCds.get(i));
+                        alarmData.put("target",partCds.get(i));
+                        alarmService.insertAlarmList(alarmData);
+                    }
+                    break;
+                }
+                case "D" -> {
+
+                    // "팀원"일 경우 자기 자신 것만 처리
+                    if(SessionUtil.getUser().getRespDivi().equals("04")) {
+                        // 자기 자신 것 처리
+                        if(map.get("inpId").toString().equals(SessionUtil.getUser().getEmpCd())){
+                            map.put("saveDivi", "02");
+                            workLogMapper.deleteWorkLogActive(map);
+                            returnData.put("note","성공적으로 내역이 삭제되었습니다.");
+                        }
+                        // 다른사람들 것은 삭제 비활성화
+                        else{
+                            returnData.put("status","fail");
+                            returnData.put("note","변경 권한이 없습니다.");
+                        }
+                    }
+                    // 대표 이사, 이사, 팀장일 경우 "즉시 삭제" 처리
+                    else {
+                        map.put("saveDivi", "02");
+                        workLogMapper.deleteWorkLogActive(map);
                         returnData.put("note","성공적으로 내역이 삭제되었습니다.");
                     }
                     break;
@@ -719,6 +923,7 @@ public class workLogService {
                             .collect(Collectors.toList());
                     int partCdsLength = partCds.size();
                     for (int i = 0; i < partCdsLength; i++) {
+                        if(partCds.get(i).equals(""))continue;
                         alarmData.put("id",partCds.get(i));
                         alarmData.put("target",partCds.get(i));
                         alarmService.insertAlarmList(alarmData);
@@ -914,7 +1119,6 @@ public class workLogService {
                     // "팀원"일 경우 자기 자신 것만 처리
                     if(SessionUtil.getUser().getRespDivi().equals("04")) {
                         // 자기 자신 것 처리
-                        System.out.println("여기");
                         System.out.println(saveData);
                         if(saveData.get("inpId").equals(SessionUtil.getUser().getEmpCd())){
                             returnData.put("status","success");
@@ -1023,7 +1227,6 @@ public class workLogService {
                 String status = row.get("status").toString();
                 switch (status){
                     case "C" -> {
-                        System.out.println("여기여기");
                         System.out.println(row);
 
                         // 현재 날짜를 가져오기

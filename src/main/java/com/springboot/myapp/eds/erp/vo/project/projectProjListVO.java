@@ -59,6 +59,7 @@ public class projectProjListVO {
     private String margin3;
     private String profit3;
     private String manager;
+    private String projPur;
 
     public String getEstDt() {
         return Util.addMinusChar(estDt);

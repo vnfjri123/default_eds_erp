@@ -17,17 +17,25 @@
         T1.`title`,
         T1.`content`,
         T1.`hit`,
-        T1.saveNm AS videoSaveNm,
-        T1.ext AS videoExt,
-        T1.origNm AS videoOrigNm,
-        T2.saveNm,
-        T2.ext,
-        T2.origNm,
-        T2.size,
-        T2.saveRoot
+        T2.saveNm AS thumbSaveNm,
+        T2.ext AS thumbExt,
+        T2.origNm AS thumbOrigNm,
+        T2.size AS thumbSize,
+        T2.saveRoot AS thumbSaveRoot,
+        T3.saveNm AS videoSaveNm,
+        T3.ext AS videoExt,
+        T3.origNm AS videoOrigNm,
+        CAST(AES_DECRYPT(UNHEX(T3.saveRoot), #{secretKey}) AS CHAR) as videoSaveRoot
         FROM tb_archive T1
         LEFT JOIN tb_archive_thumbnail T2 ON T1.index = T2.archiveIndex
+        LEFT JOIN tb_archive_video T3 ON T1.index = T3.archiveIndex
         WHERE T1.corpCd = #{corpCd}
+        <if test="title != null and !title.equals('')">
+            AND T1.title like '%' #{title} '%'
+        </if>
+        <if test="depaDivi != null and !depaDivi.equals('')">
+            AND SUBSTRING(T1.depaCd, 3) = #{depaDivi}
+        </if>
 <!--        <if test="stDt != null and !stDt.equals('')">-->
 <!--            AND DATE(inpDttm) BETWEEN #{stDt} AND #{edDt}-->
 <!--        </if>-->
@@ -35,6 +43,25 @@
 <!--            AND title like '%' #{title} '%'-->
 <!--        </if>-->
         ORDER BY `index` DESC;
+    </select>
+
+    <select id="selectArchiveVideo" resultType="com.springboot.myapp.eds.erp.vo.archive.archiveVideoVO">
+        SELECT
+        T1.`index`,
+        T1.`archiveIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`
+        FROM tb_archive_video T1
+        LEFT JOIN tb_archive T2 ON T1.archiveIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="archiveIndex != null and !archiveIndex.equals('')">
+            AND T1.`archiveIndex` = #{archiveIndex}
+        </if>
+        ORDER BY `index`;
     </select>
 
     <select id="selectArchiveThum" resultType="com.springboot.myapp.eds.erp.vo.archive.archiveThumVO">
@@ -46,10 +73,27 @@
         T1.`origNm`,
         CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) as saveRoot,
         T1.`ext`,
-        T1.`size`,
-        T1.`inpId`,
-        T1.`inpDttm`
+        T1.`size`
         FROM tb_archive_thumbnail T1
+        LEFT JOIN tb_archive T2 ON T1.archiveIndex = T2.`index`
+        WHERE T1.`corpCd` = #{corpCd}
+        <if test="archiveIndex != null and !archiveIndex.equals('')">
+            AND T1.`archiveIndex` = #{archiveIndex}
+        </if>
+        ORDER BY `index`;
+    </select>
+
+    <select id="selectArchiveFiles" resultType="com.springboot.myapp.eds.erp.vo.archive.archiveFileVO">
+        SELECT
+        T1.`index`,
+        T1.`archiveIndex`,
+        T1.`corpCd`,
+        T1.`saveNm`,
+        T1.`origNm`,
+        CAST(AES_DECRYPT(UNHEX(T1.saveRoot), #{secretKey}) AS CHAR) as saveRoot,
+        T1.`ext`,
+        T1.`size`
+        FROM tb_archive_file T1
         LEFT JOIN tb_archive T2 ON T1.archiveIndex = T2.`index`
         WHERE T1.`corpCd` = #{corpCd}
         <if test="archiveIndex != null and !archiveIndex.equals('')">
@@ -69,12 +113,7 @@
         inpId,
         inpDttm,
         title,
-        content,
-        saveNm,
-        origNm,
-        saveRoot,
-        ext,
-        size
+        content
         )
         SELECT #{corpCd},
         #{depaCd},
@@ -82,7 +121,23 @@
         #{userId},
         now(),
         #{title},
-        #{content},
+        #{content}
+    </insert>
+
+    <insert id="insertArchiveVideo" parameterType="hashMap">
+        <!--        <selectKey resultType="int" keyProperty="archiveIndex" order="BEFORE">-->
+        <!--            SELECT LAST_INSERT_ID() AS archiveIndex-->
+        <!--        </selectKey>-->
+        INSERT INTO tb_archive_video
+        (archiveIndex,
+        corpCd,
+        saveNm,
+        origNm,
+        saveRoot,
+        ext,
+        size)
+        SELECT #{archiveIndex},
+        #{corpCd},
         #{saveNm},
         #{origNm},
         HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
@@ -90,38 +145,92 @@
         #{size}
     </insert>
 
-    <insert id="insertArchiveFile" parameterType="hashMap">
+    <insert id="insertArchiveThumbnail" parameterType="hashMap">
 <!--        <selectKey resultType="int" keyProperty="archiveIndex" order="BEFORE">-->
 <!--            SELECT LAST_INSERT_ID() AS archiveIndex-->
 <!--        </selectKey>-->
         INSERT INTO tb_archive_thumbnail
         (archiveIndex,
          corpCd,
-         busiCd,
         saveNm,
          origNm,
          saveRoot,
          ext,
-         size,
-         inpId,
-         inpDttm,
-         empNm)
+         size)
         SELECT #{archiveIndex},
                #{corpCd},
-               #{busiCd},
                #{saveNm},
                #{origNm},
                HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
                #{ext},
-               #{size},
-               #{userId},
-               now(),
-               #{empNm}
+               #{size}
     </insert>
+
+    <insert id="insertArchiveFiles" parameterType="hashMap">
+        <!--        <selectKey resultType="int" keyProperty="archiveIndex" order="BEFORE">-->
+        <!--            SELECT LAST_INSERT_ID() AS archiveIndex-->
+        <!--        </selectKey>-->
+        INSERT INTO tb_archive_file
+        (archiveIndex,
+        corpCd,
+        saveNm,
+        origNm,
+        saveRoot,
+        ext,
+        size)
+        SELECT #{archiveIndex},
+        #{corpCd},
+        #{saveNm},
+        #{origNm},
+        HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
+        #{ext},
+        #{size}
+    </insert>
+
+    <update id="readArchive" parameterType="hashMap">
+        UPDATE tb_archive T1
+        SET T1.hit = T1.hit + 1
+        WHERE T1.`corpCd` = #{corpCd}
+          AND T1.`index` = #{archiveIndex}
+    </update>
+
 <!--     updId = #{userId},-->
 <!--     updDttm = now(),-->
 <!--     title = #{title},-->
 <!--     content = #{content},-->
+<!--    <update id="updateArchive" parameterType="hashMap">-->
+<!--        UPDATE tb_archive-->
+<!--        SET-->
+<!--        <if test="title != null and !title.isEmpty()">-->
+<!--            title = #{title},-->
+<!--        </if>-->
+<!--        <if test="content != null and !content.isEmpty()">-->
+<!--            content = #{content},-->
+<!--        </if>-->
+<!--        <if test="saveNm != null and !saveNm.isEmpty()">-->
+<!--            saveNm = #{saveNm},-->
+<!--        </if>-->
+<!--        <if test="origNm != null and !origNm.isEmpty()">-->
+<!--            origNm = #{origNm},-->
+<!--        </if>-->
+<!--        <if test="saveRoot != null and !saveRoot.isEmpty()">-->
+<!--            saveRoot = HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),-->
+<!--        </if>-->
+<!--        <if test="ext != null and !ext.isEmpty()">-->
+<!--            ext = #{ext},-->
+<!--        </if>-->
+<!--        <if test="size != null">-->
+<!--            size = #{size},-->
+<!--        </if>-->
+<!--        <if test="userId != null and !userId.isEmpty()">-->
+<!--            updId = #{userId},-->
+<!--            updDttm = now()-->
+<!--        </if>-->
+<!--        WHERE-->
+<!--        corpCd = #{corpCd}-->
+<!--        AND `index` = #{index}-->
+<!--    </update>-->
+
     <update id="updateArchive" parameterType="hashMap">
         UPDATE tb_archive
         SET
@@ -130,21 +239,6 @@
         </if>
         <if test="content != null and !content.isEmpty()">
             content = #{content},
-        </if>
-        <if test="saveNm != null and !saveNm.isEmpty()">
-            saveNm = #{saveNm},
-        </if>
-        <if test="origNm != null and !origNm.isEmpty()">
-            origNm = #{origNm},
-        </if>
-        <if test="saveRoot != null and !saveRoot.isEmpty()">
-            saveRoot = HEX(AES_ENCRYPT(#{saveRoot}, #{secretKey})),
-        </if>
-        <if test="ext != null and !ext.isEmpty()">
-            ext = #{ext},
-        </if>
-        <if test="size != null">
-            size = #{size},
         </if>
         <if test="userId != null and !userId.isEmpty()">
             updId = #{userId},
@@ -155,7 +249,7 @@
         AND `index` = #{index}
     </update>
 
-    <update id="updateArchiveFile" parameterType="hashMap">
+    <update id="updateArchiveThumbnail" parameterType="hashMap">
         UPDATE tb_archive_thumbnail
         SET updId    = #{userId},
             updDttm  = now(),
@@ -167,6 +261,59 @@
         WHERE corpCd = #{corpCd}
           AND `archiveIndex` = #{archiveIndex}
     </update>
+
+    <delete id="deleteVideo" parameterType="hashMap">
+        DELETE FROM tb_archive_video
+        WHERE `archiveIndex` = #{archiveIndex}
+          AND `index` = #{videoIndex}
+    </delete>
+
+    <delete id="deleteThumbnail" parameterType="hashMap">
+        DELETE FROM tb_archive_thumbnail
+        WHERE `archiveIndex` = #{archiveIndex}
+          AND `index` = #{thumbnailIndex}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="hashMap">
+        DELETE FROM tb_archive_file
+        WHERE `archiveIndex` = #{archiveIndex}
+          AND `index` = #{fileIndex}
+    </delete>
+
+<!--    <delete id="deleteFiles" parameterType="hashMap">-->
+<!--        <if test="removedVideoFlag != null">-->
+<!--        DELETE-->
+<!--        FROM tb_archive_video-->
+<!--        WHERE `archiveIndex` = #{archiveIndex}-->
+<!--        AND `index` = #{videoIndex}-->
+<!--        </if>-->
+<!--        <if test="removedThumbnailFlag != null">-->
+<!--        DELETE-->
+<!--        FROM tb_archive_thumbnail-->
+<!--        WHERE `archiveIndex` = #{archiveIndex}-->
+<!--        AND `index` = #{thumbnailIndex}-->
+<!--        </if>-->
+<!--        <if test="removedFilesFlag != null">-->
+<!--        DELETE-->
+<!--        FROM tb_archive_file-->
+<!--        WHERE `archiveIndex` = #{archiveIndex}-->
+<!--        AND `index` = #{fileIndex}-->
+<!--        </if>-->
+<!--    </delete>-->
+
+
+<!--    AND `index` = #{index}-->
+
+<!--    <delete id="deleteFiles2" parameterType="hashMap">-->
+<!--        DELETE-->
+<!--        FROM tb_archive_thumbnail-->
+<!--        WHERE `archiveIndex` = #{archiveIndex}-->
+<!--    </delete>-->
+<!--    <delete id="deleteFiles3" parameterType="hashMap">-->
+<!--        DELETE-->
+<!--        FROM tb_archive_file-->
+<!--        WHERE `archiveIndex` = #{archiveIndex}-->
+<!--    </delete>-->
 
     <delete id="deleteArchive" parameterType="hashMap">
         DELETE

@@ -397,7 +397,7 @@
 											<button type="button" class="btn btn-sm btn-primary" name="btnSearch3"		id="btnSearch3"		onclick="doAction('guMaeGridEmail', 'search')"><i class="fa fa-search"></i> 조회</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnInput3"		id="btnInput3"		onclick="doAction('guMaeGridEmail', 'reset')" ><i class="fa fa-plus"></i> 초기화</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnEmailSend"	id="btnEmailSend"	onclick="doAction('guMaeGridEmail', 'emailSend')"><i class="fa fa-print"></i> 메일요청</button>
-<%--											<button type="button" class="btn btn-sm btn-primary" name="btnDelete3"		id="btnDelete3"		onclick="doAction('guMaeGridEmail', 'delete')"><i class="fa fa-trash"></i> 삭제</button>--%>
+											<button type="button" class="btn btn-sm btn-primary" name="btnDelete3"		id="btnDelete3"		onclick="doAction('guMaeGridEmail', 'delete')"><i class="fa fa-trash"></i> 삭제</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnClose3"		id="btnClose3"		onclick="doAction('guMaeGridEmail', 'btnClose')" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> 닫기</button>
 										</div>
 									</div>
@@ -450,7 +450,7 @@
 									<td><input type="radio" name="prints" value="prints5"  style="width: 100%;" ></td>
 								</tr>
 								<tr>
-									<td class="table-active" title="주식회사 이디에스원">이디에스원(주) (전북)</td>
+									<td class="table-active" title="주식회사 이디에스원">이디에스원(주) (전주)</td>
 									<td><input type="radio" name="prints" value="prints6"  style="width: 100%;" ></td>
 									<td><input type="radio" name="prints" value="prints7"  style="width: 100%;" ></td>
 								</tr>
@@ -909,7 +909,9 @@
 		guMaeGridEmail.setColumns([
 			{ header:'발송여부',		name:'sendDivi',	width:80,		align:'center',
 				formatter: function (value) {
-					if(value.value === '02') return '발송완료';
+					if(value.value === '01') return '미발송';
+					else if(value.value === '02') return '발송완료';
+					else if(value.value === '03') return '발송반려';
 					else return '미발송';
 				},
 			},
@@ -1465,6 +1467,7 @@
 
 					var row = guMaeGridList.getFocusedCell();
 					var ordCd = guMaeGridList.getValue(row.rowKey,'ordCd');
+					doAction('guMaeGridEmail', 'reset');
 					if(ordCd == null){
 						return Swal.fire({
 							icon: 'error',
@@ -1679,7 +1682,7 @@
 
 					/* 발주서 파라미터*/
 					var row = guMaeGridList.getFocusedCell();
-					var num = guMaeGridList.getValue(row.rowKey,'totAmt');
+					var num = document.getElementById('totAmt').value;
 					var num2han = await edsUtil.num2han(num);
 
 					if(printKind.value === "prints2" ||printKind.value === "prints3"){

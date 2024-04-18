@@ -48,6 +48,9 @@
         <if test="depaCd != null and !depaCd.equals('')">
             AND t1.depaCd = #{depaCd}
         </if>
+        <if test="clasifyDivi != null and !clasifyDivi.equals('')">
+            AND t2.clasifyDivi = #{clasifyDivi}
+        </if>
         ORDER BY T1.`progressDivi` ASC, T1.`index` DESC;
     </select>
 
@@ -60,6 +63,7 @@
                T1.`inpDttm`,
                (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpId,
                (SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updId,
+               T1.`inpId` AS userId,
                T1.`updDttm`,
                T1.`title`,
                T1.`content`,

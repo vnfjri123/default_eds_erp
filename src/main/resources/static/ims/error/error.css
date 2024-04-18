@@ -1,5 +1,63 @@
+/*adminLTE 재정의 시작*/
+.card-comments .card-comment img {
+    height: 1.875rem;
+    width: 1.875rem;
+    float: left;
+}
+.img-sm {
+    height: 1.875rem;
+    width: 1.875rem;
+}
+.img-circle {
+    border-radius: 50%;
+}
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+.card-comments .comment-text {
+    color: #78838e;
+    margin-left: 40px;
+}
+.card-comments .card-comment:first-of-type {
+    padding-top: 0;
+}
+.card-comments .card-comment {
+    border-bottom: 1px solid #e9ecef;
+    padding: 8px 0;
+}
+.card-comments .username {
+    color: #495057;
+    display: block;
+    font-weight: 600;
+}
+.card-comments .text-muted {
+    font-size: 12px;
+    font-weight: 400;
+}
+.card-footer {
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 0 solid rgba(0, 0, 0, 0.125);
+}
+.btn-tool{
+    background-color: transparent;
+    color: #adb5bd;
+    font-size: .875rem;
+    margin: -.75rem 0;
+    padding: .25rem .5rem;
+}
+/*adminLTE 재정의 끝*/
 /*시작*/
-
 .toastui-editor-contents > p:first-child {
     color: rgb(123, 125, 125);
     text-decoration: underline;
@@ -10,6 +68,10 @@ select[name="progressDivi"] option[value="01"]{
 }
 select[name="progressDivi"] option[value="02"]{
     color: blue;
+}
+
+.toastui-editor-mode-switch{
+    display: none !important;
 }
 
 .toastui-editor-contents table th{
@@ -40,8 +102,9 @@ select[name="progressDivi"] option[value="02"]{
     padding: unset;
 }
 
-input::placeholder{
-    color: black !important;
+input::placeholder,
+textarea::placeholder{
+    color: grey !important;
 }
 
 .form-control:not(select):read-only{

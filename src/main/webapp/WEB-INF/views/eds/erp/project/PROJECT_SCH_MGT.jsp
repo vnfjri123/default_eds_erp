@@ -44,7 +44,7 @@
 			}
 
 			/* Button 셋팅 */
-			await edsUtil.setButtonForm(document.querySelector("#projectGridListButtonForm"));
+			// await edsUtil.setButtonForm(document.querySelector("#projectGridListButtonForm"));
 			await edsUtil.setButtonForm(document.querySelector("#projectGridCostButtonForm"));
 
 			/**********************************************************************
@@ -66,7 +66,7 @@
 				scrollX: true,
 				scrollY: true,
 				editingEvent: 'click',
-				bodyHeight: 'fitToParent',
+				bodyHeight: 'auto',
 				rowHeight: 'auto',
 				minRowHeight:40,
 				rowHeaders: [/*'rowNum', *//*'checkbox'*/],
@@ -108,7 +108,7 @@
 					formatter: function (value) {
 						var num = Number(value.row.edmsMargin);
 						var rst = ''
-						if(num < 21) rst = '<b style="color:red">'+value.value+'</b>'
+						if(num < 21 && (value.row.projDivi === '01' || value.row.projDivi === '03')) rst = '<b style="color:red">'+value.value+'%'+'</b>'
 						else rst = value.value
 						return rst
 					}},
@@ -121,7 +121,7 @@
 					formatter: function (value) {
 						var num = Number(value.row.edmsMargin);
 						var rst = '';
-						if(num < 21) rst = '<b style="color:red">'+value.value+'%'+'</b>'
+						if(num < 21 && (value.row.projDivi === '01' || value.row.projDivi === '03')) rst = '<b style="color:red">'+value.value+'%'+'</b>'
 						else rst = value.value+'%'
 						return edsUtil.addComma(rst)
 					}
@@ -314,6 +314,18 @@
 				}
 			});
 
+			projectGridList.on('afterFilter', async ev => {
+				document.getElementById('allPlan').value = edsUtil.addComma(projectGridList.getSummaryValues('conTotAmt').filtered.sum);
+				document.getElementById('allSales').value = edsUtil.addComma(projectGridList.getSummaryValues('salTotAmt').filtered.sum);
+				document.getElementById('allCost').value = edsUtil.addComma(projectGridList.getSummaryValues('costTotAmt').filtered.sum);
+			});
+
+			projectGridList.on('afterUnfilter', async ev => {
+				document.getElementById('allPlan').value = edsUtil.addComma(projectGridList.getSummaryValues('conTotAmt').filtered.sum);
+				document.getElementById('allSales').value = edsUtil.addComma(projectGridList.getSummaryValues('salTotAmt').filtered.sum);
+				document.getElementById('allCost').value = edsUtil.addComma(projectGridList.getSummaryValues('costTotAmt').filtered.sum);
+			});
+
 			projectGridCost.on('focusChange', async ev => {
 				if(ev.rowKey !== ev.prevRowKey){
 					setTimeout(async (ev)=>{
@@ -343,11 +355,19 @@
 				switch (sAction) {
 					case "search":// 조회
 
-						projectGridList.finishEditing(); // 데이터 초기화
-						projectGridList.clear(); // 데이터 초기화
-						var param = ut.serializeObject(document.querySelector("#searchForm")); //조회조건
-						var data = edsUtil.getAjax("/PROJECT_MGT/selectProjSchList", param)
-						projectGridList.resetData(data); // 데이터 set
+						new Promise((resolve, reject) => {
+							projectGridList.finishEditing(); // 데이터 초기화
+							projectGridList.clear(); // 데이터 초기화
+							resolve();
+						}).then(value => {
+							var param = ut.serializeObject(document.querySelector("#searchForm")); //조회조건
+							var data = edsUtil.getAjax("/PROJECT_MGT/selectProjSchList", param)
+							projectGridList.resetData(data); // 데이터 set
+						}).then(value => {
+							document.getElementById('allPlan').value = edsUtil.addComma(projectGridList.getSummaryValues('conTotAmt').filtered.sum);
+							document.getElementById('allSales').value = edsUtil.addComma(projectGridList.getSummaryValues('salTotAmt').filtered.sum);
+							document.getElementById('allCost').value = edsUtil.addComma(projectGridList.getSummaryValues('costTotAmt').filtered.sum);
+						});
 						break;
 				}
 			}else if (sheetNm === 'projectGridCost') {
@@ -458,6 +478,32 @@
 		/**********************************************************************
 		 * 화면 함수 영역 START
 		 ***********************************************************************/
+		// 로딩 애니메이션을 활성화하는 함수
+		function on() {
+			document.getElementById("loading").style.display = "flex";
+		}
+
+		// 로딩 애니메이션을 비활성화하고 서서히 사라지게 하는 함수
+		function off() {
+			var loadingElement = document.getElementById("loading");
+			loadingElement.style.opacity = '0';
+			setTimeout(function() {
+				loadingElement.style.display = "none";
+				loadingElement.style.opacity = '1';
+			}, 500); // 로딩 애니메이션을 숨기기 전에 500ms 동안 페이드 아웃 효과를 줍니다.
+		}
+
+		function adjustNavbarPadding() {
+			// 네비게이션바 높이에 따라 body의 padding-top 조정
+			const navbarHeight = document.querySelector('.navbar').offsetHeight;
+			document.body.style.paddingTop = navbarHeight+'px';
+		}
+
+		// 페이지 로드 시에 padding-top 조정
+		window.onload = adjustNavbarPadding;
+
+		// 화면 크기가 변경될 때마다 padding-top 재조정
+		window.onresize = adjustNavbarPadding;
 
 		/**********************************************************************
 		 * 화면 함수 영역 END
@@ -466,81 +512,86 @@
 </head>
 
 <body>
-<div class="row" style="position:relative">
-	<div class="col-md-12">
-		<!-- 검색조건 영역 -->
+
+<nav class="navbar navbar-expand-lg fixed-top navbar-light p-0" style="background-color: #ebe9e4;">
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"  style="background-color: #fff;">
+		조회조건
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNav">
 		<div class="row">
-			<div class="col-md-12" style="background-color: #ebe9e4;">
-				<div style="background-color: #faf9f5;border: 1px solid #dedcd7;margin-top: 5px;margin-bottom: 5px;padding: 3px;">
-					<!-- form start -->
-					<form class="form-inline" role="form" name="searchForm" id="searchForm" method="post" onSubmit="return false;">
-						<!-- input hidden -->
-						<input type="hidden" name="corpCd" id="corpCd" title="회사코드">
-						<!-- ./input hidden -->
-						<div class="form-group">
-							<label for="busiCd">사업장 &nbsp;</label>
-							<div class="input-group-prepend" style="min-width: 15rem;">
-								<select class="form-control select2" style="width: 100%;" name="busiCd" id="busiCd" >
-								</select>
-							</div>
-<%--							<label for="busiCd">사업장 &nbsp;</label>--%>
-<%--							<div class="input-group-prepend">--%>
-<%--								<input type="text" class="form-control" style="width: 100px; font-size: 15px;" name="busiCd" id="busiCd" title="사업장코드">--%>
-<%--							</div>--%>
-<%--							<span class="input-group-btn"><button type="button" class="btn btn-block btn-default btn-flat" name="btnBusiCd" id="btnBusiCd" onclick="popupHandler('busi','open'); return false;"><i class="fa fa-search"></i></button></span>--%>
-<%--							<div class="input-group-append">--%>
-<%--								<input type="text" class="form-control" name="busiNm" id="busiNm" title="사업장명" disabled>--%>
-<%--							</div>--%>
-						</div>
-						<div class="form-group" style="margin-left: 50px"></div>
-						<div class="form-group">
-							<label for="stDt">계약일자 &nbsp;</label>
-							<div class="input-group-prepend">
-								<input type="date" class="form-control" style="width: 150px; font-size: 15px;border-radius: 3px;" name="stDt" id="stDt" title="끝">
-							</div>
-							<span>&nbsp;~&nbsp;</span>
-							<div class="input-group-append">
-								<input type="date" class="form-control" style="width: 150px; font-size: 15px;border-radius: 3px;" name="edDt" id="edDt" title="끝">
-							</div>
-						</div>
-						<div class="form-group" style="margin-left: 50px"></div>
-						<div class="form-group">
-							<label for="projNm">프로젝트 &nbsp;</label>
-							<input type="text" class="form-control" name="projNm" id="projNm" title="프로젝트명">
-							<div class="form-group-append">
-								<span class="input-group-btn"><button type="button" class="btn btn-block btn-primary btn-flat" name="btnProjCd" id="btnProjCd" onclick="doAction('projectGridList','search'); return false;">검색</button></span>
-							</div>
-						</div>
-					</form>
-					<!-- ./form -->
-				</div>
-			</div>
-		</div>
-		<!-- 그리드 영역 -->
-		<div class="row">
-			<div class="col-md-12" id="projectGridList" style="height: calc(100vh - 6rem); width: 100%;">
-				<!-- 시트가 될 DIV 객체 -->
-				<div id="projectGridListDIV" style="width:100%; height:100%;"></div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" style="padding: 5px 15px 0 15px; background-color: #ebe9e4">
-				<div class="col text-center">
-					<form class="form-inline" role="form" name="projectGridListButtonForm" id="projectGridListButtonForm" method="post" onsubmit="return false;">
-						<div class="container">
-							<div class="row">
-								<div class="col text-center">
-									<button type="button" class="btn btn-sm btn-primary" name="btnSearch"			id="btnSearch"				onclick="doAction('projectGridList', 'search')"><i class="fa fa-search"></i> 조회</button>
-									<button type="button" class="btn btn-sm btn-primary" name="btnCostPopEv"		id="btnCostPopEv"			data-toggle="modal" data-target="#modalCart"  style="display: none"></button>
+			<div class="col-12">
+				<div class="card card-lightblue card-outline" style="margin-bottom: 3px;width:100vw;padding: 0.5rem;background-color: #faf9f5;">
+					<!-- /.card-header -->
+					<div class="card-body" style="padding: 0.25rem;background-color: #faf9f5;">
+						<!-- form start -->
+						<form role="form" name="searchForm" id="searchForm" method="post" onSubmit="return false;">
+							<!-- input hidden -->
+							<input type="hidden" name="corpCd" id="corpCd" title="회사코드">
+							<button type="button" class="btn btn-sm btn-primary d-none" name="btnSearch"            id="btnSearch"                onclick="doAction('projectGridList', 'search')"><i class="fa fa-search"></i> 조회</button>
+							<button type="button" class="btn btn-sm btn-primary d-none" name="btnCostPopEv"        id="btnCostPopEv"            data-toggle="modal" data-target="#modalCart"  style="display: none"></button>
+							<!-- ./input hidden -->
+							<div class="form-row">
+								<div class="col-md-2 col-6">
+									<label for="busiCd"><b>사업장</b></label>
+									<select class="form-control select2" style="width: 100%;" name="busiCd" id="busiCd" ></select>
+								</div>
+								<div class="col-md-4 col-6">
+									<label for="projNm"><b>프로젝트</b></label>
+									<div class="input-group">
+										<input type="text" class="form-control" name="projNm" id="projNm" title="프로젝트명">
+										<div class="input-group-append">
+											<button type="button" class="btn btn-primary btn-flat" name="btnProjCd" id="btnProjCd" onclick="doAction('projectGridList','search'); return false;">검색</button>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2 col-2">
+									<label for="projDivi"><b>구분</b></label>
+									<select class="form-control select2" style="width: 100%;" name="dtDivi" id="dtDivi" >
+										<option value="">전체</option>
+										<option value="01">계약일자</option>
+										<option value="02" selected>착수일자</option>
+										<option value="03">준공일자</option>
+									</select>
+								</div>
+								<div class="col-md-2 col-5">
+									<label for="stDt"><b>시작일자</b></label>
+									<input type="date" class="form-control" style="width: 100%; font-size: 15px;border-radius: 3px;" name="stDt" id="stDt" title="시작">
+								</div>
+								<div class="col-md-2 col-5">
+									<label for="stDt"><b>끝일자</b></label>
+									<input type="date" class="form-control" style="width: 100%; font-size: 15px;border-radius: 3px;" name="edDt" id="edDt" title="끝">
+								</div>
+								<div class="col-4">
+									<label for="allPlan"><b>총 계약금액(원)</b></label>
+									<input type="text" class="form-control text-right" id="allPlan" style="background-color: yellow" name="allPlan" placeholder="계약.." readonly="readonly"value="0">
+								</div>
+								<div class="col-4">
+									<label for="allSales"><b>총 매출금액(원)</b></label>
+									<input type="text" class="form-control text-right" id="allSales" style="color: red;font-weight: bold;background-color: yellow" name="allSales" placeholder="매출.." readonly="readonly"value="0">
+								</div>
+								<div class="col-4">
+									<label for="allCost"><b>총 매입금액(원)</b></label>
+									<input type="text" class="form-control text-right" id="allCost" style="color: red;font-weight: bold;background-color: yellow" name="allCost" placeholder="매입.." readonly="readonly"value="0">
 								</div>
 							</div>
-						</div>
-					</form>
+						</form>
+						<!-- ./form -->
+					</div>
+					<!-- /.card-body -->
 				</div>
 			</div>
 		</div>
 	</div>
+</nav>
+
+<!-- 그리드 영역 -->
+<div class="row">
+	<div class="col-md-12 scrollable-div" id="projectGridList" style="width: 100%;">
+		<!-- 시트가 될 DIV 객체 -->
+		<div id="projectGridListDIV" style="width:100%; height:100%;"></div>
+	</div>
 </div>
+
 <div class="modal fade" id="modalCart" tabindex="-1" role="dialog"
 	 aria-hidden="true">
 	<div class="modal-dialog modal-xl" role="document">

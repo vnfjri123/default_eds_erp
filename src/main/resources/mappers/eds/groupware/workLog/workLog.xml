@@ -237,6 +237,32 @@
         ORDER BY seq
     </select>
 
+    <select id="selectWorkLogActive"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogActivityVO">
+        SELECT /* selectWorkLogActive */
+            corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,planCd
+            ,seq
+            ,saveDivi
+            ,busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm
+            ,content
+            ,activityDt
+            ,inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,inpDttm
+            ,updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,updDttm
+        FROM tb_performance_plan_activity_list T1
+        WHERE T1.corpCd = #{corpCd}
+           AND T1.planCd = #{planCd}
+           AND T1.saveDivi = '01'
+        ORDER BY seq
+    </select>
+
     <select id="selectWorkLogActivity"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogActivityVO">
         SELECT /* selectWorkLogActivity */
             corpCd
@@ -444,6 +470,61 @@
          ORDER BY T1.planCdRoot, T1.planCd*1 ASC
     </select>
 
+    <select id="getLowKeyResultsForOrderPlanList"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogListVO">
+        SELECT /* getLowKeyResultsForOrderPlanList */
+            T1.corpCd
+            ,(SELECT corpNm FROM TB_BASE_CORP_LIST T0 WHERE T0.corpCd=T1.corpCd) AS corpNm
+            ,T1.planCd
+            ,T1.planDivi
+            ,T1.parePlanCd
+            ,T1.planCdRoot
+            ,T1.planNm
+            ,(SELECT I1.planNm FROM tb_performance_plan_list I1 WHERE I1.corpCd=T1.corpCd AND I1.planCd = T1.parePlanCd) AS subPlanNm
+            ,T1.busiCd
+            ,(SELECT busiNm FROM TB_BASE_BUSI_LIST T0 WHERE T0.corpCd=T1.corpCd AND T0.busiCd=T1.busiCd) AS busiNm
+            ,T1.depaCd
+            ,(SELECT depaNm FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaNm
+            ,(SELECT I1.depaColorCd FROM TB_BASE_DEPA_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.depaCd = T1.depaCd) AS depaColorCd
+            ,T1.empCd
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.empCd) AS empNm
+            ,T1.partCds
+            ,T1.inpId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
+            ,T1.updId
+            ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,T1.saveDivi
+            ,T1.stDt
+            ,T1.edDt
+            ,T1.unit
+            ,T1.stAmt
+            ,T1.edAmt
+            ,T1.note
+            ,T1.edRate
+            ,IFNULL(SUM(T2.amt)/T1.edAmt*100,0) AS rate
+            ,GROUP_CONCAT(T2.statusDivi) AS statusDivi
+          FROM tb_performance_plan_list T1
+          LEFT JOIN tb_performance_plan_check_in_list T2
+                 ON T1.corpCd = T2.corpCd
+                AND T1.planCd = T2.planCd
+                AND T2.saveDivi = '01'
+                AND T2.checkInDivi = '02'
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.saveDivi IN ('01', '02')
+           AND T1.planDivi = '02'
+           AND T1.ordPlanCd= #{ordPlanCd}
+         GROUP BY T1.corpCd, T1.planCd
+         ORDER BY T1.planCdRoot, T1.planCd*1 ASC
+    </select>
+
+    <select id="getUsersForOrderPlanList"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogListVO">
+        SELECT /* getUsersForOrderPlanList */
+            T1.empCd,
+            T1.partCds
+        FROM tb_performance_plan_list T1
+        WHERE T1.corpCd = #{corpCd}
+          AND T1.planCd = #{planCd}
+    </select>
+
     <select id="getLowKeyResultsActivitys"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogActivityVO">
         SELECT /* getLowKeyResultsActivitys */
               T1.corpCd,
@@ -503,6 +584,7 @@
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
             ,T1.updId
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,(SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = T1.planCd) AS unit
           FROM tb_performance_plan_check_in_list T1
          WHERE T1.corpCd = #{corpCd}
            AND T1.saveDivi = #{saveDivi}
@@ -533,6 +615,7 @@
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
             ,T1.updId
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,(SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = #{planCd}) AS unit
           FROM tb_performance_plan_check_in_list T1
           LEFT JOIN tb_performance_plan_check_in_list T2
             ON T1.corpCd = T2.corpCd
@@ -551,14 +634,16 @@
     <select id="getWorkLogPlanningKeyResultChart"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogPlanningKeyResultVO">
         SELECT /* getWorkLogPlanningKeyResultChart */
             dt,
-            SUM(amt) AS amt
+            SUM(amt) AS amt,
+            unit
         FROM
             (SELECT
                  *
              FROM
                  (SELECT /* selectWorkLogPlanningKeyResult */
-                      LEFT(dt,6) AS dt
-                       ,amt
+                       LEFT(dt,6) AS dt,
+                       amt,
+                       (SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = #{planCd}) AS unit
                   FROM tb_performance_plan_check_in_list T1
                   WHERE T1.corpCd = #{corpCd}
                     AND T1.saveDivi = #{saveDivi}
@@ -589,6 +674,7 @@
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.inpId) AS inpNm
             ,T1.updId
             ,(SELECT empNm FROM TB_BASE_USER_LIST I1 WHERE I1.corpCd = #{corpCd} AND I1.empCd = T1.updId) AS updNm
+            ,(SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = T1.planCd) AS unit
           FROM tb_performance_plan_check_in_list T1
          WHERE T1.corpCd = #{corpCd}
            AND T1.saveDivi = #{saveDivi}
@@ -599,17 +685,16 @@
 
     <select id="getWorkLogCheckInKeyResultChart"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogCheckInKeyResultVO">
         SELECT /* getWorkLogCheckInKeyResultChart */
-            LEFT(dt, 6) AS dt,
+            LEFT(dt, 8) AS dt,
             SUM(CASE WHEN checkInDivi = #{checkInDivi1} THEN amt ELSE 0 END) AS planningAmt,
-            SUM(CASE WHEN checkInDivi = #{checkInDivi2} THEN amt ELSE 0 END) AS ckeckInamt
-        FROM
-            tb_performance_plan_check_in_list
-        WHERE
-            corpCd = #{corpCd}
+            SUM(CASE WHEN checkInDivi = #{checkInDivi2} THEN amt ELSE 0 END) AS ckeckInamt,
+            (SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = #{planCd}) AS unit
+        FROM tb_performance_plan_check_in_list
+        WHERE corpCd = #{corpCd}
           AND saveDivi = #{saveDivi}
           AND planCd = #{planCd}
-        GROUP BY LEFT(dt, 6)
-        ORDER BY LEFT(dt, 6);
+        GROUP BY LEFT(dt, 8)
+        ORDER BY LEFT(dt, 8);
     </select>
 
     <select id="getWorkLogSchDetailProgressChart"  resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogSchDetailProgressChartVO">
@@ -806,6 +891,34 @@
         </if>
     </select>
 
+    <select id="getWorkLogCheckInComparedToPlanList" resultType="com.springboot.myapp.eds.groupware.vo.workLog.workLogCheckInKeyResultVO">
+        SELECT /* getWorkLogCheckInComparedToPlanList */
+            T1.corpCd,
+            T1.planCd,
+            T1.seq AS planSeq,
+            T1.dt AS planDt,
+            T1.note AS planNote,
+            T1.amt AS planAmt,
+            IFNULL(T2.seq, '') AS checkInSeq,
+            IFNULL(T2.dt, '') AS checkInDt,
+            IFNULL(T2.note, '') AS checkInNote,
+            IFNULL(T2.amt, '0') AS checkInAmt,
+            IFNULL(T2.statusDivi, '') AS statusDivi,
+            (SELECT unit FROM tb_performance_plan_list I1 WHERE I1.corpCd = #{corpCd} AND I1.planCd = #{planCd}) AS unit
+          FROM tb_performance_plan_check_in_list T1
+          LEFT JOIN tb_performance_plan_check_in_list T2
+            ON T1.corpCd = T2.corpCd
+           AND T1.planCd = T2.planCd
+           AND T1.seq = T2.planSeq
+         WHERE T1.corpCd = #{corpCd}
+           AND T1.planCd = #{planCd}
+           AND T1.saveDivi = #{saveDivi}
+           AND (T2.saveDivi = #{saveDivi} OR T2.saveDivi IS NULL)
+           AND T1.checkInDivi = #{checkInDivi1}
+           AND (T2.checkInDivi = #{checkInDivi2} OR T2.checkInDivi IS NULL)
+         ORDER BY T1.corpCd, T1.planCd, T1.dt DESC, T2.dt DESC
+    </select>
+
     <insert id="insertWorkLogList" parameterType="hashMap">
         INSERT INTO /* insertWorkLogList */
             tb_performance_plan_list(
@@ -888,6 +1001,39 @@
              ,#{saveDivi}
              ,#{busiCd}
              ,#{depaCd}
+             ,#{content}
+             ,#{userId}
+             ,now()
+             ,#{userId}
+             ,now()
+    </insert>
+
+    <insert id="insertWorkLogActive" parameterType="hashMap">
+        INSERT INTO /*insertWorkLogActive*/
+            tb_performance_plan_activity_list(
+                                corpCd
+                               ,planCd
+                               ,seq
+                               ,saveDivi
+                               ,busiCd
+                               ,depaCd
+                               ,activityDt
+                               ,content
+                               ,inpId
+                               ,inpDttm
+                               ,updId
+                               ,updDttm)
+        SELECT
+            #{corpCd}
+             ,#{planCd}
+             ,(SELECT IFNULL(MAX(seq*1),0)+1
+               FROM tb_performance_plan_activity_list
+               WHERE corpCd = #{corpCd}
+               AND planCd = #{planCd})
+             ,#{saveDivi}
+             ,#{busiCd}
+             ,#{depaCd}
+             ,#{activityDt}
              ,#{content}
              ,#{userId}
              ,now()
@@ -1084,6 +1230,14 @@
 
     <delete id="deleteWorkLogContent"  parameterType="hashMap">
         UPDATE tb_performance_plan_comment_list T1/*deleteWorkLogContent*/
+        SET T1.saveDivi = '02'
+        WHERE corpCd = #{corpCd}
+          AND planCd = #{planCd}
+          AND seq = #{seq}
+    </delete>
+
+    <delete id="deleteWorkLogActive"  parameterType="hashMap">
+        UPDATE tb_performance_plan_activity_list T1/*deleteWorkLogActive*/
         SET T1.saveDivi = '02'
         WHERE corpCd = #{corpCd}
           AND planCd = #{planCd}

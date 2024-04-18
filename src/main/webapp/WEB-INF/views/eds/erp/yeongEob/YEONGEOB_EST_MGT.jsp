@@ -84,12 +84,12 @@
 						<div class="container">
 							<div class="row">
 								<div class="col text-center">
-									<button type="button" class="btn btn-sm btn-primary" name="btnFinish"		id="btnFinish"		onclick="doAction('yeongEobGridList', 'finish')"><i class="fa fa-lock"></i> 마감</button>
-									<button type="button" class="btn btn-sm btn-primary" name="btnCancel"		id="btnCancel"		onclick="doAction('yeongEobGridList', 'cancel')"><i class="fa fa-unlock"></i> 마감취소</button>
+<%--									<button type="button" class="btn btn-sm btn-primary" name="btnFinish"		id="btnFinish"		onclick="doAction('yeongEobGridList', 'finish')"><i class="fa fa-lock"></i> 마감</button>--%>
+<%--									<button type="button" class="btn btn-sm btn-primary" name="btnCancel"		id="btnCancel"		onclick="doAction('yeongEobGridList', 'cancel')"><i class="fa fa-unlock"></i> 마감취소</button>--%>
 									<button type="button" class="btn btn-sm btn-primary" name="btnSearch"		id="btnSearch"		onclick="doAction('yeongEobGridList', 'search')"><i class="fa fa-search"></i> 조회</button>
 <%--									<button type="button" class="btn btn-sm btn-primary" name="btnInput"		id="btnInput"		onclick="doAction('yeongEobGridList', 'input')" ><i class="fa fa-plus"></i> 신규</button>--%>
 <%--									<button type="button" class="btn btn-sm btn-primary" name="btnSave"			id="btnSave"		onclick="doAction('yeongEobGridList', 'save')"><i class="fa fa-save"></i> 저장</button>--%>
-<%--									<button type="button" class="btn btn-sm btn-primary" name="btnDelete"		id="btnDelete"		onclick="doAction('yeongEobGridList', 'delete')"><i class="fa fa-trash"></i> 삭제</button>--%>
+									<button type="button" class="btn btn-sm btn-primary" name="btnDelete"		id="btnDelete"		onclick="doAction('yeongEobGridList', 'delete')"><i class="fa fa-trash"></i> 삭제</button>
 <%--									<button type="button" class="btn btn-sm btn-primary" name="btnSubmit"		id="btnSubmit"		onclick="doAction('yeongEobGridList', 'submit')"><i class="fa fa-save"></i> 프로젝트상신</button>--%>
 									<button type="button" class="btn btn-sm btn-primary" name="btnEmailPopEv"	id="btnEmailPopEv"data-toggle="modal" data-target="#modalCart3"style="display: none"></button>
 									<button type="button" class="btn btn-sm btn-primary" name="btnItemPopEv"	id="btnItemPopEv"	data-toggle="modal" data-target="#modalCart" style="display: none">item list modal</button>
@@ -441,8 +441,8 @@
 										<div class="col text-center">
 											<button type="button" class="btn btn-sm btn-primary" name="btnSearch3"		id="btnSearch3"		onclick="doAction('yeongEobGridEmail', 'search')"><i class="fa fa-search"></i> 조회</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnInput3"		id="btnInput3"		onclick="doAction('yeongEobGridEmail', 'reset')" ><i class="fa fa-plus"></i> 초기화</button>
-											<button type="button" class="btn btn-sm btn-primary" name="btnEmailSend"	id="btnEmailSend"	onclick="doAction('yeongEobGridEmail', 'emailSend')"><i class="fa fa-print"></i> 전송</button>
-<%--											<button type="button" class="btn btn-sm btn-primary" name="btnDelete3"		id="btnDelete3"		onclick="doAction('yeongEobGridEmail', 'delete')"><i class="fa fa-trash"></i> 삭제</button>--%>
+											<button type="button" class="btn btn-sm btn-primary" name="btnEmailSend"	id="btnEmailSend"	onclick="doAction('yeongEobGridEmail', 'emailSend')"><i class="fa fa-print"></i> 메일요청</button> <%-- 여기 --%>
+											<button type="button" class="btn btn-sm btn-primary" name="btnDelete3"		id="btnDelete3"		onclick="doAction('yeongEobGridEmail', 'delete')"><i class="fa fa-trash"></i> 삭제</button>
 											<button type="button" class="btn btn-sm btn-primary" name="btnClose3"		id="btnClose3"		onclick="doAction('yeongEobGridEmail', 'btnClose')" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i> 닫기</button>
 										</div>
 									</div>
@@ -477,11 +477,13 @@
 									<th class="table-active" style="width: 30%; text-align: center">사업장</th>
 									<th class="table-active" style="text-align: center">법인대표인감</th>
 									<th class="table-active" style="text-align: center">법인사용인감</th>
+									<th class="table-active" style="text-align: center">인감없음</th>
 								</tr>
 								<tr>
 									<td class="table-active">이디에스(주)</td>
 									<td><input type="radio" name="prints" value="prints1"  style="width: 100%;" ></td>
-									<td style="text-align: center">-</td>
+									<td><input type="radio" name="prints" value="prints8"  style="width: 100%;" ></td>
+									<%--									<td style="text-align: center">-</td>--%>
 								</tr>
 								<tr>
 									<td class="table-active">(주)토마토아이앤에스</td>
@@ -492,6 +494,11 @@
 									<td class="table-active" title="주식회사 티엠티">이디에스(주) (청주)</td>
 									<td><input type="radio" name="prints" value="prints4"  style="width: 100%;" ></td>
 									<td><input type="radio" name="prints" value="prints5"  style="width: 100%;" ></td>
+								</tr>
+								<tr>
+									<td class="table-active" title="주식회사 이디에스원">이디에스원(주) (전주)</td>
+									<td><input type="radio" name="prints" value="prints6"  style="width: 100%;" ></td>
+									<td><input type="radio" name="prints" value="prints7"  style="width: 100%;" ></td>
 								</tr>
 							</table>
 						</form>
@@ -925,7 +932,16 @@
 		});
 
 		yeongEobGridEmail.setColumns([
-			{ header:'보낸일시',		name:'inpDttm',		minWidth:150,	align:'left',	defaultValue: ''	},
+			{ header:'발송여부',		name:'sendDivi',	width:80,		align:'center',
+				formatter: function (value) {
+					if(value.value === '01') return '미발송';
+					else if(value.value === '02') return '발송완료';
+					else if(value.value === '03') return '발송반려';
+					else return '미발송';
+				},
+			},
+			// { header:'보낸일시',		name:'inpDttm',		width:150,	align:'center',	defaultValue: ''	},
+			{ header:'보낸일시',		name:'updDttm',		width:150,	align:'center',	defaultValue: ''	},
 			{ header:'입력자',		name:'inpNm',		width:80,	align:'center',	defaultValue: ''	},
 
 			// hidden(숨김)
@@ -1588,7 +1604,10 @@
 					param.push(element)
 					if(printKind === "prints2" ||printKind === "prints3"){
 						jr.open(param, 'yeongEob_gyeonjeogseo2');
-					}else{
+					}else if(printKind === "prints6" ||printKind === "prints7"){
+						jr.open(param, 'yeongEob_gyeonjeogseo3');
+					}
+					else{
 						jr.open(param, 'yeongEob_gyeonjeogseo');
 					}
 					break;
@@ -1596,6 +1615,7 @@
 
 					var row = yeongEobGridList.getFocusedCell();
 					var estCd = yeongEobGridList.getValue(row.rowKey,'estCd');
+					doAction('yeongEobGridEmail', 'reset');
 					if(estCd == null){
 						return Swal.fire({
 							icon: 'error',
@@ -1612,7 +1632,7 @@
 
 					break;
 				case "submit":
-				{
+
 					var param = ut.serializeObject(document.querySelector("#searchForm")); //조회조건
 					yeongEobGridList.resetData(edsUtil.getAjax("/YEONGEOB_EST_MGT/selectEstMgtList", param)); // 데이터 set
 					let data={};
@@ -1625,7 +1645,7 @@
 					data.submitDivi='02'//임시저장
 					const parentData=data;
 					await edsEdms.insertSubmit(edmsEstGridItem,document.edmsEstGridItemForm,parentData,dropzeneRemoveFile);
-				}
+
 					break;
 				case "itemPopup":// 상세 팝업 보기
 
@@ -1806,6 +1826,119 @@
 						return Swal.fire({
 							icon: 'error',
 							title: '실패',
+							text: '발주서 버튼을 누르고 인감 분류를 체크하세요.',
+						});
+					}
+
+					await edsUtil.toggleLoadingScreen('on');
+
+					// file 가져오기
+					var file = $('#emailFile'); // input type file tag
+
+					// formData 생성
+					var clonFile = file.clone();
+
+					var newForm = $('<form></form>');
+					newForm.attr("method", "post");
+					newForm.attr("enctype","multipart/form-data");
+					newForm.append(clonFile);
+
+					// 추가적 데이터 입력
+					/* 메세지 파라미터*/
+					var formData = new FormData(newForm[0]);
+					formData.append("divi",			'estimate');
+					var row = yeongEobGridList.getFocusedCell();
+					var estCd = yeongEobGridList.getValue(row.rowKey,'estCd');
+					var projCd = yeongEobGridList.getValue(row.rowKey,'projCd');
+					var ordCd = yeongEobGridList.getValue(row.rowKey,'ordCd');
+					var busiCd = yeongEobGridList.getValue(row.rowKey,'busiCd');
+					formData.append("sendDivi",		"save");
+					formData.append("estCd",		estCd);
+					formData.append("projCd",		projCd);
+					formData.append("ordCd",		ordCd);
+					formData.append("emailSeq",		"");
+					formData.append("setFrom",		document.getElementById('setFrom').value);
+					formData.append("toAddr",		document.getElementById('toAddr').value);
+					formData.append("ccAddr",		document.getElementById('ccAddr').value);
+					formData.append("bccAddr",		document.getElementById('bccAddr').value);
+					formData.append("setSubject",	document.getElementById('setSubject').value);
+					formData.append("html",			yeongEobeditor.getHTML());
+
+					/* 기존 이메일 순번*/
+					var row = yeongEobGridEmail.getFocusedCell();
+					var beforeEmailSeq = yeongEobGridEmail.getValue(row.rowKey,'seq');
+					formData.append("beforeEmailSeq",beforeEmailSeq);
+
+					/* 발주서 파라미터*/
+					var num = document.getElementById('totAmt2').value;
+					var num2han = await edsUtil.num2han(num);
+
+					if(printKind.value === "prints2" ||printKind.value === "prints3"){
+						formData.append("id",		'yeongEob_gyeonjeogseo2');
+					}else if(printKind.value === "prints6" ||printKind.value === "prints7"){
+						formData.append("id",		'yeongEob_gyeonjeogseo3');
+					}else{
+						formData.append("id",		'yeongEob_gyeonjeogseo');
+					}
+
+					// 인쇄 파일 명
+					if(printKind.value === "prints1"||printKind.value === "prints8"){
+						formData.append("nameFormat",	"[이디에스]_견적서_");
+					}else if(printKind.value === "prints2" ||printKind.value === "prints3"){
+						formData.append("nameFormat",	"[토마토아이엔에스]_견적서_");
+					}else if(printKind.value === "prints6" ||printKind.value === "prints7"){
+						formData.append("nameFormat",	"[이디에스원]_견적서_");
+					}else {
+						formData.append("nameFormat",	"[이디에스(청주)]_견적서_");
+					}
+
+					formData.append("busiCd",		busiCd);
+					formData.append("num",			edsUtil.addComma(num));
+					formData.append("num2han",		num2han);
+					formData.append("printKind",	printKind.value);
+
+					$.ajax({
+						url: "/EMAIL_MGT/sendEmail",
+						type: "POST",
+						data: formData,
+						enctype: 'multipart/form-data',
+						processData: false,
+						contentType: false,
+						cache: false,
+						success: async function (rst) {
+
+							await edsUtil.toggleLoadingScreen('off');
+
+							var status = rst.status;
+							var note = rst.note;
+							var exc = rst.exc;
+							if(status === 'success'){
+								await doAction("yeongEobGridEmail", "search");
+								Swal.fire({
+									icon: 'success',
+									title: '성공',
+									text: note,
+									footer: exc
+								})
+							}else{
+								console.log(exc);
+								Swal.fire({
+									icon: 'error',
+									title: '실패',
+									text: note,
+									footer: exc
+								})
+							}
+						},
+					});
+					break;
+				/*case "emailSend":// 보내기
+
+					var printKind = document.querySelector('input[name="prints"]:checked')
+					if(!printKind){
+						return Swal.fire({
+							icon: 'error',
+							title: '실패',
 							text: '견적서 버튼을 누르고 인감 분류를 체크하세요.',
 						});
 					}
@@ -1823,7 +1956,7 @@
 					newForm.append(clonFile);
 
 					// 추가적 데이터 입력
-					/* 메세지 파라미터*/
+					/!* 메세지 파라미터*!/
 					var formData = new FormData(newForm[0]);
 					formData.append("divi",			'estimate');
 					formData.append("sendDivi",		'send');
@@ -1838,12 +1971,12 @@
 					formData.append("setSubject",	document.getElementById('setSubject').value);
 					formData.append("html",			yeongEobeditor.getHTML());
 
-					/* 기존 이메일 순번*/
+					/!* 기존 이메일 순번*!/
 					var row = yeongEobGridEmail.getFocusedCell();
 					var beforeEmailSeq = yeongEobGridEmail.getValue(row.rowKey,'seq');
 					formData.append("beforeEmailSeq",beforeEmailSeq);
 
-					/* 견적서 파라미터*/
+					/!* 견적서 파라미터*!/
 					var row = yeongEobGridList.getFocusedCell();
 					var num = yeongEobGridList.getValue(row.rowKey,'totAmt2');
 					var num2han = await edsUtil.num2han(num);
@@ -1851,15 +1984,19 @@
 					// 인쇄 파일
 					if(printKind.value === "prints2" ||printKind.value === "prints3"){
 						formData.append("id",		'yeongEob_gyeonjeogseo2');
+					}else if(printKind.value === "prints6" ||printKind.value === "prints7"){
+						formData.append("id",		'yeongEob_gyeonjeogseo3');
 					}else{
 						formData.append("id",		'yeongEob_gyeonjeogseo');
 					}
 
 					// 인쇄 파일 명
-					if(printKind.value === "prints1"){
+					if(printKind.value === "prints1"||printKind.value === "prints8"){
 						formData.append("nameFormat",	"[이디에스]_견적서_");
 					}else if(printKind.value === "prints2" ||printKind.value === "prints3"){
 						formData.append("nameFormat",	"[토마토아이엔에스]_견적서_");
+					}else if(printKind.value === "prints6" ||printKind.value === "prints7"){
+						formData.append("nameFormat",	"[이디에스원]_견적서_");
 					}else {
 						formData.append("nameFormat",	"[이디에스(청주)]_견적서_");
 					}
@@ -1903,7 +2040,7 @@
 							}
 						},
 					});
-					break;
+					break;*/
 			}
 		}
 	}

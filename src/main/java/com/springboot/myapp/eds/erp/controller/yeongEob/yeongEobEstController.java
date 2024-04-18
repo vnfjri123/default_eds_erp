@@ -25,6 +25,12 @@ public class yeongEobEstController {
 		return "/eds/erp/yeongEob/YEONGEOB_EST_MGT";
 	}
 
+	@RequestMapping("/YEONGEOB_EST_SEND_VIEW")
+	public String yeongEobEstSendView(Model model) throws Exception {
+
+		return "/eds/erp/yeongEob/YEONGEOB_EST_SEND";
+	}
+
 	@RequestMapping("/YEONGEOB_EST_MGT_POP_VIEW")
 	public String yeongEobEstMgtPopView(Model model) throws Exception {
 

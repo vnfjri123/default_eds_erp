@@ -50,9 +50,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://localhost:80",
-                        "https://192.168.0.31:81",
-                        "https://edscorp.iptime.org:8181"
+                        "http://localhost:70",
+                        "https://192.168.0.31:71",
+                        "https://edscorp.iptime.org:7171"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Authorization", "Content-Type")
@@ -92,8 +92,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	    Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
 	    connector.setScheme("http");
 	    connector.setSecure(false);
-	    connector.setPort(80);
-	    connector.setRedirectPort(8181);
+	    connector.setPort(70);
+	    connector.setRedirectPort(7171);
 	    return connector;
 	}
 }

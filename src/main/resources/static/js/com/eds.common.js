@@ -3106,7 +3106,15 @@ var edsUtil = {
                         formObj.elements[i].checked = sValue;
                         break;
                     default:
-
+                        /*if(column === 'submitNm'){
+                            continue;
+                        }else if(column === 'projNm'){
+                            // submitNm 요소를 한 번만 찾아서 재사용합니다.
+                            let submitNmElement = document.getElementById('submitNm');
+                            if (submitNmElement) {
+                                // submitNmElement.value += sValue; // sValue를 현재 값에 추가합니다.
+                            }
+                        }*/
                         formObj.elements[i].value = sValue;
                         break;
                 }

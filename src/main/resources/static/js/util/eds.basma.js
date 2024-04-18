@@ -38,5 +38,6 @@ eds.basma = {
 		{ target:"month", commCd:"SYS011", head:false }, // 월 구분
 		{ target:"clasifyDivi", commCd:"SYS012", head:false }, // 구분
 		{ target:"modelDivi", commCd:"SYS013", head:true }, // 모델 구분
+		{ target:"depaDivi", commCd:"SYS014", head:true }, // 부서 구분
 	]
 };

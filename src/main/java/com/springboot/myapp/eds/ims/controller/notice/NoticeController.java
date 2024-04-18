@@ -96,20 +96,47 @@ public class NoticeController {
   @RequestMapping("/noticeView/noticeFilesLoad/{params}")
   @ResponseBody
   public ResponseEntity<byte[]> loadSiteImage(@PathVariable("params") String params) throws IOException {
+
     String[] param = params.split(","); // params
+
     String saveNm = "";
     saveNm = param[1] + "." + param[2];
     String corpCd = param[0]; // 회사코드별 파일업로드 관리
-    String path = new File(realPath + "/file/").getCanonicalPath()
-            + File.separatorChar + corpCd
-            + File.separatorChar + "ims"
-            + File.separatorChar + "0001"
-            + File.separatorChar + "noticeFiles"
-            + File.separatorChar + saveNm;
-    InputStream imageStream = new FileInputStream(path);
-    byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-    imageStream.close();
-    return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+
+    String fileType = param[2];
+    String fileName = "";
+    if (fileType.equals("pdf")) {
+      fileName = "pdfimg.jpg";
+    } else if (fileType.equals("xlsx")) {
+      fileName = "exclimg.jpg";
+    } else if (fileType.equals("doc")){
+      fileName = "wordimg.jpg";
+    } else if (fileType.equals("hwp")) {
+      fileName = "hwpimg.jpg";
+    }
+    
+    if (!fileName.isEmpty()) {
+      String pdfPath = new File(realPath + "/static/").getCanonicalPath()
+              + File.separatorChar + "img"
+              + File.separatorChar + "fileImage"
+              + File.separatorChar + fileName;
+      InputStream pdfImageStream = new FileInputStream(pdfPath);
+      byte[] pdfImageByteArray = IOUtils.toByteArray(pdfImageStream);
+      pdfImageStream.close();
+      return new ResponseEntity<byte[]>(pdfImageByteArray, HttpStatus.OK);
+    } else{
+      String path = new File(realPath + "/file/").getCanonicalPath()
+              + File.separatorChar + corpCd
+              + File.separatorChar + "ims"
+              + File.separatorChar + "0001"
+              + File.separatorChar + "noticeFiles"
+              + File.separatorChar + saveNm;
+      InputStream imageStream = new FileInputStream(path);
+      byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+      imageStream.close();
+
+      return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+    }
   }
 
   @RequestMapping("/noticeView/selectNoticeByIndex")

@@ -80,7 +80,6 @@ public class ApiPrintController {
 //                jasperPath =  new File(filePath+"jrxml/eds/erp").getCanonicalPath()+File.separatorChar+path+File.separatorChar;
                 jasperPath =  new File(filePath+"jrxml/eds/erp/").getCanonicalPath()+File.separatorChar+path+File.separatorChar;
                 file = new File(jasperPath+paths[1]+".jrxml");
-                System.out.println("ssssssssssssssssssssssssssssssss");
                 System.out.println(jasperPath+paths[1]+".jrxml");
             }
 
@@ -210,7 +209,6 @@ public class ApiPrintController {
                     jasperPrint[i] = JasperFillManager.fillReport(jasperReport, rptData, conn);
                     // 오른쪽 상단에 eds 식별 qrcode 의무화: 회사코드+사업장코드+사업장등록번호+각 테이블에대한 유니크넘버
                 }
-                System.out.println("ssssssssssssssssssssssssssss22222ssss");
                 //리포트 페이지 병합2
                 for (int i = 1; i < size; i++) {
                     List pages = jasperPrint[i].getPages();

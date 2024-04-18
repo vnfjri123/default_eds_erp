@@ -16,13 +16,16 @@ public class archiveVO {
   private String updId;
   private String title;
   private int hit;
-  private String saveNm;
-  private String videoSaveNm;
-  private String origNm;
-  private String videoOrigNm;
-  private String saveRoot;
-  private String ext;
-  private String videoExt;
-  private int size;
   private String content;
+
+  private String thumbOrigNm;
+  private String thumbExt;
+  private String thumbSaveRoot;
+  private String thumbSaveNm;
+  private String thumbSize;
+
+  private String videoSaveNm;
+  private String videoExt;
+  private String videoOrigNm;
+  private String videoSaveRoot;
 }

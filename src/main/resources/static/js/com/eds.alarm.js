@@ -86,6 +86,14 @@ edsAlarm =
 				{textContent = '발주요청';className = 'right badge badge-warning';}
 				else if(test[i].stateDivi=='09')
 				{textContent = '발주승인';className = 'right badge badge-success';}
+				else if(test[i].stateDivi=='10')
+				{textContent = '발주반려';className = 'right badge badge-danger';}
+				else if(test[i].stateDivi=='11')
+				{textContent = '견적요청';className = 'right badge badge-warning';}
+				else if(test[i].stateDivi=='12')
+				{textContent = '견적승인';className = 'right badge badge-success';}
+				else if(test[i].stateDivi=='13')
+				{textContent = '견적반려';className = 'right badge badge-danger';}
 				else {textContent = '문서';className = 'right badge badge-danger';}
 			}
 			var spanElement = document.createElement('span');
@@ -343,6 +351,10 @@ edsAlarm =
 					else if(target.getAttribute("statedivi") === '07') ; // 코멘트
 					else if(target.getAttribute("statedivi") === '08') ; // 발주요청
 					else if(target.getAttribute("statedivi") === '09') ; // 발주승인
+					else if(target.getAttribute("statedivi") === '10') ; // 발주반려
+					else if(target.getAttribute("statedivi") === '11') ; // 발주요청
+					else if(target.getAttribute("statedivi") === '12') ; // 발주승인
+					else if(target.getAttribute("statedivi") === '13') ; // 발주반려
 					else Swal.fire({icon: 'warning',html: "일치하는 문서가 없습니다.<br/>결재요청자에게 문서를 확인해주세요"});
 					if(readDivi=='00' || readDivi=='null')//처음 읽는 문서는 읽음으로 업데이트
 					{

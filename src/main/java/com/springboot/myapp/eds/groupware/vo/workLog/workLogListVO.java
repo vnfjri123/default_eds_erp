@@ -53,4 +53,46 @@ public class workLogListVO {
     public double getRate() {
         return (double) Math.round((rate * 100)/100);
     }
+
+    @Override
+    public String toString() {
+        return "workLogListVO{" +
+                "corpCd='" + corpCd + '\'' +
+                ", corpNm='" + corpNm + '\'' +
+                ", planCd='" + planCd + '\'' +
+                ", planDivi='" + planDivi + '\'' +
+                ", parePlanCd='" + parePlanCd + '\'' +
+                ", planCdRoot='" + planCdRoot + '\'' +
+                ", pareSeq='" + pareSeq + '\'' +
+                ", depth='" + depth + '\'' +
+                ", planNm='" + planNm + '\'' +
+                ", subPlanNm='" + subPlanNm + '\'' +
+                ", busiCd='" + busiCd + '\'' +
+                ", busiNm='" + busiNm + '\'' +
+                ", depaCd='" + depaCd + '\'' +
+                ", depaNm='" + depaNm + '\'' +
+                ", depaColorCd='" + depaColorCd + '\'' +
+                ", empCd='" + empCd + '\'' +
+                ", empNm='" + empNm + '\'' +
+                ", partCds='" + partCds + '\'' +
+                ", inpId='" + inpId + '\'' +
+                ", inpNm='" + inpNm + '\'' +
+                ", updId='" + updId + '\'' +
+                ", updNm='" + updNm + '\'' +
+                ", saveDivi='" + saveDivi + '\'' +
+                ", stDt='" + stDt + '\'' +
+                ", edDt='" + edDt + '\'' +
+                ", unit='" + unit + '\'' +
+                ", stAmt='" + stAmt + '\'' +
+                ", edAmt='" + edAmt + '\'' +
+                ", note='" + note + '\'' +
+                ", edRate='" + edRate + '\'' +
+                ", rate=" + rate +
+                ", status='" + status + '\'' +
+                ", partImg='" + partImg + '\'' +
+                ", statusDivi='" + statusDivi + '\'' +
+                ", statusDivis='" + statusDivis + '\'' +
+                ", cntColor='" + cntColor + '\'' +
+                '}';
+    }
 }

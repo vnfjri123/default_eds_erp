@@ -116,6 +116,8 @@
 				{ header:'비고',			name:'note1',		minWidth:150,	align:'left',	hidden:true },
 				{ header:'결재자보고내용',	name:'note2',		minWidth:150,	align:'left',	hidden:true },
 				{ header:'저장문서번호',	name:'submitCd',		minWidth:150,	align:'left',	hidden:true },
+				{ header:'거래처담당자',	name:'manager',		minWidth:150,	align:'left',	hidden:true },
+				{ header:'프로젝트목적',	name:'projPur',		minWidth:150,	align:'left',	hidden:true },
 			]);
 
 			/**********************************************************************
@@ -188,6 +190,7 @@
 						param.rows = projectGridList.getCheckedRows();
 						param.name = document.getElementById('name').value;
 
+							// console.log(param)
 						await edsIframe.closePopup(param);
 
 						break;
